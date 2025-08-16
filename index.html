@@ -1,64 +1,63 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>AI偏差値診断｜メール登録→診断→結果メール</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI偏差値診断｜メール登録→診断→結果メール</title>
 
-<style>
-  :root {
-    --brand:#7356b6; --bg:#f5f3ff; --card:#fff; --muted:#666; --ink:#222;
-  }
-  *{box-sizing:border-box;}
-  body{
-    font-family: system-ui, -apple-system, Arial, sans-serif;
-    margin:0; color:var(--ink); background:var(--bg);
-  }
-  header{
-    background:var(--brand); color:#fff; padding:18px; text-align:center;
-  }
-  main{max-width:980px; margin:24px auto; padding:0 16px 60px;}
-  .card{
-    background:var(--card); border-radius:14px; padding:22px;
-    box-shadow:0 6px 20px rgba(0,0,0,.06); margin:14px 0;
-  }
-  h1{font-size:22px; margin:0;}
-  h2{font-size:18px; margin:0 0 12px;}
-  p{line-height:1.7; margin:8px 0;}
-  .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
-  input[type="email"], input[type="text"], select{
-    width:100%; padding:12px 14px; border-radius:10px; border:1px solid #ddd;
-    font:inherit; background:#fff;
-  }
-  .btn{
-    display:inline-block; padding:10px 16px; border-radius:10px; text-decoration:none;
-    background:var(--brand); color:#fff; border:0; cursor:pointer; font-weight:600;
-    box-shadow:0 3px 10px rgba(115,86,182,.24);
-  }
-  .btn.secondary{ background:#fff; color:var(--brand); border:1px solid var(--brand); }
-  .btn.ghost{ background:#fff; color:var(--ink); border:1px solid #ddd; }
-  .muted{ color:var(--muted); font-size:12px;}
-  .q{ padding:12px 10px; border-top:1px dashed #eee;}
-  .choices{ display:flex; gap:10px; flex-wrap:wrap; margin-top:6px;}
-  .choices label{
-    display:inline-flex; align-items:center; gap:6px;
-    padding:8px 10px; border:1px solid #e5e5e5; border-radius:10px; background:#fff;
-  }
-  .right{ text-align:right; }
-  .score{
-    font-size:28px; font-weight:800; color:#6f5ad1;
-  }
-  .hide{ display:none !important; }
-  .cta-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:10px;}
-  .badge{display:inline-block; background:#eee; color:#444; padding:2px 8px; border-radius:999px; font-size:12px;}
-  footer{ text-align:center; color:#888; font-size:12px; padding:40px 0;}
-  .ok{ color:#11805a; font-weight:600;}
-  .err{ color:#b42318; font-weight:600;}
-</style>
+  <style>
+    :root{
+      --brand:#7356b6; --bg:#f5f3ff; --card:#fff; --muted:#666; --ink:#222;
+    }
+    *{box-sizing:border-box}
+    body{
+      font-family: system-ui, -apple-system, Arial, sans-serif;
+      margin:0; color:var(--ink); background:var(--bg);
+    }
+    header{
+      background:var(--brand); color:#fff;
+      padding:18px; text-align:center;
+    }
+    main{max-width:980px; margin:24px auto; padding:0 16px 60px;}
+    .card{
+      background:var(--card);
+      border-radius:12px; padding:22px;
+      box-shadow: 0 6px 22px rgba(0,0,0,.06);
+      margin:16px 0;
+    }
+    h1{font-size:22px; margin:0;}
+    h2{font-size:18px; margin:12px 0}
+    p{line-height:1.7; margin:8px 0}
+    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+    input[type="email"], select, button, .btn {
+      font:inherit; padding:12px 14px;
+      border-radius:10px; border:1px solid #ddd; background:#fff;
+    }
+    input[type="email"]{flex:1 1 320px; min-width:240px}
+    button, .btn{
+      background:var(--brand); border:none; color:#fff; cursor:pointer;
+    }
+    .ghost{ background:#fff; color:var(--brand); border:1px solid var(--brand); }
+    .muted{ color:var(--muted); font-size:12px }
+    .hint{ font-size:13px; color:#444 }
+    .q{ border-top:1px dashed #e6e3f7; padding-top:12px; margin-top:12px }
+    .radios{ display:flex; gap:12px; flex-wrap:wrap; margin-top:6px }
+    .radios label{ display:inline-flex; align-items:center; gap:6px; padding:8px 10px; border:1px solid #ddd; border-radius:12px; background:#fff }
+    .center{ text-align:center }
+    .score{ font-size:28px; color:#6f5ad1; font-weight:700 }
+    .level{ font-weight:700 }
+    .cta{ display:flex; gap:12px; flex-wrap:wrap; margin-top:10px }
+    .pill{ display:inline-block; font-size:12px; padding:3px 8px; border-radius:999px; background:#eee; color:#555; }
+    .ok{ color:#16784d } .warn{ color:#8a5a00 } .bad{ color:#a40000 }
+    a.btn{ text-decoration:none; display:inline-block }
+    .footer{ color:#777; font-size:12px; text-align:center; margin-top:24px }
+    .badge{ background:#f1edff; color:#5d3fc0; padding:3px 8px; border-radius:999px; font-size:12px; }
+  </style>
 </head>
 <body>
   <header>
     <h1>AI偏差値診断</h1>
+    <div class="muted">メール登録（任意） → 10問に回答 → 結果を表示 &amp; メール送信</div>
   </header>
 
   <main>
@@ -66,205 +65,177 @@
     <section id="step1" class="card">
       <div class="badge">STEP 1</div>
       <h2>診断結果をメールで受け取る（任意）</h2>
-      <p class="muted">
-        メール登録をすると、診断後に<strong>結果レポートをメール</strong>でお送りします。未登録でも診断は実施できます。
-      </p>
-
+      <p class="hint">登録すると、診断後に結果をメールでもお送りします。未登録でも診断は可能です。</p>
       <div class="row">
         <input id="email" type="email" placeholder="メールアドレスを入力" autocomplete="email" />
-        <button id="btn-register" class="btn">登録する</button>
-        <button id="btn-skip" class="btn ghost" type="button">登録せずに診断へ</button>
+        <button id="btnRegister">登録する</button>
+        <a id="btnSkip" class="btn ghost" href="#step2">登録せずに診断へ</a>
       </div>
-
-      <p class="muted">
-        送信先の管理：Googleスプレッドシート（自動作成）。<br/>
-        プライバシー：用途は診断に関するご連絡のみ。不必要なときはいつでも配信停止いただけます。
-      </p>
-      <p id="reg-status" class="muted"></p>
+      <p class="muted">送信先の管理：Googleスプレッドシート（自動作成）／用途は診断に関するご連絡のみ。不要時はいつでも配信停止いただけます。</p>
+      <div id="regMsg" class="muted"></div>
     </section>
 
-    <!-- STEP 2: 設問 -->
+    <!-- STEP 2: 質問 -->
     <section id="step2" class="card">
       <div class="badge">STEP 2</div>
       <h2>10問の自己評価に回答</h2>
+      <div id="qWrap"></div>
 
-      <div id="questions"></div>
-
-      <div class="right" style="margin-top:12px;">
-        <button id="btn-diagnose" class="btn">診断する</button>
+      <div class="center" style="margin-top:16px">
+        <button id="btnCalc" style="min-width:180px">診断する</button>
       </div>
     </section>
 
     <!-- STEP 3: 結果 -->
-    <section id="step3" class="card hide">
+    <section id="step3" class="card">
       <div class="badge">STEP 3</div>
       <h2>診断結果</h2>
 
       <p>
-        総合スコア：<span id="total-score" class="score">-</span>
-        <span style="margin-left:12px;">レベル：<strong id="level">-</strong></span>
+        総合スコア： <span id="score" class="score">--</span>
+        &nbsp;&nbsp; レベル： <span id="level" class="level">--</span>
       </p>
+      <p id="advice" class="hint"></p>
 
-      <p id="advise" class="muted" style="margin-top:8px;"></p>
-
-      <div class="cta-row" style="margin-top:10px;">
-        <a id="btn-more" class="btn" href="./exo_lp.html" target="_blank" rel="noopener">ExoVisionary Hubを見る</a>
-        <a id="btn-consult" class="btn secondary" href="#" target="_blank" rel="noopener">個別相談を予約</a>
+      <div class="cta">
+        <!-- ★ ここがご要望のリンク：LPファイルに直リンクさせています -->
+        <a id="btn-allcourses" class="btn" href="./exo_lp.html">ExoVisionary Hubを見る</a>
+        <a class="btn ghost" href="https://example.com/booking" target="_blank" rel="noopener">個別相談を予約</a>
       </div>
 
-      <p id="mail-note" class="muted" style="margin-top:12px;"></p>
+      <p class="muted" id="mailEcho" style="margin-top:8px;"></p>
     </section>
 
-    <footer>© ExoVisionary Hub</footer>
+    <div class="footer">© ExoVisionary Hub</div>
   </main>
 
-  <!-- ▼▼▼ ここからJS：一番上に LINKS を置く（ページ内のどのJSより前） ▼▼▼ -->
   <script>
-    /* 診断ページから飛ばすリンク先を一括管理 */
-    const LINKS = {
-      allCourses: "./exo_lp.html",                                          // ← ハイブリッドLP（同フォルダに exo_lp.html を置く）
-      apply: "https://forms.gle/i77QbkDoVhVvWnPd8",                        // 申し込み/説明会
-      demo:  "https://example.com/demo",                                   // デモ（任意）
-      oneOnOne: "https://example.com/consult"                              // 個別相談（任意）
+    /* ========= 設定 ========= */
+    // ★GAS（デプロイURL） — 置き換える場合はここだけ変更
+    const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbwg9IuBV3PKyfkepUdoRYI0J5wbQtX8NLU11BJl-UScoQSr9LRTNqnnofnX_6KDlvH0_w/exec";
+
+    // 質問（10問）
+    const QUESTIONS = [
+      "ChatGPTなどのAIツールを業務で使ったことはありますか？",
+      "プロンプト（AIへの指示文）を工夫して出力を改善した経験はありますか？",
+      "業務フローの一部をAIで自動化・省力化したことがありますか？",
+      "社内ルール・ガイドラインに沿ったAI活用を意識していますか？",
+      "AI出力の品質管理（検証・レビュー）を実施していますか？",
+      "データの取り扱い・守秘の観点で配慮して運用できていますか？",
+      "RAG/外部データ連携などの拡張機能を扱ったことがありますか？",
+      "チームでAI活用のナレッジ共有・教育を進めていますか？",
+      "成果（コスト削減/時間短縮/売上寄与など）を可視化していますか？",
+      "新しいAI機能・ツールを定期的に試し、評価していますか？"
+    ];
+
+    // レベル判定
+    function levelOf(score){
+      if (score >= 70) return { key:"advanced", label:"先進層" };
+      if (score >= 55) return { key:"practical", label:"実践層" };
+      if (score >= 40) return { key:"middle", label:"初級〜中級" };
+      return { key:"entry", label:"入門層" };
+    }
+
+    // レベル別のひとこと
+    const LEVEL_TIPS = {
+      entry  : "まずは安全な使い方と用途探索から。社内ルールに沿って小さく試し、成功体験を。",
+      middle : "プロンプト改善と検証プロセスの整備で品質を上げましょう。",
+      practical: "評価・A/B・ガバナンスまで含めた運用設計を進めましょう。",
+      advanced : "RAG/エージェントで事業インパクトへ！要件定義から運用SLAまで拡張を。"
     };
-  </script>
-  <!-- ▲▲▲ LINKS はこの位置に置けばOK（見つからない時はこのブロックごと貼る） ▲▲▲ -->
 
-  <script>
-  // ====== 設定 ======
-  const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbwg9IuBV3PKyfkepUdoRYI0J5wbQtX8NLU11BJl-UScoQSr9LRTNqnnofnX_6KDlvH0_w/exec"; // 先にデプロイしたGASの /exec URL
-
-  // ====== UI 初期化：設問生成 ======
-  const QS = [
-    "ChatGPTなどのAIツールを業務で使ったことはありますか？",
-    "プロンプト（AIへの指示文）を工夫して出力を改善した経験はありますか？",
-    "生成AIの出力を検証・修正するワークフローがありますか？",
-    "社内ルールやセキュリティ方針に沿ってAIを運用していますか？",
-    "データ集計・要約・メール作成など日常業務でAIを活用できていますか？",
-    "AIを使った小さな改善（PoC）を複数実施しましたか？",
-    "AI活用の学習計画・ロードマップがありますか？",
-    "AIを使ったA/Bや評価・振り返りを定期的に行っていますか？",
-    "社内共有（ナレッジ化・ガイド整備）を行っていますか？",
-    "RAGや自社データ連携など高度な応用に着手していますか？",
-  ];
-
-  function radio(name, value, label){
-    const id = `${name}-${value}`;
-    return `
-      <label for="${id}">
-        <input type="radio" id="${id}" name="${name}" value="${value}" />
-        ${label}
-      </label>`;
-  }
-  function makeQuestion(i, text){
-    const name = `q${i+1}`;
-    return `
-      <div class="q">
-        <div><strong>${i+1}. ${text}</strong></div>
-        <div class="choices">
-          ${radio(name,1,"全くない")}
-          ${radio(name,2,"少し")}
-          ${radio(name,3,"普通")}
-          ${radio(name,4,"かなり")}
-          ${radio(name,5,"とてもある")}
-        </div>
-      </div>`;
-  }
-  const $qs = document.getElementById("questions");
-  $qs.innerHTML = QS.map((t,i)=>makeQuestion(i,t)).join("");
-
-  // ====== LINKS の紐付け（ここが今回のポイント） ======
-  document.getElementById("btn-more").href    = LINKS.allCourses;
-  document.getElementById("btn-consult").href = LINKS.oneOnOne;
-
-  // ====== メール登録（任意） ======
-  const $email = document.getElementById("email");
-  const $regStatus = document.getElementById("reg-status");
-
-  async function postJSON(url, payload){
-    const res = await fetch(url, {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify(payload)
+    /* ========= UI生成 ========= */
+    const qWrap = document.getElementById("qWrap");
+    QUESTIONS.forEach((text, idx) => {
+      const n = idx + 1;
+      const qEl = document.createElement("div");
+      qEl.className = "q";
+      qEl.innerHTML = `
+        <div><b>${n}. ${text}</b></div>
+        <div class="radios">
+          ${[1,2,3,4,5].map(v => `
+            <label>
+              <input type="radio" name="q${n}" value="${v}">
+              ${["全くない","少し","普通","かなり","とてもある"][v-1]}
+            </label>
+          `).join("")}
+        </div>`;
+      qWrap.appendChild(qEl);
     });
-    try{ return await res.json(); }catch(e){ return {ok:false,msg:"invalid json"} }
-  }
 
-  document.getElementById("btn-register").addEventListener("click", async ()=>{
-    const email = ($email.value || "").trim();
-    if(!email || !/.+@.+/.test(email)){
-      $regStatus.innerHTML = '<span class="err">メールアドレスを入力してください。</span>';
-      return;
-    }
-    $regStatus.textContent = "登録中…";
-    const r = await postJSON(GAS_ENDPOINT, { type:"register", email });
-    $regStatus.innerHTML = r?.ok ? '<span class="ok">登録しました。診断へお進みください。</span>'
-                                 : `<span class="err">登録に失敗しました：${r?.msg||"不明なエラー"}</span>`;
-    // 登録後は STEP2 へスクロール
-    document.getElementById("step2").scrollIntoView({behavior:"smooth"});
-  });
+    /* ========= メール登録 ========= */
+    const emailInput  = document.getElementById("email");
+    const regMsg      = document.getElementById("regMsg");
+    const btnRegister = document.getElementById("btnRegister");
 
-  document.getElementById("btn-skip").addEventListener("click", ()=>{
-    document.getElementById("step2").scrollIntoView({behavior:"smooth"});
-  });
+    // 既存の保存値を復元
+    emailInput.value = localStorage.getItem("adx_email") || "";
 
-  // ====== 診断 ======
-  function calcScore(ans){
-    // 10問 × 1〜5 = 素点10〜50 → 0〜100に正規化
-    const sum = Object.values(ans).reduce((a,b)=>a + Number(b||0), 0);
-    const score100 = Math.round(((sum - 10) / 40) * 100);
-    return Math.max(0, Math.min(100, score100));
-  }
-  function levelOf(score){
-    if(score >= 75) return {key:"advanced", jp:"先進層", advise:"RAG/エージェントで事業インパクトへ。案件化・運用SLAまで支援・スクールをご案内します。"};
-    if(score >= 60) return {key:"practical", jp:"実践層", advise:"評価・A/B・ガバナンスまで含めた運用設計を実装・ドドンと。"};
-    if(score >= 40) return {key:"middle", jp:"初級〜中級", advise:"プロンプト改善や検証プロセスの整備で品質・効率を同時に底上げ。短期集中プランがおすすめ。"};
-    return          {key:"entry", jp:"入門層", advise:"まずは安全な使い方と用途探索から。社内ルールに沿って小さく試し、成功体験を。"};
-  }
+    btnRegister.addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        regMsg.textContent = "メール形式を確認してください。";
+        return;
+      }
+      regMsg.textContent = "登録中…";
+      try{
+        await fetch(GAS_ENDPOINT, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ type:"register", email })
+        });
+        localStorage.setItem("adx_email", email);
+        regMsg.textContent = "登録しました。診断にお進みください。";
+        location.hash = "#step2";
+      }catch(e){
+        regMsg.textContent = "登録に失敗しました。時間をおいて再度お試しください。";
+      }
+    });
 
-  document.getElementById("btn-diagnose").addEventListener("click", async ()=>{
-    // 回答取得
-    const ans = {};
-    for(let i=1;i<=10;i++){
-      const v = document.querySelector(`input[name="q${i}"]:checked`);
-      ans[`q${i}`] = v ? Number(v.value) : 0;
-    }
-    // 未回答チェック
-    const unanswered = Object.values(ans).filter(v=>!v).length;
-    if(unanswered>0){
-      alert(`未回答が ${unanswered} 件あります。すべて選択してください。`);
-      return;
-    }
+    /* ========= 診断ロジック ========= */
+    const btnCalc = document.getElementById("btnCalc");
+    const scoreEl = document.getElementById("score");
+    const levelEl = document.getElementById("level");
+    const adviceEl= document.getElementById("advice");
+    const mailEcho= document.getElementById("mailEcho");
 
-    // スコア＆レベル
-    const score = calcScore(ans);
-    const LV = levelOf(score);
+    btnCalc.addEventListener("click", async () => {
+      // 回答の収集
+      const answers = {};
+      for(let i=1;i<=QUESTIONS.length;i++){
+        const val = document.querySelector(`input[name="q${i}"]:checked`)?.value;
+        if(!val){ alert(`Q${i} が未回答です。`); return; }
+        answers[`q${i}`] = Number(val);
+      }
+      // スコア計算（平均×20）
+      const sum = Object.values(answers).reduce((a,b)=>a+b,0);
+      const score = Math.round((sum / QUESTIONS.length) * 20);
 
-    // 画面表示
-    document.getElementById("total-score").textContent = score;
-    document.getElementById("level").textContent = LV.jp;
-    document.getElementById("advise").textContent = LV.advise;
+      const lv = levelOf(score);
+      scoreEl.textContent = score;
+      levelEl.textContent = lv.label;
+      adviceEl.textContent = LEVEL_TIPS[lv.key];
 
-    const email = ($email.value || "").trim();
-    document.getElementById("mail-note").textContent =
-      email && /.+@.+/.test(email)
+      // メール送信（GAS）
+      const email = (localStorage.getItem("adx_email") || "").trim();
+      mailEcho.textContent = email
         ? `結果を ${email} に送信しています（数分かかる場合があります）。`
-        : `メール未登録のため、結果メールは送信されません。STEP1で登録してからの診断がおすすめです。`;
+        : "メール未登録のため、結果メールの送信はスキップしました。";
 
-    // 結果セクション表示
-    document.getElementById("step3").classList.remove("hide");
-    location.hash = "#step3";
+      try{
+        await fetch(GAS_ENDPOINT, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ type:"result", email, score, answers })
+        });
+      }catch(e){
+        // エラーはUIには出さない（画面表示優先）
+        console.warn("send result failed:", e);
+      }
 
-    // GAS へ保存＆（登録済みなら）結果メール
-    try{
-      await postJSON(GAS_ENDPOINT, {
-        type:"result",
-        email: email || "(no-email)",
-        score,
-        answers: ans
-      });
-    }catch(e){ /* noop */ }
-  });
+      // 結果へスクロール
+      location.hash = "#step3";
+    });
   </script>
 </body>
 </html>
