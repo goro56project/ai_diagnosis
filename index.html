@@ -54,6 +54,46 @@
     .badge{ background:#f1edff; color:#5d3fc0; padding:3px 8px; border-radius:999px; font-size:12px; }
   </style>
 </head>
+  <script>
+/* 診断結果のスコアを検出して LP へ渡す＋保存 */
+(function () {
+  function computeLevel(score){
+    if (score >= 70) return 'practical';   // 実践〜先進
+    if (score >= 55) return 'middle';      // 初級〜中級
+    return 'entry';                        // 入門
+  }
+
+  function updateLpLink() {
+    // ページ内テキストから「総合スコア：NN」を拾う（日本語 UI 前提）
+    const text = (document.querySelector('main')?.textContent || document.body.textContent || '').replace(/\s+/g, ' ');
+    const m = text.match(/総合スコア\s*[:：]\s*(\d{1,3})/);
+    if (!m) return;
+
+    const score = parseInt(m[1], 10);
+    const level = computeLevel(score);
+
+    // 保存（LP が URLパラメータ無しでも拾えるように）
+    localStorage.setItem('ai_score', String(score));
+    localStorage.setItem('ai_level', level);
+
+    // 「ExoVisionary Hubを見る」リンクを書き換え（見つかった最初の exo_lp.html リンクを対象）
+    const link =
+      document.querySelector('#link-lp') ||               // もし id を付けているなら優先
+      document.querySelector('a[href*="exo_lp.html"]');   // 付いていなければ href で検索
+
+    if (link) {
+      const u = new URL('https://goro56project.github.io/ai_diagnosis/exo_lp.html');
+      u.searchParams.set('score', String(score));
+      u.searchParams.set('level', level);
+      link.href = u.toString();
+    }
+  }
+
+  // 画面表示後に実行（結果が描画されてから拾うため）
+  window.addEventListener('load', () => setTimeout(updateLpLink, 0));
+})();
+</script>
+
 <body>
   <header>
     <h1>AI偏差値診断</h1>
