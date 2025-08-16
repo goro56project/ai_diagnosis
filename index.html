@@ -93,6 +93,51 @@
   window.addEventListener('load', () => setTimeout(updateLpLink, 0));
 })();
 </script>
+<script>
+/* 診断結果を LP に渡す（保存＋リンク書き換え） */
+(function () {
+  // 画面の「結果カード」からスコアとレベルを拾う
+  function pickFromDOM() {
+    const block = Array.from(document.querySelectorAll('section,div'))
+      .find(el => /総合スコア|AI偏差値/.test(el.textContent) && /レベル/.test(el.textContent));
+    if (!block) return null;
+
+    const mScore = block.textContent.match(/(AI偏差値|総合スコア)\s*[:：]\s*(\d{1,3})/);
+    const mLevel = block.textContent.match(/レベル\s*[:：]\s*([^\s・。\n]+)/);
+    const score = mScore ? Number(mScore[2]) : NaN;
+    const levelLabel = mLevel ? mLevel[1] : "";
+    // ざっくりキー推定（既にお持ちのロジックがあればそれを使ってOK）
+    const lvKey = /先進|本格|実践/.test(levelLabel) ? "practical"
+                : /初級|中級|普通|並/.test(levelLabel) ? "middle"
+                : "entry";
+    return { score, levelLabel, lvKey };
+  }
+
+  function saveAndRewrite({ score, levelLabel, lvKey }) {
+    if (isNaN(score)) return;
+
+    // 1) 値を保存（LPで参照）
+    sessionStorage.setItem("ai_score", String(score));
+    sessionStorage.setItem("ai_level_label", levelLabel);
+    sessionStorage.setItem("ai_level_key", lvKey);
+
+    // 2) LPへのリンクを書き換え（?score=..&level=..&lv=.. を付与）
+    document.querySelectorAll('a[href*="exo_lp.html"]').forEach(a => {
+      const u = new URL(a.getAttribute("href"), location.href);
+      u.searchParams.set("score", String(score));
+      u.searchParams.set("level", levelLabel);
+      u.searchParams.set("lv", lvKey);
+      a.setAttribute("href", u.pathname + u.search + "#flow");
+    });
+  }
+
+  // 診断後に要素が描画されたあとでも動くように少し遅らせて実行
+  setTimeout(() => {
+    const picked = pickFromDOM();
+    if (picked) saveAndRewrite(picked);
+  }, 100); // 必要に応じて調整
+})();
+</script>
 
 <body>
   <header>
