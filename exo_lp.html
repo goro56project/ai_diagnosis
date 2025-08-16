@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ExoVisionary Hub｜AI偏差値診断の結果と次の一歩</title>
+<meta name="description" content="AI偏差値診断の結果にもとづき、あなたに最適な学習ステップとコースをご提案します。無料説明会・個別相談も受付中。">
+<style>
+  :root{
+    --brand:#6f5ad1;      /* メインカラー */
+    --accent:#00b894;     /* アクセント */
+    --ink:#1f2937;        /* 文字色 */
+    --muted:#6b7280;      /* サブ文字 */
+    --bg:#f7f7fb;         /* 背景 */
+    --card:#ffffff;       /* カード背景 */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;font-family:system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;color:var(--ink);background:var(--bg)}
+  a{color:var(--brand);text-decoration:none}
+  a:hover{opacity:.9}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.8);backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid #eee}
+  header .bar{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+  .logo{font-weight:700;letter-spacing:.2px;color:var(--brand)}
+  nav a{margin-left:16px;font-size:14px;color:var(--ink)}
+  nav a.btn{background:var(--brand);color:#fff;padding:8px 14px;border-radius:10px}
+  .hero{background:linear-gradient(135deg,#6f5ad1 0%,#a78bfa 60%,#f5f3ff 100%);color:#fff}
+  .hero .wrap{padding:48px 20px}
+  .hero h1{font-size:clamp(22px,3.6vw,36px);margin:.2em 0 .4em}
+  .hero p.sub{opacity:.95;margin:0 0 18px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);padding:6px 10px;border-radius:999px;font-size:12px}
+  .hero-cards{display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}
+  .card{background:var(--card);border:1px solid #eee;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
+  .card.pad{padding:20px}
+  .stat{display:flex;gap:14px;align-items:center}
+  .stat .num{font-size:28px;font-weight:800;color:#fff}
+  .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);font-size:12px}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;font-weight:600;border:1px solid #ddd;background:#fff;color:var(--ink)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.brand{background:var(--brand);border-color:var(--brand);color:#fff}
+  section{padding:56px 0}
+  h2.sec{font-size:clamp(20px,3vw,28px);margin:0 0 18px}
+  p.lead{color:var(--muted);margin:8px 0 24px}
+  /* コース */
+  .grid3{display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .course{position:relative}
+  .course h3{margin:0 0 8px}
+  .chip{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid #e6e6ff;background:#f6f6ff;color:#4c44c7}
+  ul.clean{padding-left:18px;margin:10px 0}
+  ul.clean li{margin:6px 0}
+  /* 比較表 */
+  .table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;border:1px solid #eee}
+  .table th,.table td{padding:12px 14px;border-bottom:1px solid #eee;font-size:14px;text-align:left}
+  .table tr:nth-child(even){background:#fafafa}
+  /* フロー */
+  .timeline{display:grid;gap:14px}
+  .step{display:flex;gap:12px;align-items:flex-start}
+  .step .mark{width:28px;height:28px;display:grid;place-items:center;border-radius:999px;background:var(--brand);color:#fff;font-size:14px;font-weight:700;flex:0 0 28px}
+  /* FAQ */
+  details{background:#fff;border:1px solid #eee;border-radius:12px;padding:10px 14px}
+  details+details{margin-top:10px}
+  summary{cursor:pointer;font-weight:600}
+  /* CTA */
+  .cta{background:linear-gradient(135deg,#eef2ff 0%, #ffffff 60%)}
+  .cta .box{background:#fff;border:1px solid #eee;border-radius:18px;padding:22px}
+  footer{padding:32px 0;color:var(--muted);font-size:13px;text-align:center;border-top:1px solid #eee}
+  .top{position:fixed;right:18px;bottom:18px;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:12px 14px;font-weight:700;box-shadow:0 8px 20px rgba(0,0,0,.18);cursor:pointer}
+  @media (max-width:900px){
+    .hero-cards{grid-template-columns:1fr}
+    .grid3{grid-template-columns:1fr}
+    nav{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="logo">ExoVisionary Hub</div>
+    <nav>
+      <a href="#result">結果サマリ</a>
+      <a href="#courses">コース</a>
+      <a href="#flow">学習の流れ</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn" href="#contact">お問い合わせ</a>
+      <a class="btn brand" id="nav-apply" href="#">無料説明会に申込</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero / Result -->
+<div class="hero" id="result">
+  <div class="wrap">
+    <span class="badge">AI偏差値診断｜結果ガイド</span>
+    <h1 id="hero-title">あなたの結果と、最短の次の一歩</h1>
+    <p class="sub" id="hero-copy">診断スコアに応じて、おすすめの学習ルートと具体アクションをご案内します。</p>
+
+    <div class="hero-cards">
+      <div class="card pad" style="background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:#fff">
+        <div class="stat">
+          <div class="num" id="stat-score">–</div>
+          <div>
+            <div class="pill" id="stat-level">レベル：–</div>
+            <div style="opacity:.9;margin-top:6px" id="stat-tip">まずは基本から一緒に整えていきましょう。</div>
+          </div>
+        </div>
+      </div>
+      <div class="card pad">
+        <b>推奨アクション</b>
+        <ul class="clean" id="todo-list" style="margin-top:8px">
+          <li>無料説明会で全体像と進め方を把握</li>
+          <li>自社/個人のユースケースを3つ洗い出す</li>
+          <li>1週間のミニ実践課題にチャレンジ</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn primary" id="cta-apply" href="#" target="_blank">無料説明会に申込</a>
+          <a class="btn" href="#courses">コースを見る</a>
+        </div>
+      </div>
+      <div class="card pad">
+        <b>個別相談</b>
+        <p class="lead" style="margin-top:8px">要件整理／導入ロードマップをご一緒に設計します。</p>
+        <div class="btn-row">
+          <a class="btn" id="cta-1on1" target="_blank" href="#">個別相談を予約</a>
+          <a class="btn" id="cta-demo" target="_blank" href="#">デモを見る</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Courses -->
+<section id="courses">
+  <div class="wrap">
+    <h2 class="sec">おすすめコース</h2>
+    <p class="lead">診断結果のレベルに応じて、最短で成果につながるコースを提示します。</p>
+
+    <div class="grid3">
+      <!-- Entry -->
+      <div class="card pad course" id="course-entry">
+        <span class="chip">入門〜初級向け</span>
+        <h3>ENTRY：AI活用の型とルール</h3>
+        <ul class="clean">
+          <li>安全に始めるための基本リテラシー</li>
+          <li>良いプロンプトの型／テンプレ集</li>
+          <li>2週間のミニ課題（レビュー付）</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn brand" id="apply-entry" target="_blank" href="#">無料説明会に申込</a>
+          <a class="btn" href="#flow">学習の流れ</a>
+        </div>
+      </div>
+
+      <!-- Middle -->
+      <div class="card pad course" id="course-middle">
+        <span class="chip">初級〜中級向け</span>
+        <h3>MIDDLE：品質と効率を同時に</h3>
+        <ul class="clean">
+          <li>業務テンプレの整備と自動化の入口</li>
+          <li>評価・検証フレームとA/B運用</li>
+          <li>短期集中プラン（成果レビュー）</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn brand" id="apply-middle" target="_blank" href="#">無料説明会に申込</a>
+          <a class="btn" href="#flow">学習の流れ</a>
+        </div>
+      </div>
+
+      <!-- Practical -->
+      <div class="card pad course" id="course-practical">
+        <span class="chip">実践〜先進向け</span>
+        <h3>PRACTICAL：本格運用へ</h3>
+        <ul class="clean">
+          <li>業務設計・評価→本番運用まで</li>
+          <li>RAG/エージェント・社内展開</li>
+          <li>運用SLA設計とガバナンス</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn brand" id="apply-practical" target="_blank" href="#">無料説明会に申込</a>
+          <a class="btn" href="#flow">学習の流れ</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 比較表 -->
+    <div style="margin-top:24px;overflow-x:auto">
+      <table class="table">
+        <thead>
+          <tr><th></th><th>ENTRY</th><th>MIDDLE</th><th>PRACTICAL</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>期間</td><td>2〜3週間</td><td>4〜6週間</td><td>6〜8週間</td></tr>
+          <tr><td>主対象</td><td>まずは安全に開始</td><td>品質×効率の両立</td><td>本格運用・内製化</td></tr>
+          <tr><td>アウトプット</td><td>型/ルール・基礎テンプレ</td><td>業務テンプレ/評価設計</td><td>運用手順/RAG・エージェント</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Flow -->
+<section id="flow">
+  <div class="wrap">
+    <h2 class="sec">学習の流れ</h2>
+    <div class="timeline">
+      <div class="step card pad">
+        <div class="mark">1</div>
+        <div><b>無料説明会（30分）</b><br><span class="muted">到達イメージとご状況を確認。最短ルートをご提案します。</span></div>
+      </div>
+      <div class="step card pad">
+        <div class="mark">2</div>
+        <div><b>キックオフ＆基礎の共通化</b><br>安全・ルール・型を共通言語に。初回課題に着手。</div>
+      </div>
+      <div class="step card pad">
+        <div class="mark">3</div>
+        <div><b>実践課題 & レビュー</b><br>あなたのユースケースに沿って短期で成果を出す。</div>
+      </div>
+      <div class="step card pad">
+        <div class="mark">4</div>
+        <div><b>評価・検証・運用設計</b><br>評価フレームと運用手順を整え、継続可能に。</div>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <a class="btn primary" id="flow-apply" target="_blank" href="#">無料説明会に申込</a>
+      <a class="btn" id="flow-1on1" target="_blank" href="#">個別相談を予約</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="contact">
+  <div class="wrap">
+    <div class="box">
+      <h2 class="sec" id="cta-title">最初の一歩をご一緒に：無料説明会</h2>
+      <p class="lead" id="cta-copy">安全に始めるための型とルール、成果の一歩を具体化します。</p>
+      <div class="btn-row">
+        <a class="btn brand" id="cta-apply-2" target="_blank" href="#">無料説明会に申込</a>
+        <a class="btn" id="cta-1on1-2" target="_blank" href="#">個別相談を予約</a>
+        <a class="btn" id="btn-syllabus" href="#courses">コース一覧</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <h2 class="sec">よくある質問</h2>
+    <details>
+      <summary>結果パラメータ（score/level）がなくても使えますか？</summary>
+      <div>はい。URLにパラメータが無い場合は、通常のLPとして表示されます。</div>
+    </details>
+    <details>
+      <summary>法人・個人どちらでも参加できますか？</summary>
+      <div>はい、どちらも歓迎です。チーム向けの内製化支援も可能です。</div>
+    </details>
+    <details>
+      <summary>相談だけでも大丈夫ですか？</summary>
+      <div>もちろんです。要件整理・進め方の壁打ちだけでもお気軽にご予約ください。</div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  © ExoVisionary Hub
+</footer>
+
+<button class="top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+/* ====== 必要に応じてここだけ編集（リンク先） ====== */
+const LINKS = {
+  apply:    "https://forms.gle/i77QbkDoVhVvWnPd8",          // 説明会/申込みフォーム
+  oneOnOne: "https://line.me/R/ti/p/@your-line-id",          // 個別相談（LINE等に変更可）
+  demo:     "https://cal.com/your-demo-link",                // デモ（任意）
+};
+/* =============================================== */
+
+const qs = new URLSearchParams(location.search);
+const score = parseInt(qs.get("score"),10);
+const email = qs.get("email") || "";
+
+function levelFromScore(s){
+  if(isNaN(s)) return null;
+  if(s>=70) return "advanced";      // 先進層
+  if(s>=55) return "practical";     // 実践層（中〜上級）
+  if(s>=40) return "middle";        // 初級〜中級
+  return "entry";                   // 入門層
+}
+
+function levelLabel(key){
+  return {advanced:"先進層", practical:"実践層", middle:"初級〜中級", entry:"入門層"}[key] || "–";
+}
+
+function setTextsByLevel(key){
+  const todo = document.getElementById('todo-list');
+  const ctaTitle = document.getElementById('cta-title');
+  const ctaCopy  = document.getElementById('cta-copy');
+
+  if(key==='entry'){
+    ctaTitle.textContent = "最初の一歩をご一緒に：無料説明会";
+    ctaCopy.textContent  = "安全に始めるための型とルール、成果の一歩を具体化します。";
+    todo.innerHTML = `
+      <li>無料説明会で全体像と安全ルールを把握</li>
+      <li>良いプロンプトの型で日常業務を改善</li>
+      <li>2週間のミニ課題にトライ</li>`;
+  }else if(key==='middle'){
+    ctaTitle.textContent = "品質×効率を同時に上げる：短期集中プラン";
+    ctaCopy.textContent  = "レビュー工数を減らし、出力の再現性を高める設計をご提案します。";
+    todo.innerHTML = `
+      <li>課題のボトルネックを特定</li>
+      <li>評価フレームとA/B運用を導入</li>
+      <li>テンプレ整備で再現性を確保</li>`;
+  }else if(key==='practical' || key==='advanced'){
+    ctaTitle.textContent = "業務設計〜評価〜本番運用：実践ロードマップ";
+    ctaCopy.textContent  = "評価・A/B・ガバナンスまで含めた運用設計をご支援します。";
+    todo.innerHTML = `
+      <li>要件整理→ロードマップ作成</li>
+      <li>RAG/エージェントの検討・PoC</li>
+      <li>運用SLA・体制づくり</li>`;
+  }
+}
+
+(function init(){
+  // NAV/CTAリンク反映
+  const setHref = (id, url) => { const el = document.getElementById(id); if(el) el.href = url; };
+  ["nav-apply","cta-apply","apply-entry","apply-middle","apply-practical","flow-apply","cta-apply-2"].forEach(id=>setHref(id, LINKS.apply));
+  ["cta-1on1","flow-1on1","cta-1on1-2"].forEach(id=>setHref(id, LINKS.oneOnOne));
+  setHref("cta-demo", LINKS.demo);
+
+  // スコア表示
+  if(!isNaN(score)){
+    document.getElementById('stat-score').textContent = score;
+    const key = levelFromScore(score);
+    const label = levelLabel(key);
+    document.getElementById('stat-level').textContent = `レベル：${label}`;
+    document.getElementById('hero-title').textContent = `あなたの結果：スコア ${score}（${label}）`;
+    document.getElementById('hero-copy').textContent  = "ここからの最短ルートをご案内します。";
+    document.getElementById('stat-tip').textContent   = (key==='entry') ? "まずは安全な始め方と型づくりから。" :
+                                                        (key==='middle') ? "品質×効率の両立にフォーカス。" :
+                                                        "運用と拡張の設計を前提に。";
+    setTextsByLevel(key);
+  }else{
+    // デフォルト
+    document.getElementById('stat-score').textContent = "–";
+    document.getElementById('stat-level').textContent = "レベル：–";
+    setTextsByLevel('middle');
+  }
+
+  // メールを文中に差し込む（任意）
+  if(email){
+    const small = document.createElement('div');
+    small.style.color = '#6b7280';
+    small.style.fontSize = '12px';
+    small.style.marginTop = '6px';
+    small.textContent = `※ このガイドは ${email} 宛の診断結果にもとづいて表示されています。`;
+    document.querySelector('.hero .wrap').appendChild(small);
+  }
+})();
+</script>
+
+</body>
+</html>
