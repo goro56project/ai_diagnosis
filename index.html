@@ -1,86 +1,306 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI偏差値診断｜結果送付用メール登録</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI偏差値診断｜メール登録→診断→結果メール</title>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial,
-        "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
-      margin: 0;
-      background: #f6f7fb;
+    :root { --brand:#7356b6; --bg:#f5f3ff; --card:#fff; --muted:#666; }
+    *{box-sizing:border-box}
+    body{font-family:system-ui, -apple-system, Arial, sans-serif; margin:0; background:var(--bg); color:#222;}
+    header{background:var(--brand); color:#fff; padding:18px; text-align:center;}
+    main{max-width:920px; margin:24px auto; padding:0 16px 60px;}
+    .card{background:var(--card); border-radius:14px; padding:20px; box-shadow:0 6px 20px rgba(0,0,0,.06); margin:14px 0;}
+    h1{font-size:22px; margin:0;}
+    h2{font-size:18px; margin:0 0 12px}
+    p{line-height:1.7; margin:8px 0}
+    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+    input[type="email"], select, button, .btn {
+      font:inherit; padding:12px 14px; border-radius:10px; border:1px solid #ddd; background:#fff;
     }
-    header {
-      background: #7356b6;
-      color: #fff;
-      text-align: center;
-      padding: 24px 16px;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 700;
-    }
-    header .sub {
-      margin-top: 6px;
-      font-size: 14px;
-      opacity: 0.9;
-    }
-    main {
-      max-width: 960px;
-      margin: 24px auto;
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-    }
-    .lead {
-      margin: 0 0 10px;
-      color: #333;
-      line-height: 1.7;
-    }
-    .note {
-      margin: 0 0 18px;
-      font-size: 12px;
-      color: #666;
-    }
-    /* Googleフォームを見やすくするためのサイズ調整 */
-    iframe {
-      width: 100%;
-      height: 900px; /* 必要に応じて調整 */
-      border: 0;
-    }
-    @media (max-width: 600px) {
-      iframe {
-        height: 1100px;
-      }
-    }
-    footer {
-      text-align: center;
-      font-size: 12px;
-      color: #888;
-      padding: 24px 0 32px;
-    }
+    button, .btn{ background:var(--brand); color:#fff; border:none; cursor:pointer }
+    button:disabled{opacity:.5; cursor:not-allowed}
+    .muted{color:var(--muted); font-size:13px}
+    .step-badge{display:inline-block; font-size:12px; padding:4px 8px; border-radius:999px; background:#eee; margin-bottom:10px}
+    .ok{color:#1b7f4b; font-weight:600}
+    .warn{color:#b34}
+    .q{padding:14px 0; border-bottom:1px dashed #eee}
+    .scale{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
+    .scale label{display:inline-flex; align-items:center; gap:6px; padding:8px 10px; border:1px solid #ddd; border-radius:10px; cursor:pointer}
+    .result{font-size:18px}
+    .level{font-weight:700; color:var(--brand)}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .ghost{background:#fff; color:var(--brand); border:1px solid var(--brand)}
+    .center{text-align:center}
+    .divider{height:1px; background:#eee; margin:18px 0}
   </style>
 </head>
 <body>
   <header>
     <h1>AI偏差値診断</h1>
-    <div class="sub">結果送付用メール登録</div>
+    <div class="muted">メール登録 → 診断 → 結果を表示＆メール送付</div>
   </header>
 
   <main>
-    <p class="lead">診断結果をお届けするメール登録フォームです。メールアドレスをご入力ください。</p>
-    <p class="note">このフォームはGoogleフォームを利用しています。送信いただいた情報は結果送付およびご案内のためにのみ使用します。</p>
+    <!-- STEP 1: メール登録 -->
+    <section class="card" id="step1">
+      <div class="step-badge">STEP 1</div>
+      <h2>診断結果をメールで受け取る（任意）</h2>
+      <p class="muted">メール登録すると、診断後に結果をメールでもお送りします。未登録でも診断は実施できます。</p>
+      <div class="row">
+        <input id="email" type="email" placeholder="メールアドレスを入力" style="flex:1 1 320px">
+        <button id="btnRegister">登録する</button>
+        <a class="btn ghost" id="btnSkip" href="#step2">登録せずに診断へ</a>
+      </div>
+      <div id="msg1" class="muted" style="margin-top:8px"></div>
+      <div class="divider"></div>
+      <p class="muted">送信先の管理：Googleスプレッドシート（自動作成）。<br>
+        プライバシー：用途は診断に関するご連絡のみ。不要時はいつでも配信停止いただけます。</p>
+    </section>
 
-    <!-- Googleフォーム埋め込み -->
-    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScZN8k-L3FCCvHzpnknxv5duAKZSOzSF33KeooVGFD1F5Dwvg/viewform?embedded=true"
-            width="700" height="520" frameborder="0" marginheight="0" marginwidth="0">
-      読み込んでいます…
-    </iframe>
+    <!-- STEP 2: 診断 -->
+    <section class="card" id="step2">
+      <div class="step-badge">STEP 2</div>
+      <h2>10問の自己評価に回答</h2>
+
+      <form id="formQuiz">
+        <!-- Q1〜Q10（1=全くない / 5=とてもある） -->
+        <div class="q">
+          <div>1. ChatGPTなどのAIツールを業務で使ったことはありますか？</div>
+          <div class="scale">
+            <label><input type="radio" name="q1" value="1" required>全くない</label>
+            <label><input type="radio" name="q1" value="2">少し</label>
+            <label><input type="radio" name="q1" value="3">普通</label>
+            <label><input type="radio" name="q1" value="4">かなり</label>
+            <label><input type="radio" name="q1" value="5">とてもある</label>
+          </div>
+        </div>
+
+        <div class="q">
+          <div>2. プロンプト（AIへの指示文）を工夫して出力を改善した経験はありますか？</div>
+          <div class="scale">
+            <label><input type="radio" name="q2" value="1" required>全くない</label>
+            <label><input type="radio" name="q2" value="2">少し</label>
+            <label><input type="radio" name="q2" value="3">普通</label>
+            <label><input type="radio" name="q2" value="4">かなり</label>
+            <label><input type="radio" name="q2" value="5">とてもある</label>
+          </div>
+        </div>
+
+        <div class="q">
+          <div>3. AIで作成した文章や資料を社内・顧客に提出したことはありますか？</div>
+          <div class="scale">
+            <label><input type="radio" name="q3" value="1" required>全くない</label>
+            <label><input type="radio" name="q3" value="2">少し</label>
+            <label><input type="radio" name="q3" value="3">普通</label>
+            <label><input type="radio" name="q3" value="4">かなり</label>
+            <label><input type="radio" name="q3" value="5">とてもある</label>
+          </div>
+        </div>
+
+        <div class="q">
+          <div>4. 画像生成や音声認識など、複数のAI機能を組み合わせて使えますか？</div>
+          <div class="scale">
+            <label><input type="radio" name="q4" value="1" required>全くない</label>
+            <label><input type="radio" name="q4" value="2">少し</label>
+            <label><input type="radio" name="q4" value="3">普通</label>
+            <label><input type="radio" name="q4" value="4">かなり</label>
+            <label><input type="radio" name="q4" value="5">とてもある</label>
+          </div>
+        </div>
+
+        <div class="q">
+          <div>5. AIの出力に対して事実確認・検証（ハルシネーション対策）をしていますか？</div>
+          <div class="scale">
+            <label><input type="radio" name="q5" value="1" required>全くない</label>
+            <label><input type="radio" name="q5" value="2">少し</label>
+            <label><input type="radio" name="q5" value="3">普通</label>
+            <label><input type="radio" name="q5" value="4">かなり</label>
+            <label><input type="radio" name="q5" value="5">とてもある</label>
+          </div>
+        </div>
+
+        <div class="q">
+          <div>6. 自分の業務に合わせてAIワークフローを設計・自動化したことがありますか？</div>
+          <div class="scale">
+            <label><input type="radio" name="q6" value="1" required>全くない</label>
+            <label><input type="radio" name="q6" value="2">少し</label>
+            <label><input type="radio" name="q6" value="3">普通</label>
+            <label><input type="radio" name="q6" value="4">かなり</label>
+            <label><input type="radio" name="q6" value="5">とてもある</label>
+          </div>
+        </div>
+
+        <div class="q">
+          <div>7. 社内のナレッジやドキュメント検索にAIを活用していますか？</div>
+          <div class="scale">
+            <label><input type="radio" name="q7" value="1" required>全くない</label>
+            <label><input type="radio" name="q7" value="2">少し</label>
+            <label><input type="radio" name="q7" value="3">普通</label>
+            <label><input type="radio" name="q7" value="4">かなり</label>
+            <label><input type="radio" name="q7" value="5">とてもある</label>
+          </div>
+        </div>
+
+        <div class="q">
+          <div>8. プロンプトやテンプレをチームで共有・改善していますか？</div>
+          <div class="scale">
+            <label><input type="radio" name="q8" value="1" required>全くない</label>
+            <label><input type="radio" name="q8" value="2">少し</label>
+            <label><input type="radio" name="q8" value="3">普通</label>
+            <label><input type="radio" name="q8" value="4">かなり</label>
+            <label><input type="radio" name="q8" value="5">とてもある</label>
+          </div>
+        </div>
+
+        <div class="q">
+          <div>9. セキュリティ／コンプライアンスに配慮したAI活用ができていますか？</div>
+          <div class="scale">
+            <label><input type="radio" name="q9" value="1" required>全くない</label>
+            <label><input type="radio" name="q9" value="2">少し</label>
+            <label><input type="radio" name="q9" value="3">普通</label>
+            <label><input type="radio" name="q9" value="4">かなり</label>
+            <label><input type="radio" name="q9" value="5">とてもある</label>
+          </div>
+        </div>
+
+        <div class="q">
+          <div>10. 売上向上・コスト削減など事業成果への寄与を実感していますか？</div>
+          <div class="scale">
+            <label><input type="radio" name="q10" value="1" required>全くない</label>
+            <label><input type="radio" name="q10" value="2">少し</label>
+            <label><input type="radio" name="q10" value="3">普通</label>
+            <label><input type="radio" name="q10" value="4">かなり</label>
+            <label><input type="radio" name="q10" value="5">とてもある</label>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:16px">
+          <button type="submit" id="btnSubmit">診断する</button>
+          <div id="msg2" class="muted"></div>
+        </div>
+      </form>
+    </section>
+
+    <!-- STEP 3: 結果表示 -->
+    <section class="card" id="step3" style="display:none">
+      <div class="step-badge">STEP 3</div>
+      <h2>診断結果</h2>
+      <p class="result">
+        総合スコア：<b id="score" style="font-size:22px;color:var(--brand)">-</b>　
+        レベル：<span class="level" id="level">-</span>
+      </p>
+      <div id="advice" class="muted"></div>
+      <div class="actions">
+        <a class="btn" href="#" target="_blank" rel="noopener">ExoVisionary Hubを見る</a>
+        <a class="btn ghost" href="#" target="_blank" rel="noopener">個別相談を予約</a>
+      </div>
+      <p id="mailNote" class="muted" style="margin-top:12px"></p>
+    </section>
+
+    <p class="center muted">© ExoVisionary Hub</p>
   </main>
 
-  <footer>© 2025 AI偏差値診断</footer>
+  <script>
+    // ★ あなたのGAS WebアプリURL
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwg9IuBV3PKyfkepUdoRYI0J5wbQtX8NLU11BJl-UScoQSr9LRTNqnnofnX_6KDlvH0_w/exec";
+
+    // 状態
+    let savedEmail = "";
+
+    // --- STEP1: メール登録 ---
+    const emailEl = document.getElementById('email');
+    const btnRegister = document.getElementById('btnRegister');
+    const btnSkip = document.getElementById('btnSkip');
+    const msg1 = document.getElementById('msg1');
+
+    btnRegister.addEventListener('click', async () => {
+      const email = (emailEl.value || "").trim();
+      if (!email || !/.+@.+\..+/.test(email)) {
+        msg1.innerHTML = '<span class="warn">正しいメールアドレスを入力してください。</span>';
+        return;
+      }
+      savedEmail = email;
+      msg1.textContent = '送信中...';
+
+      // no-cors で送信（応答は読まない）
+      try {
+        await fetch(GAS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'register', email })
+        });
+        msg1.innerHTML = '<span class="ok">登録しました。診断に進めます。</span>';
+        location.hash = '#step2';
+      } catch (e) {
+        msg1.innerHTML = '<span class="warn">送信に失敗しました。通信環境をご確認ください。</span>';
+      }
+    });
+
+    // --- STEP2: 診断 ---
+    const formQuiz = document.getElementById('formQuiz');
+    const msg2 = document.getElementById('msg2');
+    const scoreEl = document.getElementById('score');
+    const levelEl = document.getElementById('level');
+    const adviceEl = document.getElementById('advice');
+    const mailNoteEl = document.getElementById('mailNote');
+    const step3 = document.getElementById('step3');
+
+    formQuiz.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg2.textContent = '採点中...';
+
+      // 回答収集
+      const a = {};
+      let sum = 0;
+      for (let i=1; i<=10; i++) {
+        const v = Number((new FormData(formQuiz)).get('q'+i));
+        a['q'+i] = v;
+        sum += v;
+      }
+      // 10〜50 を 0〜100 にスケール
+      const score = Math.round((sum - 10) / 40 * 100);
+
+      // レベル判定
+      let level = '入門層';
+      if (score >= 70) level = '先進層';
+      else if (score >= 55) level = '実践層';
+      else if (score >= 40) level = '初級〜中級';
+
+      // 表示
+      scoreEl.textContent = score;
+      levelEl.textContent = level;
+      adviceEl.innerHTML = (level === '先進層')
+        ? '高度な活用ができています。社内展開や自動化、ガバナンス設計へ。'
+        : (level === '実践層')
+          ? '業務適用が進んでいます。テンプレ共有やワークフロー化でさらなる効率化を。'
+          : (level === '初級〜中級')
+            ? '基本活用はOK。プロンプト改善と検証プロセスの整備で品質を上げましょう。'
+            : 'まずは安全な使い方と用途探索から。社内ルールに沿って小さく試し、成功体験を。';
+
+      step3.style.display = 'block';
+      location.hash = '#step3';
+
+      if (savedEmail) {
+        mailNoteEl.textContent = '結果を ' + savedEmail + ' に送信しています（数分かかる場合があります）。';
+        // 結果をGASへ送信（no-cors）
+        try {
+          await fetch(GAS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type:'result', email:savedEmail, score, answers:a })
+          });
+        } catch (e) {
+          // 応答は読めないため、失敗時のみメモ
+          console.log('send error', e);
+        }
+      } else {
+        mailNoteEl.innerHTML = 'メール未登録のため、画面表示のみです。<br>結果メールも受け取りたい場合は、ページ上部でメール登録してから再診断してください。';
+      }
+      msg2.textContent = '';
+    });
+  </script>
 </body>
 </html>
