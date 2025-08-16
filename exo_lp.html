@@ -116,29 +116,32 @@
 
     <div class="grid3" style="margin-top:16px;">
 
-      <!-- 左：結果カード（白） -->
-      <div class="card card-white" id="result-brief">
-        <h3 class="muted">診断サマリ</h3>
-        <p class="big"><b>あなたの結果</b></p>
+     <!-- 左：結果カード（白） -->
+<div class="card card-white" id="result-brief">
+  <h3 class="muted">診断サマリ</h3>
+  <p class="big"><b>あなたの結果</b></p>
 
-        <p class="score-line" style="margin:8px 0 12px;">
-          <span>スコア：</span><b id="score">—</b> / 100　
-          <span class="badge">レベル：<span id="lv-label">-</span></span>
-        </p>
+  <!-- ★ 表記を「AI偏差値：{スコア}」に変更 ／ /100 は削除 -->
+  <p class="score-line" style="margin:8px 0 12px;">
+    <b>AI偏差値：</b><b id="score">—</b>
+    <span class="badge" style="margin-left:8px;">レベル：<span id="lv-label">-</span></span>
+  </p>
 
-        <p id="result-lead">まずは基本から一緒に整えていきましょう。</p>
+  <p id="result-lead">まずは基本から一緒に整えていきましょう。</p>
 
-        <ul id="result-bullets" class="list">
-          <li>安全に始めるための基本ルールを整備</li>
-          <li>よく使う業務テンプレを準備</li>
-          <li>小さく試して成功体験をつくる</li>
-        </ul>
+  <ul id="result-bullets" class="list">
+    <li>基本リテラシーと安全ルールを整備</li>
+    <li>業務テンプレ／良いプロンプトの型を準備</li>
+    <li>小さく試して成功体験を蓄積</li>
+  </ul>
 
-        <div class="btn-row">
-          <a class="btn ghost" href="#flow">最短の進め方を見る</a>
-          <a class="btn" href="#courses">おすすめコースへ</a>
-        </div>
-      </div>
+  <!-- ★ 2つのボタンを白→紫（primary）に変更 -->
+  <div class="btn-row">
+    <a class="btn primary" href="#flow"    id="btn-shortest">最短の進め方を見る</a>
+    <a class="btn primary" href="#courses" id="btn-courses">おすすめコースへ</a>
+  </div>
+</div>
+
 
       <!-- 中央：アクション -->
       <div class="card pad">
