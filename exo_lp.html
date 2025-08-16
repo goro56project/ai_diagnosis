@@ -109,6 +109,51 @@
   if (leadEl) leadEl.textContent = MAP[key].lead;
 })();
 </script>
+<script>
+/* === URL/LocalStorage から診断値を取得し、LPに反映 === */
+(function () {
+  const TTL_MS = 10 * 60 * 1000; // 10分
+
+  function readPayload() {
+    const sp = new URLSearchParams(location.search);
+    const score = Number(sp.get("score"));
+    const levelLabel = sp.get("level");
+    const lvKey = sp.get("lv");
+
+    if (!isNaN(score) && levelLabel && lvKey) {
+      return { score, levelLabel, lvKey };
+    }
+    // URLに無い場合は localStorage から（新しいタブで開いてもOK）
+    try {
+      const raw = localStorage.getItem("ai_diag_payload");
+      if (!raw) return null;
+      const obj = JSON.parse(raw);
+      if (!obj || !obj.ts || Date.now() - obj.ts > TTL_MS) return null;
+      return { score: Number(obj.score), levelLabel: obj.levelLabel, lvKey: obj.lvKey };
+    } catch(_) { return null; }
+  }
+
+  const payload = readPayload();
+  if (!payload) return;
+
+  // === ここでDOMへ反映（IDはあなたのHTMLに合わせて）===
+  // 左カードの表示要素
+  const scoreEl = document.getElementById("result-score"); // 「AI偏差値：0 / 100」の数字部分
+  const levelEl = document.getElementById("lv-label");     // 「レベル：入門層」
+  if (scoreEl) scoreEl.textContent = String(payload.score);
+  if (levelEl) levelEl.textContent = payload.levelLabel;
+
+  // レベル別メッセージ（任意）
+  const MAP = {
+    entry:     { lead: "まずは基本を整え、短期で成果を出す土台をつくりましょう。" },
+    middle:    { lead: "品質と効率を同時に上げる短期集中プランがおすすめです。" },
+    practical: { lead: "評価・検証〜運用設計まで踏み込み、再現性ある仕組み化へ。" }
+  };
+  const key = (payload.lvKey in MAP) ? payload.lvKey : "entry";
+  const leadEl = document.getElementById("result-lead");
+  if (leadEl) leadEl.textContent = MAP[key].lead;
+})();
+</script>
 
 <body>
 
