@@ -5,305 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI偏差値診断</title>
   <style>
-    /*
-     * シンプルなスタイリングで、診断フォームと結果表示をひとつのページにまとめています。
-     * 紫のグラデーション背景と、白いカード風コンテナで視認性を高めています。
-     */
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #9a84c4, #7050b3);
       margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
+      background-color: #f3f3f3;
     }
-    .container {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 24px 32px;
-      margin-top: 40px;
-      width: 100%;
-      max-width: 640px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    header {
+      background-color: #7356b6;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    main {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     h1 {
-      font-size: 24px;
       margin-top: 0;
-      margin-bottom: 24px;
-      text-align: center;
-      color: #5b3f94;
     }
-    .question {
-      margin-bottom: 24px;
-    }
-    .question-title {
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-    .options label {
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      margin-bottom: 8px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .options label:hover {
-      background: #f0f0f8;
-    }
-    .options input {
-      margin-right: 8px;
-    }
-    button[type="submit"] {
-      display: block;
+    iframe {
       width: 100%;
-      background: #7356b6;
-      color: #ffffff;
+      height: 1200px; /* フォームの長さに応じて調整 */
       border: none;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.2s;
     }
-    button[type="submit"]:hover {
-      background: #6449a0;
-    }
-    .result {
-      margin-top: 32px;
-    }
-    .result h2 {
+    footer {
       text-align: center;
-      color: #5b3f94;
-      margin-bottom: 16px;
-    }
-    .card-row {
-      display: flex;
-      flex-wrap: wrap;
-      margin: -8px;
-    }
-    .card {
-      background: #f9f9fc;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      padding: 16px;
-      flex: 1 1 calc(33.333% - 16px);
-      margin: 8px;
-      text-align: center;
-    }
-    .card h3 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 14px;
-      color: #5b3f94;
-    }
-    .card .value {
-      font-size: 24px;
-      font-weight: bold;
-      color: #7356b6;
-    }
-    .tasks {
-      margin-top: 24px;
-      background: #fff8e1;
-      border-left: 4px solid #ffca28;
-      padding: 16px;
-      border-radius: 8px;
-    }
-    .tasks p {
-      margin: 0;
-      font-size: 14px;
-      line-height: 1.5;
-      color: #444;
-    }
-    .recommendation {
-      margin-top: 24px;
-      background: #e8eaf6;
-      border-left: 4px solid #3949ab;
-      padding: 16px;
-      border-radius: 8px;
-    }
-    .recommendation p {
-      margin: 0;
-      font-size: 14px;
-      line-height: 1.5;
-      color: #333;
+      font-size: 12px;
+      color: #666;
+      margin: 30px 0 10px;
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <h1>AI偏差値診断</h1>
-  <form id="diagnosis-form">
-    <!-- セクションA：AIリテラシー（基礎知識） -->
-    <div class="question">
-      <div class="question-title">ChatGPTなどのAIツールを業務で使ったことはありますか？</div>
-      <div class="options">
-        <label><input type="radio" name="q1" value="0" required> 全くない</label>
-        <label><input type="radio" name="q1" value="1"> 少しある</label>
-        <label><input type="radio" name="q1" value="2"> たくさんある</label>
-      </div>
-    </div>
-    <div class="question">
-      <div class="question-title">プロンプト（AIへの指示文）を工夫して出力を改善した経験はありますか？</div>
-      <div class="options">
-        <label><input type="radio" name="q2" value="0" required> 全くない</label>
-        <label><input type="radio" name="q2" value="1"> 少しある</label>
-        <label><input type="radio" name="q2" value="2"> たくさんある</label>
-      </div>
-    </div>
-    <div class="question">
-      <div class="question-title">AIで作成した文章や資料を社内や顧客に提出したことはありますか？</div>
-      <div class="options">
-        <label><input type="radio" name="q3" value="0" required> 全くない</label>
-        <label><input type="radio" name="q3" value="1"> 少しある</label>
-        <label><input type="radio" name="q3" value="2"> たくさんある</label>
-      </div>
-    </div>
-    <!-- セクションB：自動化スキル -->
-    <div class="question">
-      <div class="question-title">スプレッドシートの関数を業務で活用していますか？</div>
-      <div class="options">
-        <label><input type="radio" name="q4" value="0" required> 全くない</label>
-        <label><input type="radio" name="q4" value="1"> 少しある</label>
-        <label><input type="radio" name="q4" value="2"> たくさんある</label>
-      </div>
-    </div>
-    <div class="question">
-      <div class="question-title">Google Apps Script（GAS）やマクロを使ったことはありますか？</div>
-      <div class="options">
-        <label><input type="radio" name="q5" value="0" required> 全くない</label>
-        <label><input type="radio" name="q5" value="1"> 少しある</label>
-        <label><input type="radio" name="q5" value="2"> たくさんある</label>
-      </div>
-    </div>
-    <div class="question">
-      <div class="question-title">外部サービスAPI（OpenAI、LINE、Slack等）を使ったことはありますか？</div>
-      <div class="options">
-        <label><input type="radio" name="q6" value="0" required> 全くない</label>
-        <label><input type="radio" name="q6" value="1"> 少しある</label>
-        <label><input type="radio" name="q6" value="2"> たくさんある</label>
-      </div>
-    </div>
-    <!-- セクションC：業務改善ポテンシャル -->
-    <div class="question">
-      <div class="question-title">日常業務で繰り返し行っている作業はありますか？</div>
-      <div class="options">
-        <label><input type="radio" name="q7" value="0" required> 全くない</label>
-        <label><input type="radio" name="q7" value="1"> 少しある</label>
-        <label><input type="radio" name="q7" value="2"> たくさんある</label>
-      </div>
-    </div>
-    <div class="question">
-      <div class="question-title">社内や顧客対応で「AIで自動化できそう」と思う業務はありますか？</div>
-      <div class="options">
-        <label><input type="radio" name="q8" value="0" required> 全くない</label>
-        <label><input type="radio" name="q8" value="1"> 少しある</label>
-        <label><input type="radio" name="q8" value="2"> たくさんある</label>
-      </div>
-    </div>
-    <div class="question">
-      <div class="question-title">業務改善提案を過去1年で行ったことはありますか？</div>
-      <div class="options">
-        <label><input type="radio" name="q9" value="0" required> 全くない</label>
-        <label><input type="radio" name="q9" value="1"> 少しある</label>
-        <label><input type="radio" name="q9" value="2"> たくさんある</label>
-      </div>
-    </div>
-    <div class="question">
-      <div class="question-title">AI活用に予算（ツール代など）を投じる意欲はありますか？</div>
-      <div class="options">
-        <label><input type="radio" name="q10" value="0" required> 全くない</label>
-        <label><input type="radio" name="q10" value="1"> 少しある</label>
-        <label><input type="radio" name="q10" value="2"> たくさんある</label>
-      </div>
-    </div>
-    <button type="submit">診断する</button>
-  </form>
-  <div id="result" class="result" style="display:none;">
-    <h2>診断結果</h2>
-    <div class="card-row">
-      <div class="card">
-        <h3>AIリテラシー</h3>
-        <div class="value" id="literacy-score">0</div>
-      </div>
-      <div class="card">
-        <h3>自動化スキル</h3>
-        <div class="value" id="automation-score">0</div>
-      </div>
-      <div class="card">
-        <h3>業務改善ポテンシャル</h3>
-        <div class="value" id="improvement-score">0</div>
-      </div>
-    </div>
-    <div class="card-row" style="justify-content:center;">
-      <div class="card" style="flex-basis:100%; max-width:100%;">
-        <h3>あなたのAI偏差値</h3>
-        <div class="value" id="ai-bias-score">0</div>
-      </div>
-    </div>
-    <div class="tasks" id="tasks"></div>
-    <div class="recommendation" id="recommendation"></div>
-  </div>
-</div>
-<script>
-  // 診断結果の計算と表示を担当する関数
-  document.getElementById('diagnosis-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // 各セクションの総得点を計算
-    const answers = new FormData(event.target);
-    // セクションごとに質問番号を配列で管理
-    const literacyQs = ['q1','q2','q3'];
-    const automationQs = ['q4','q5','q6'];
-    const improvementQs = ['q7','q8','q9','q10'];
-    function calcScore(questionKeys, maxPoints) {
-      let total = 0;
-      questionKeys.forEach(key => {
-        const val = parseInt(answers.get(key), 10);
-        total += isNaN(val) ? 0 : val;
-      });
-      return Math.round((total / maxPoints) * 1000) / 10; // 小数点第一位まで
-    }
-    const literacy = calcScore(literacyQs, literacyQs.length * 2);
-    const automation = calcScore(automationQs, automationQs.length * 2);
-    const improvement = calcScore(improvementQs, improvementQs.length * 2);
-    // AI偏差値は単純平均
-    const aiBias = Math.round(((literacy + automation + improvement) / 3) * 10) / 10;
-    // DOMに結果を反映
-    document.getElementById('literacy-score').textContent = literacy.toFixed(1);
-    document.getElementById('automation-score').textContent = automation.toFixed(1);
-    document.getElementById('improvement-score').textContent = improvement.toFixed(1);
-    document.getElementById('ai-bias-score').textContent = aiBias.toFixed(1);
-    // 課題を生成
-    let tasksMsg = '';
-    const taskList = [];
-    if (literacy < 50) taskList.push('AIリテラシーの向上が必要です。AIツールやプロンプトの使い方を学びましょう。');
-    if (automation < 50) taskList.push('自動化スキルに改善余地があります。GASや関数を使った業務効率化を学びましょう。');
-    if (improvement < 50) taskList.push('繰り返し業務の洗い出しと業務改善提案を検討しましょう。');
-    if (taskList.length === 0) {
-      tasksMsg = '特に課題は見つかりませんでした。現在のレベルを維持し、さらなる向上を目指しましょう。';
-    } else {
-      tasksMsg = taskList.map(msg => '• ' + msg).join('<br>');
-    }
-    document.getElementById('tasks').innerHTML = '<p><strong>課題:</strong><br>' + tasksMsg + '</p>';
-    // 推奨プランの決定
-    let planMsg = '';
-    if (aiBias <= 39.9) {
-      planMsg = '単発コース「AI基礎×業務改善入門」を推奨します。AIの基本から学び、業務改善の第一歩を踏み出しましょう。';
-    } else if (aiBias <= 60) {
-      planMsg = '単発コース「GAS×AI 実践」を受講した後、1ヶ月フルコースへのアップグレードを推奨します。自動化スキルを向上させ、より高度なAI活用を目指しましょう。';
-    } else {
-      planMsg = '1ヶ月フルコースを受講し、認定AIコンサル制度への参加を推奨します。高いAI活用レベルを活かし、戦略的なAI活用を学びましょう。';
-    }
-    document.getElementById('recommendation').innerHTML = '<p><strong>推奨プラン:</strong><br>' + planMsg + '</p>';
-    // 結果を表示
-    document.getElementById('result').style.display = 'block';
-    // フォーム部分をスクロールアウトさせるため、ページトップへ移動
-    window.scrollTo({ top: document.querySelector('#result').offsetTop - 20, behavior: 'smooth' });
-  });
-</script>
+  <header>
+    <h1>AI偏差値診断</h1>
+  </header>
+
+  <main>
+    <p>以下のフォームにご回答ください。診断結果を通じて、あなたのAI活用レベルを可視化します。</p>
+
+    <!-- Googleフォーム埋め込み -->
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdzkZcDPQY5fYQXWtf-3h8Yp4gQlMGKy5hT6uHNjIRhiUiUNg/viewform?embedded=true">
+      読み込んでいます…
+    </iframe>
+  </main>
+
+  <footer>
+    © 2025 AI偏差値診断
+  </footer>
 </body>
 </html>
