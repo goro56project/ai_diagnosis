@@ -173,6 +173,29 @@
   if (leadEl) leadEl.textContent = MAP[key].lead;
 })();
 </script>
+<!-- GA4 クリック計測（CTA用）-->
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const send = (name, params = {}) => { 
+      if (window.gtag) gtag('event', name, params);
+    };
+    // 無料説明会に申込
+    document.getElementById('cta-apply')
+      ?.addEventListener('click', () => send('qualify_lead'));
+
+    // 個別相談を予約
+    document.getElementById('cta-1on1')
+      ?.addEventListener('click', () => send('close_convert_lead'));
+
+    // デモを見る（任意）
+    document.getElementById('cta-demo')
+      ?.addEventListener('click', () => send('demo_view'));
+
+    // コースを見る（#courses への内部リンク）
+    document.querySelector('a[href="#courses"]')
+      ?.addEventListener('click', () => send('view_courses'));
+  });
+</script>
 
 <body>
 
