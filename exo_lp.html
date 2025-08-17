@@ -74,6 +74,16 @@
     .flow .step{border-left:4px solid var(--brand); padding-left:12px; margin:14px 0 18px}
     footer{margin-top:60px; padding:24px 0; color:#777; text-align:center}
   </style>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  // 既定で page_view が送られます
+  gtag('config', 'G-QFQZF4F1QW', { transport_type: 'beacon' });
+</script>
+
 </head>
   <script>
 /* 診断値を URL or sessionStorage から取得してLPに反映 */
