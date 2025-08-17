@@ -1,518 +1,95 @@
-<!doctype html>
-<html lang="ja">
-  <!-- GA4 / EVH Site -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){ dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, debug_mode: true });
-</script>
+<section id="courses">
+  <div class="wrap">
+    <h2 class="sec">おすすめコース</h2>
+    <p class="lead">診断結果と現状レベルに合わせて、最短で成果につながるコースを提示します。</p>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ExoVisionary Hub｜診断結果と次の一歩</title>
-  <style>
-    :root{
-      --brand:#7356b6;
-      --brand-ink:#fff;
-      --ink:#222;
-      --muted:#666;
-      --bg:#f5f3ff;
-      --card:#fff;
-      --line:#e6e2f7;
-      --shadow:0 10px 24px rgba(0,0,0,.06);
-      --radius:14px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--ink); background:var(--bg);
-    }
-    a{color:inherit; text-decoration:none}
-    header{
-      position:sticky; top:0; z-index:50;
-      background:var(--card); border-bottom:1px solid var(--line);
-      backdrop-filter:saturate(180%) blur(8px);
-    }
-    .nav{
-      max-width:1060px; margin:0 auto; padding:12px 18px;
-      display:flex; align-items:center; gap:16px;
-    }
-    .brand{font-weight:700; color:var(--brand)}
-    .spacer{flex:1}
-    .nav a{padding:8px 10px; color:#555}
-    .nav .pill{background:var(--brand); color:var(--brand-ink); border-radius:999px; padding:10px 14px; font-weight:600}
-    main{max-width:1060px; margin:0 auto; padding:28px 18px 80px}
-    h1{font-size:30px; margin:8px 0 18px}
-    h2{font-size:22px; margin:0 0 14px}
-    h3{font-size:18px; margin:0 0 10px}
-    p.lead{color:#444}
-
-    .grid{display:grid; gap:16px}
-    .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
-    @media (max-width:900px){ .grid.three{grid-template-columns:1fr} }
-
-    .card{
-      background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
-      padding:20px; border:1px solid var(--line);
-    }
-    .card.white{background:#fff} /* 左カラムを白に固定 */
-
-    .btn-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px}
-    .btn{
-      display:inline-block; padding:12px 16px; border-radius:12px;
-      border:1px solid var(--line); background:#fff; color:#333; font-weight:600;
-      box-shadow:0 4px 12px rgba(0,0,0,.04);
-    }
-    .btn.primary{background:var(--brand); color:var(--brand-ink); border-color:transparent}
-    .btn.ghost{background:transparent}
-
-    .badge{display:inline-block; font-size:12px; padding:4px 8px; border-radius:999px; background:#eee; margin-left:.5em}
-    .score-line{font-weight:700; margin:6px 0 10px}
-    .score-line b{font-size:24px; color:var(--brand)}
-
-    .sec-title{font-size:24px; margin:26px 0 12px}
-    .course-grid{display:grid; gap:14px; grid-template-columns:repeat(3,minmax(0,1fr))}
-    @media (max-width:900px){ .course-grid{grid-template-columns:1fr} }
-    .course .title{font-weight:800; margin:6px 0 8px}
-    .course ul{margin:8px 0 10px; padding-left:18px}
-    .course li{margin:4px 0}
-
-    .flow .step{border-left:4px solid var(--brand); padding-left:12px; margin:14px 0 18px}
-    footer{margin-top:60px; padding:24px 0; color:#777; text-align:center}
-  </style>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  // 既定で page_view が送られます
-  gtag('config', 'G-QFQZF4F1QW', { transport_type: 'beacon' });
-</script>
-
-</head>
-  <script>
-/* 診断値を URL or sessionStorage から取得してLPに反映 */
-(function () {
-  const p = new URLSearchParams(location.search);
-  const score =
-    Number(p.get("score")) ||
-    Number(sessionStorage.getItem("ai_score")) || 0;
-
-  const levelLabel =
-    p.get("level") ||
-    sessionStorage.getItem("ai_level_label") || "—";
-
-  const lvKey =
-    p.get("lv") ||
-    sessionStorage.getItem("ai_level_key") || "entry";
-
-  // 表示箇所（あなたのHTMLのIDに合わせて下さい）
-  const scoreEl = document.getElementById("result-score");   // 例: 「AI偏差値：0 / 100」の数値部分
-  const levelEl = document.getElementById("lv-label");       // 例: 「レベル：入門層」
-
-  if (scoreEl) scoreEl.textContent = String(score);
-  if (levelEl) levelEl.textContent = levelLabel;
-
-  // レベル別メッセージや箇条書きの差し替えをしている場合はここで分岐
-  const MAP = {
-    entry:     { label: "入門層",     lead: "まずは基本を整え、短期で成果を出す土台を作りましょう。" },
-    middle:    { label: "初級〜中級", lead: "品質と効率を同時に上げる短期集中プランがおすすめです。" },
-    practical: { label: "実践層",     lead: "評価・検証〜運用設計まで踏み込み、再現性ある仕組み化へ。" }
-  };
-  const key = (["entry","middle","practical"].includes(lvKey)) ? lvKey : "entry";
-  const leadEl = document.getElementById("result-lead");
-  if (leadEl) leadEl.textContent = MAP[key].lead;
-})();
-</script>
-<script>
-/* === URL/LocalStorage から診断値を取得し、LPに反映 === */
-(function () {
-  const TTL_MS = 10 * 60 * 1000; // 10分
-
-  function readPayload() {
-    const sp = new URLSearchParams(location.search);
-    const score = Number(sp.get("score"));
-    const levelLabel = sp.get("level");
-    const lvKey = sp.get("lv");
-
-    if (!isNaN(score) && levelLabel && lvKey) {
-      return { score, levelLabel, lvKey };
-    }
-    // URLに無い場合は localStorage から（新しいタブで開いてもOK）
-    try {
-      const raw = localStorage.getItem("ai_diag_payload");
-      if (!raw) return null;
-      const obj = JSON.parse(raw);
-      if (!obj || !obj.ts || Date.now() - obj.ts > TTL_MS) return null;
-      return { score: Number(obj.score), levelLabel: obj.levelLabel, lvKey: obj.lvKey };
-    } catch(_) { return null; }
-  }
-
-  const payload = readPayload();
-  if (!payload) return;
-
-  // === ここでDOMへ反映（IDはあなたのHTMLに合わせて）===
-  // 左カードの表示要素
-  const scoreEl = document.getElementById("result-score"); // 「AI偏差値：0 / 100」の数字部分
-  const levelEl = document.getElementById("lv-label");     // 「レベル：入門層」
-  if (scoreEl) scoreEl.textContent = String(payload.score);
-  if (levelEl) levelEl.textContent = payload.levelLabel;
-
-  // レベル別メッセージ（任意）
-  const MAP = {
-    entry:     { lead: "まずは基本を整え、短期で成果を出す土台をつくりましょう。" },
-    middle:    { lead: "品質と効率を同時に上げる短期集中プランがおすすめです。" },
-    practical: { lead: "評価・検証〜運用設計まで踏み込み、再現性ある仕組み化へ。" }
-  };
-  const key = (payload.lvKey in MAP) ? payload.lvKey : "entry";
-  const leadEl = document.getElementById("result-lead");
-  if (leadEl) leadEl.textContent = MAP[key].lead;
-})();
-</script>
-<!-- GA4 クリック計測（CTA用）-->
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    const send = (name, params = {}) => { 
-      if (window.gtag) gtag('event', name, params);
-    };
-    // 無料説明会に申込
-    document.getElementById('cta-apply')
-      ?.addEventListener('click', () => send('qualify_lead'));
-
-    // 個別相談を予約
-    document.getElementById('cta-1on1')
-      ?.addEventListener('click', () => send('close_convert_lead'));
-
-    // デモを見る（任意）
-    document.getElementById('cta-demo')
-      ?.addEventListener('click', () => send('demo_view'));
-
-    // コースを見る（#courses への内部リンク）
-    document.querySelector('a[href="#courses"]')
-      ?.addEventListener('click', () => send('view_courses'));
-  });
-</script>
-
-<body>
-
-  <!-- ====== Header ====== -->
-  <header>
-    <nav class="nav">
-      <div class="brand">ExoVisionary Hub</div>
-      <div class="spacer"></div>
-      <a href="#summary">結果サマリ</a>
-      <a href="#courses">コース</a>
-      <a href="#flow">学習の流れ</a>
-      <a class="pill" id="nav-contact" href="#" target="_blank">お問い合わせ</a>
-      <a class="pill" id="nav-apply"   href="#" target="_blank">無料説明会に申込</a>
-    </nav>
-  </header>
-
-  <main>
-
-    <!-- ====== Result Summary ====== -->
-    <section id="summary">
-      <h1>あなたの結果と、最短の次の一歩</h1>
-      <p class="lead">診断スコアに応じて、おすすめの学習ルートと具体アクションをご案内します。</p>
-
-      <div class="grid three">
-        <!-- 左：診断結果（白） -->
-        <div class="card white" id="result-card">
-          <h3>診断サマリ</h3>
-          <h2>あなたの結果</h2>
-          <p class="score-line">
-            AI偏差値：<b id="score-val">--</b>／100　
-            <span class="badge">レベル：<span id="lv-label">--</span></span>
-          </p>
-
-          <p id="result-lead">まずは安全な使い方と型を整えて、短期で成果を出す土台を作ります。</p>
-          <ul id="result-bullets">
-            <li>基本リテラシーと安全ルールを整備</li>
-            <li>業務テンプレ／良いプロンプトの型を準備</li>
-            <li>小さく試して成功体験を蓄積</li>
-          </ul>
-
-          <div class="btn-row">
-            <a class="btn primary" id="cta-next" href="#flow">最短の進め方を見る</a>
-            <a class="btn primary" href="#courses">おすすめコースへ</a>
-          </div>
-        </div>
-
-        <!-- 中：無料説明会 -->
-        <div class="card">
-          <h3>まずは無料で方向性を確認</h3>
-          <p class="lead">最短ルートと進め方をご提案します。無理な営業はしません。</p>
-          <div class="btn-row">
-            <a class="btn primary" id="cta-apply" href="#" target="_blank">無料説明会に申込</a>
-            <a class="btn" href="#courses">コースを見る</a>
-          </div>
-        </div>
-
-        <!-- 右：個別相談／デモ -->
-        <div class="card">
-          <h3>要件整理／導入ロードマップ</h3>
-          <p>評価・検証の仕組みまで含め、再現性のある運用設計をご一緒に。</p>
-          <div class="btn-row">
-            <a class="btn" id="cta-1on1" href="#" target="_blank">個別相談を予約</a>
-            <a class="btn" id="cta-demo" href="#" target="_blank">デモを見る</a>
-          </div>
+    <div class="row">
+      <!-- ENTRY -->
+      <div class="card pad">
+        <p class="badge">入門〜初級向け</p>
+        <h3>ENTRY：AI基礎＆日常業務の成功体験（2–3週間）</h3>
+        <ul class="bullets">
+          <li><b>AIリテラシー入門：</b>安全な使い方／情報の扱い／NGケース</li>
+          <li><b>ChatGPT基礎：</b>良いプロンプトの型（目的→制約→出力形式→評価）</li>
+          <li><b>日常業務で活用：</b>プレゼン下書き・要約・メール文案</li>
+          <li><b>デザイン支援：</b>画像生成でバナー／スライド素材を作成</li>
+          <li><b>改善ループ：</b>提出→フィードバック→再提出（GPT自動レビュー）</li>
+        </ul>
+        <p class="note">成果：<b>「AIで資料とデザインが作れた」</b>という成功体験／基礎の自信がつく</p>
+        <div class="btn-row">
+          <a class="btn primary" id="cta-apply" href="#contact">無料説明会に申込</a>
+          <a class="btn" href="#flow">学習の流れ</a>
         </div>
       </div>
-    </section>
 
-    <!-- ====== Courses ====== -->
-    <section id="courses">
-      <h2 class="sec-title">おすすめコース</h2>
-      <p class="lead">診断結果のレベルに応じて、最短で成果につながるコースを提示します。</p>
-
-      <div class="course-grid">
-        <div class="card course">
-          <div class="badge">入門〜初級向け</div>
-          <div class="title">ENTRY：AI活用の型とルール</div>
-          <ul>
-            <li>安全に始めるための基本リテラシー</li>
-            <li>良いプロンプトの型／テンプレ集</li>
-            <li>2週間のミニ課題（レビュー付）</li>
-          </ul>
-          <div class="btn-row">
-            <a class="btn primary" id="btn-entry-apply" href="#" target="_blank">無料説明会に申込</a>
-            <a class="btn" href="#flow">学習の流れ</a>
-          </div>
-        </div>
-
-        <div class="card course">
-          <div class="badge">初級〜中級向け</div>
-          <div class="title">MIDDLE：品質と効率を同時に</div>
-          <ul>
-            <li>業務テンプレの整備と自動化の入口</li>
-            <li>評価・検証フレームとA/B運用</li>
-            <li>短期集中プラン（成果レビュー）</li>
-          </ul>
-          <div class="btn-row">
-            <a class="btn primary" id="btn-mid-apply" href="#" target="_blank">無料説明会に申込</a>
-            <a class="btn" href="#flow">学習の流れ</a>
-          </div>
-        </div>
-
-        <div class="card course">
-          <div class="badge">実践〜先進向け</div>
-          <div class="title">PRACTICAL：本格運用へ</div>
-          <ul>
-            <li>業務設計・評価→本番運用まで</li>
-            <li>RAG／エージェント・社内展開</li>
-            <li>運用SLA設計とガバナンス</li>
-          </ul>
-          <div class="btn-row">
-            <a class="btn primary" id="btn-pro-apply" href="#" target="_blank">無料説明会に申込</a>
-            <a class="btn" href="#flow">学習の流れ</a>
-          </div>
+      <!-- MIDDLE -->
+      <div class="card pad">
+        <p class="badge">初級〜中級向け</p>
+        <h3>MIDDLE：AI×業務改善の入口（4–6週間）</h3>
+        <ul class="bullets">
+          <li><b>業務テンプレ整備：</b>議事録・FAQ・メールの型化と運用</li>
+          <li><b>GAS入門〜半自動：</b>フォーム→シート→自動返信→レポート</li>
+          <li><b>評価・改善：</b>A/B運用／品質・再現性・時間の指標で回す</li>
+          <li><b>可視化：</b>簡易KPIダッシュボード（Sheets＋自動更新）</li>
+        </ul>
+        <p class="note">成果：小さな業務が <b>“勝手に回る” 半自動フロー</b> を構築</p>
+        <div class="btn-row">
+          <a class="btn primary" id="cta-apply-mid" href="#contact">無料説明会に申込</a>
+          <a class="btn" href="#flow">学習の流れ</a>
         </div>
       </div>
-    </section>
 
-    <!-- ====== Flow ====== -->
-    <section id="flow" class="flow">
-      <h2 class="sec-title">学習の流れ</h2>
-      <div class="card step">
-        <h3>1. 無料説明会（30分）</h3>
-        <p>到達イメージとご状況を確認し、最短ルートをご提案します。</p>
+      <!-- PRACTICAL -->
+      <div class="card pad">
+        <p class="badge">実践〜先進向け</p>
+        <h3>PRACTICAL：疑似案件で本格運用へ（6–8週間）</h3>
+        <ul class="bullets">
+          <li><b>要件定義ロールプレイ：</b>GPTがクライアント役でヒアリング演習</li>
+          <li><b>設計〜実装：</b>データ流・権限・失敗時ハンドリング・SLA</li>
+          <li><b>納品一式：</b>設計書／GASコード／SOP／成果レポート／デモ台本</li>
+        </ul>
+        <p class="note">成果：<b>提案〜納品まで自走</b>できるミニ案件レベルの実力</p>
+        <div class="btn-row">
+          <a class="btn primary" id="cta-apply-pro" href="#contact">無料説明会に申込</a>
+          <a class="btn" href="#flow">学習の流れ</a>
+        </div>
       </div>
-      <div class="card step">
-        <h3>2. キックオフ＆基礎の共通化</h3>
-        <p>安全・ルール・型を共通言語に。初回課題に着手。</p>
+    </div>
+
+    <!-- 課題例：一行リスト（おすすめコース直下に表示） -->
+    <div class="row">
+      <div class="card pad">
+        <h4 class="sub">ENTRY 課題例</h4>
+        <ul class="bullets">
+          <li>プレゼン下書き／要約／話者ノート作成</li>
+          <li>スライド用バナー画像を2点生成</li>
+          <li>プロンプトと改善履歴を提出（GPT自動レビュー）</li>
+        </ul>
       </div>
-      <div class="card step">
-        <h3>3. 短期集中プラン／検証設計</h3>
-        <p>テンプレ整備／評価・検証／A/B運用で再現性を作る。</p>
+      <div class="card pad">
+        <h4 class="sub">MIDDLE 課題例</h4>
+        <ul class="bullets">
+          <li>フォーム受付→自動返信→集計→レポートの半自動化</li>
+          <li>評価指標（品質/再現性/時間）の週次レポート</li>
+          <li>テンプレ3本（議事録・FAQ・メール）を整備</li>
+        </ul>
       </div>
-      <div class="card step">
-        <h3>4. 本格運用・展開</h3>
-        <p>RAG／エージェント、SLA・ガバナンス整備、社内展開へ。</p>
+      <div class="card pad">
+        <h4 class="sub">PRACTICAL 課題例</h4>
+        <ul class="bullets">
+          <li>要件定義書／データフロー／失敗時対応の設計書ドラフト</li>
+          <li>GASコード＋SOP＋成果レポートの納品一式</li>
+          <li>3分デモ用の説明台本（または動画リンク）</li>
+        </ul>
       </div>
-    </section>
+    </div>
 
-    <footer>© ExoVisionary Hub</footer>
-  </main>
-
-  <!-- ====== JS（リンク定義・スコア反映・レベル別コピー） ====== -->
-  <script>
-    // 必要に応じて外部URLへ差し替えてください
-    const LINKS = {
-      contact : "#",
-      apply   : "#",
-      demo    : "#",
-      oneOnOne: "#"
-    };
-
-    // ヘッダー/CTAのリンクを反映
-    document.getElementById('nav-contact').href = LINKS.contact;
-    ['nav-apply','cta-apply','btn-entry-apply','btn-mid-apply','btn-pro-apply'].forEach(id=>{
-      const el = document.getElementById(id); if(el) el.href = LINKS.apply;
-    });
-    const d1 = document.getElementById('cta-demo');     if(d1) d1.href = LINKS.demo;
-    const d2 = document.getElementById('cta-1on1');     if(d2) d2.href = LINKS.oneOnOne;
-
-    // レベル別の表示定義
-    const MAP = {
-      entry:{
-        label:'入門層',
-        lead:'まずは安全な使い方と型を整えて、短期で成果を出す土台を作ります。',
-        bullets:[
-          '基本リテラシーと安全ルールを整備',
-          '業務テンプレ／良いプロンプトの型を準備',
-          '小さく試して成功体験を蓄積'
-        ]
-      },
-      middle:{
-        label:'初級〜中級',
-        lead:'品質と効率の両立へ。評価と検証の仕組みを整えます。',
-        bullets:[
-          'テンプレ整備と自動化の入口設計',
-          '評価・検証フレーム／A/B運用',
-          '短期集中プランで成果レビュー'
-        ]
-      },
-      practical:{
-        label:'実践〜先進',
-        lead:'業務設計から本番運用まで、再現性のある設計を構築します。',
-        bullets:[
-          '要件整理とロードマップ設計',
-          'RAG／エージェント・社内展開',
-          '運用SLA／ガバナンス整備'
-        ]
-      }
-    };
-
-    (function applyScoreAndCopy(){
-      const qs   = new URL(location.href).searchParams;
-      let score  = Number(qs.get('score'));
-      let level  = qs.get('level');
-
-      // localStorage も参照
-      if(!Number.isFinite(score)){
-        const s = localStorage.getItem('ai_score');
-        if(s!=null) score = Number(s);
-      }
-      if(!level){
-        level = localStorage.getItem('ai_level') || '';
-      }
-
-      // レベルが無ければスコアから推定
-      let key = (level==='entry'||level==='middle'||level==='practical') ? level : '';
-      if(!key){
-        if(Number.isFinite(score)){
-          key = score>=70 ? 'practical' : score>=55 ? 'middle' : 'entry';
-        }else{
-          key = 'entry';
-        }
-      }
-
-      // 画面へ反映
-      const elScore = document.getElementById('score-val');
-      if(elScore){
-        elScore.textContent = Number.isFinite(score) ? String(score) : '--';
-      }
-      const elLv = document.getElementById('lv-label');
-      if(elLv){ elLv.textContent = MAP[key].label; }
-
-      const lead = document.getElementById('result-lead');
-      if(lead){ lead.textContent = MAP[key].lead; }
-
-      const ul = document.getElementById('result-bullets');
-      if(ul){
-        ul.innerHTML = '';
-        MAP[key].bullets.forEach(t=>{
-          const li = document.createElement('li'); li.textContent = t; ul.appendChild(li);
-        });
-      }
-
-      // ついでに保存（次回来訪でも表示できるように）
-      if(Number.isFinite(score)) localStorage.setItem('ai_score', String(score));
-      localStorage.setItem('ai_level', key);
-    })();
-  </script>
-
-  <!-- ★ ここが「</body> の直前」の追加スクリプトです（必要ならこの位置でOK） -->
-  <script>
-    // index.html 側から ?score=xx&level=yy で来ない場合でも localStorage から取得して再反映
-    (function () {
-      const url = new URL(location.href);
-      let score = url.searchParams.get('score');
-      let level = url.searchParams.get('level');
-
-      if (score == null) score = localStorage.getItem('ai_score');
-      if (level == null) level = localStorage.getItem('ai_level');
-
-      // 既存スクリプトが処理済みでも、念のため値だけ上書き可能
-      const elScore = document.getElementById('score-val');
-      if (elScore && score !== null && score !== '') elScore.textContent = String(Number(score));
-      const LABEL = {entry:'入門層', middle:'初級〜中級', practical:'実践〜先進'};
-      const elLevel = document.getElementById('lv-label');
-      if (elLevel && level && LABEL[level]) elLevel.textContent = LABEL[level];
-    })();
-  </script>
-  <!-- 追加ここまで -->
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-  // ① 無料説明会に申込（id="cta-apply" のリンク/ボタン）
-  const btnApply = document.getElementById('cta-apply');
-  if (btnApply) {
-    btnApply.addEventListener('click', function (e) {
-      const url = this.href;
-      // カスタムイベント送信
-      gtag('event', 'qualify_lead', {
-        event_category: 'CTA',
-        event_label: '無料説明会に申込',
-        value: 1
-      });
-      // 送信時間を確保してから遷移（新規タブ/⌘クリックはそのまま）
-      if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
-        e.preventDefault();
-        setTimeout(() => { location.href = url; }, 250);
-      }
-    });
-  }
-
-  // ② 個別相談を予約（id="cta-1on1"）
-  const btn1on1 = document.getElementById('cta-1on1');
-  if (btn1on1) {
-    btn1on1.addEventListener('click', function (e) {
-      const url = this.href;
-      gtag('event', 'close_convert_lead', {
-        event_category: 'CTA',
-        event_label: '個別相談を予約',
-        value: 1
-      });
-      if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
-        e.preventDefault();
-        setTimeout(() => { location.href = url; }, 250);
-      }
-    });
-  }
-
-  // ③ 将来用：購入（id="cta-purchase" があれば）
-  const btnPurchase = document.getElementById('cta-purchase');
-  if (btnPurchase) {
-    btnPurchase.addEventListener('click', function (e) {
-      const url = this.href;
-      gtag('event', 'purchase', {
-        currency: 'JPY',
-        value: 0,               // 実額があるなら差し替え
-        event_category: 'CTA',
-        event_label: '購入/決済'
-      });
-      if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
-        e.preventDefault();
-        setTimeout(() => { location.href = url; }, 250);
-      }
-    });
-  }
-});
-</script>
-
-</body>
-</html>
+    <!-- 卒業・ロースター案内 -->
+    <div class="card pad">
+      <p class="note">
+        卒業判定はGPTが自動採点（80点以上で合格）。<br>
+        合格者は <b>56projectロースター</b> への登録審査に進めます（拡販フェーズ案件での参画を想定）。
+      </p>
+    </div>
+  </div>
+</section>
