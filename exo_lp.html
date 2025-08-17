@@ -433,6 +433,63 @@
     })();
   </script>
   <!-- 追加ここまで -->
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  // ① 無料説明会に申込（id="cta-apply" のリンク/ボタン）
+  const btnApply = document.getElementById('cta-apply');
+  if (btnApply) {
+    btnApply.addEventListener('click', function (e) {
+      const url = this.href;
+      // カスタムイベント送信
+      gtag('event', 'qualify_lead', {
+        event_category: 'CTA',
+        event_label: '無料説明会に申込',
+        value: 1
+      });
+      // 送信時間を確保してから遷移（新規タブ/⌘クリックはそのまま）
+      if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
+        e.preventDefault();
+        setTimeout(() => { location.href = url; }, 250);
+      }
+    });
+  }
+
+  // ② 個別相談を予約（id="cta-1on1"）
+  const btn1on1 = document.getElementById('cta-1on1');
+  if (btn1on1) {
+    btn1on1.addEventListener('click', function (e) {
+      const url = this.href;
+      gtag('event', 'close_convert_lead', {
+        event_category: 'CTA',
+        event_label: '個別相談を予約',
+        value: 1
+      });
+      if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
+        e.preventDefault();
+        setTimeout(() => { location.href = url; }, 250);
+      }
+    });
+  }
+
+  // ③ 将来用：購入（id="cta-purchase" があれば）
+  const btnPurchase = document.getElementById('cta-purchase');
+  if (btnPurchase) {
+    btnPurchase.addEventListener('click', function (e) {
+      const url = this.href;
+      gtag('event', 'purchase', {
+        currency: 'JPY',
+        value: 0,               // 実額があるなら差し替え
+        event_category: 'CTA',
+        event_label: '購入/決済'
+      });
+      if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
+        e.preventDefault();
+        setTimeout(() => { location.href = url; }, 250);
+      }
+    });
+  }
+});
+</script>
 
 </body>
 </html>
