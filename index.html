@@ -53,6 +53,16 @@
   // 既定で page_view が送られます
   gtag('config', 'G-QFQZF4F1QW', { transport_type: 'beacon' });
 </script>
+<!-- GA4 クリック計測（Hub遷移）-->
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    // ExoVisionary Hubを見る（外部の exo_lp.html へ）
+    const hubLink = document.querySelector('a[href="https://goro56project.github.io/ai_diagnosis/exo_lp.html"]');
+    hubLink?.addEventListener('click', () => {
+      if (window.gtag) gtag('event', 'open_hub');
+    });
+  });
+</script>
 
 <body>
   <header>
