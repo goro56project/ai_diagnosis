@@ -1,127 +1,103 @@
 <section id="courses">
-  <!-- Scoped minimal styles (this section only) -->
-  <style>
-    /* layout */
-    #courses .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
-    #courses .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin:16px 0 32px}
-    /* cards */
-    #courses .card{background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-    #courses .pad{padding:20px}
-    /* badges / headings */
-    #courses .badge{display:inline-block;background:#eef6ff;color:#2563eb;border-radius:999px;padding:4px 10px;font-size:.85rem;margin-bottom:6px}
-    #courses h2.sec{font-size:1.8rem;margin:8px 0 6px}
-    #courses h3{font-size:1.2rem;line-height:1.4;margin:6px 0 12px}
-    #courses h4.sub{font-size:1rem;margin:0 0 10px;color:#334155}
-    #courses .lead{color:#475569;margin-bottom:10px}
-    /* bullets */
-    #courses .bullets{list-style:none;margin:0;padding:0}
-    #courses .bullets li{display:flex;gap:10px;align-items:flex-start;margin:8px 0;line-height:1.6}
-    #courses .bullets li::before{content:"✓";flex:0 0 auto;transform:translateY(2px)}
-    /* notes */
-    #courses .note{background:#f8fafc;border:1px dashed #e2e8f0;border-radius:12px;padding:10px 12px;margin:10px 0 0;color:#0f172a}
-    /* buttons */
-    #courses .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    #courses .btn{display:inline-block;border:1px solid #cbd5e1;border-radius:999px;padding:8px 14px;text-decoration:none;color:#0f172a}
-    #courses .btn.primary{background:#111827;color:#fff;border-color:#111827}
-    #courses .btn:active{transform:translateY(1px)}
-    /* responsive tweaks */
-    @media (max-width:640px){
-      #courses h2.sec{font-size:1.6rem}
-      #courses h3{font-size:1.05rem}
-    }
-  </style>
+  <div style="max-width:1100px;margin:0 auto;padding:0 16px;">
+    <h2 style="font-size:1.8rem;margin:8px 0 6px;">おすすめコース</h2>
+    <p style="color:#475569;margin-bottom:10px;">診断結果と現状レベルに合わせて、最短で成果につながるコースを提示します。</p>
 
-  <div class="wrap">
-    <h2 class="sec">おすすめコース</h2>
-    <p class="lead">診断結果と現状レベルに合わせて、最短で成果につながるコースを提示します。</p>
-
-    <div class="row">
+    <!-- 3カラム行 -->
+    <div style="display:flex;flex-wrap:wrap;gap:24px;margin:16px 0 32px;">
       <!-- ENTRY -->
-      <div class="card pad">
-        <p class="badge">入門〜初級向け</p>
-        <h3>ENTRY：AI基礎＆日常業務の成功体験（2–3週間）</h3>
-        <ul class="bullets">
-          <li><b>AIリテラシー入門：</b>安全な使い方／情報の扱い／NGケース</li>
-          <li><b>ChatGPT基礎：</b>良いプロンプトの型（目的→制約→出力形式→評価）</li>
-          <li><b>日常業務で活用：</b>プレゼン下書き・要約・メール文案</li>
-          <li><b>デザイン支援：</b>画像生成でバナー／スライド素材を作成</li>
-          <li><b>改善ループ：</b>提出→フィードバック→再提出（GPT自動レビュー）</li>
+      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+        <p style="display:inline-block;background:#eef6ff;color:#2563eb;border-radius:999px;padding:4px 10px;font-size:.85rem;margin:0 0 6px;">入門〜初級向け</p>
+        <h3 style="font-size:1.2rem;line-height:1.4;margin:6px 0 12px;">ENTRY：AI基礎＆日常業務の成功体験（2–3週間）</h3>
+        <ul style="list-style:none;margin:0;padding:0;">
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>AIリテラシー入門：</b>安全な使い方／情報の扱い／NGケース</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>ChatGPT基礎：</b>良いプロンプトの型（目的→制約→出力形式→評価）</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>日常業務で活用：</b>プレゼン下書き・要約・メール文案</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>デザイン支援：</b>画像生成でバナー／スライド素材を作成</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>改善ループ：</b>提出→フィードバック→再提出（GPT自動レビュー）</li>
         </ul>
-        <p class="note">成果：<b>「AIで資料とデザインが作れた」</b>という成功体験／基礎の自信がつく</p>
-        <div class="btn-row">
-          <a class="btn primary" id="cta-apply" href="#contact">無料説明会に申込</a>
-          <a class="btn" href="#flow">学習の流れ</a>
+        <p style="background:#f8fafc;border:1px dashed #e2e8f0;border-radius:12px;padding:10px 12px;margin:10px 0 0;color:#0f172a;">
+          成果：<b>「AIで資料とデザインが作れた」</b>という成功体験／基礎の自信がつく
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+          <a id="cta-apply" href="#contact" style="display:inline-block;border:1px solid #111827;border-radius:999px;padding:8px 14px;text-decoration:none;background:#111827;color:#fff;">無料説明会に申込</a>
+          <a href="#flow" style="display:inline-block;border:1px solid #cbd5e1;border-radius:999px;padding:8px 14px;text-decoration:none;color:#0f172a;">学習の流れ</a>
         </div>
       </div>
 
       <!-- MIDDLE -->
-      <div class="card pad">
-        <p class="badge">初級〜中級向け</p>
-        <h3>MIDDLE：AI×業務改善の入口（4–6週間）</h3>
-        <ul class="bullets">
-          <li><b>業務テンプレ整備：</b>議事録・FAQ・メールの型化と運用</li>
-          <li><b>GAS入門〜半自動：</b>フォーム→シート→自動返信→レポート</li>
-          <li><b>評価・改善：</b>A/B運用／品質・再現性・時間の指標で回す</li>
-          <li><b>可視化：</b>簡易KPIダッシュボード（Sheets＋自動更新）</li>
+      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+        <p style="display:inline-block;background:#eef6ff;color:#2563eb;border-radius:999px;padding:4px 10px;font-size:.85rem;margin:0 0 6px;">初級〜中級向け</p>
+        <h3 style="font-size:1.2rem;line-height:1.4;margin:6px 0 12px;">MIDDLE：AI×業務改善の入口（4–6週間）</h3>
+        <ul style="list-style:none;margin:0;padding:0;">
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>業務テンプレ整備：</b>議事録・FAQ・メールの型化と運用</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>GAS入門〜半自動：</b>フォーム→シート→自動返信→レポート</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>評価・改善：</b>A/B運用／品質・再現性・時間の指標で回す</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>可視化：</b>簡易KPIダッシュボード（Sheets＋自動更新）</li>
         </ul>
-        <p class="note">成果：小さな業務が <b>“勝手に回る” 半自動フロー</b> を構築</p>
-        <div class="btn-row">
-          <a class="btn primary" id="cta-apply-mid" href="#contact">無料説明会に申込</a>
-          <a class="btn" href="#flow">学習の流れ</a>
+        <p style="background:#f8fafc;border:1px dashed #e2e8f0;border-radius:12px;padding:10px 12px;margin:10px 0 0;color:#0f172a;">
+          成果：小さな業務が <b>“勝手に回る” 半自動フロー</b> を構築
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+          <a id="cta-apply-mid" href="#contact" style="display:inline-block;border:1px solid #111827;border-radius:999px;padding:8px 14px;text-decoration:none;background:#111827;color:#fff;">無料説明会に申込</a>
+          <a href="#flow" style="display:inline-block;border:1px solid #cbd5e1;border-radius:999px;padding:8px 14px;text-decoration:none;color:#0f172a;">学習の流れ</a>
         </div>
       </div>
 
       <!-- PRACTICAL -->
-      <div class="card pad">
-        <p class="badge">実践〜先進向け</p>
-        <h3>PRACTICAL：疑似案件で本格運用へ（6–8週間）</h3>
-        <ul class="bullets">
-          <li><b>要件定義ロールプレイ：</b>GPTがクライアント役でヒアリング演習</li>
-          <li><b>設計〜実装：</b>データ流・権限・失敗時ハンドリング・SLA</li>
-          <li><b>納品一式：</b>設計書／GASコード／SOP／成果レポート／デモ台本</li>
+      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+        <p style="display:inline-block;background:#eef6ff;color:#2563eb;border-radius:999px;padding:4px 10px;font-size:.85rem;margin:0 0 6px;">実践〜先進向け</p>
+        <h3 style="font-size:1.2rem;line-height:1.4;margin:6px 0 12px;">PRACTICAL：疑似案件で本格運用へ（6–8週間）</h3>
+        <ul style="list-style:none;margin:0;padding:0;">
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>要件定義ロールプレイ：</b>GPTがクライアント役でヒアリング演習</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>設計〜実装：</b>データ流・権限・失敗時ハンドリング・SLA</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">✓</span><b>納品一式：</b>設計書／GASコード／SOP／成果レポート／デモ台本</li>
         </ul>
-        <p class="note">成果：<b>提案〜納品まで自走</b>できるミニ案件レベルの実力</p>
-        <div class="btn-row">
-          <a class="btn primary" id="cta-apply-pro" href="#contact">無料説明会に申込</a>
-          <a class="btn" href="#flow">学習の流れ</a>
+        <p style="background:#f8fafc;border:1px dashed #e2e8f0;border-radius:12px;padding:10px 12px;margin:10px 0 0;color:#0f172a;">
+          成果：<b>提案〜納品まで自走</b>できるミニ案件レベルの実力
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+          <a id="cta-apply-pro" href="#contact" style="display:inline-block;border:1px solid #111827;border-radius:999px;padding:8px 14px;text-decoration:none;background:#111827;color:#fff;">無料説明会に申込</a>
+          <a href="#flow" style="display:inline-block;border:1px solid #cbd5e1;border-radius:999px;padding:8px 14px;text-decoration:none;color:#0f172a;">学習の流れ</a>
         </div>
       </div>
     </div>
 
-    <!-- 課題例 -->
-    <div class="row">
-      <div class="card pad">
-        <h4 class="sub">ENTRY 課題例</h4>
-        <ul class="bullets">
-          <li>プレゼン下書き／要約／話者ノート作成</li>
-          <li>スライド用バナー画像を2点生成</li>
-          <li>プロンプトと改善履歴を提出（GPT自動レビュー）</li>
+    <!-- 課題例（1行カード×3） -->
+    <div style="display:flex;flex-wrap:wrap;gap:24px;margin:16px 0 32px;">
+      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+        <h4 style="font-size:1rem;margin:0 0 10px;color:#334155;">ENTRY 課題例</h4>
+        <ul style="list-style:none;margin:0;padding:0;">
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>プレゼン下書き／要約／話者ノート作成</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>スライド用バナー画像を2点生成</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>プロンプトと改善履歴を提出（GPT自動レビュー）</li>
         </ul>
       </div>
-      <div class="card pad">
-        <h4 class="sub">MIDDLE 課題例</h4>
-        <ul class="bullets">
-          <li>フォーム受付→自動返信→集計→レポートの半自動化</li>
-          <li>評価指標（品質/再現性/時間）の週次レポート</li>
-          <li>テンプレ3本（議事録・FAQ・メール）を整備</li>
+      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+        <h4 style="font-size:1rem;margin:0 0 10px;color:#334155;">MIDDLE 課題例</h4>
+        <ul style="list-style:none;margin:0;padding:0;">
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>フォーム受付→自動返信→集計→レポートの半自動化</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>評価指標（品質/再現性/時間）の週次レポート</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>テンプレ3本（議事録・FAQ・メール）を整備</li>
         </ul>
       </div>
-      <div class="card pad">
-        <h4 class="sub">PRACTICAL 課題例</h4>
-        <ul class="bullets">
-          <li>要件定義書／データフロー／失敗時対応の設計書ドラフト</li>
-          <li>GASコード＋SOP＋成果レポートの納品一式</li>
-          <li>3分デモ用の説明台本（または動画リンク）</li>
+      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+        <h4 style="font-size:1rem;margin:0 0 10px;color:#334155;">PRACTICAL 課題例</h4>
+        <ul style="list-style:none;margin:0;padding:0;">
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>要件定義書／データフロー／失敗時対応の設計書ドラフト</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>GASコード＋SOP＋成果レポートの納品一式</li>
+          <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>3分デモ用の説明台本（または動画リンク）</li>
         </ul>
       </div>
     </div>
 
     <!-- 卒業・ロースター案内 -->
-    <div class="card pad">
-      <p class="note">
+    <div style="background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+      <p style="background:#f8fafc;border:1px dashed #e2e8f0;border-radius:12px;padding:10px 12px;margin:0;color:#0f172a;">
         卒業判定はGPTが自動採点（80点以上で合格）。<br>
         合格者は <b>56projectロースター</b> への登録審査に進めます（拡販フェーズ案件での参画を想定）。
       </p>
     </div>
   </div>
 </section>
+
