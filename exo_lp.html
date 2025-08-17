@@ -1,4 +1,36 @@
 <section id="courses">
+  <!-- Scoped minimal styles (this section only) -->
+  <style>
+    /* layout */
+    #courses .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+    #courses .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin:16px 0 32px}
+    /* cards */
+    #courses .card{background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+    #courses .pad{padding:20px}
+    /* badges / headings */
+    #courses .badge{display:inline-block;background:#eef6ff;color:#2563eb;border-radius:999px;padding:4px 10px;font-size:.85rem;margin-bottom:6px}
+    #courses h2.sec{font-size:1.8rem;margin:8px 0 6px}
+    #courses h3{font-size:1.2rem;line-height:1.4;margin:6px 0 12px}
+    #courses h4.sub{font-size:1rem;margin:0 0 10px;color:#334155}
+    #courses .lead{color:#475569;margin-bottom:10px}
+    /* bullets */
+    #courses .bullets{list-style:none;margin:0;padding:0}
+    #courses .bullets li{display:flex;gap:10px;align-items:flex-start;margin:8px 0;line-height:1.6}
+    #courses .bullets li::before{content:"✓";flex:0 0 auto;transform:translateY(2px)}
+    /* notes */
+    #courses .note{background:#f8fafc;border:1px dashed #e2e8f0;border-radius:12px;padding:10px 12px;margin:10px 0 0;color:#0f172a}
+    /* buttons */
+    #courses .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    #courses .btn{display:inline-block;border:1px solid #cbd5e1;border-radius:999px;padding:8px 14px;text-decoration:none;color:#0f172a}
+    #courses .btn.primary{background:#111827;color:#fff;border-color:#111827}
+    #courses .btn:active{transform:translateY(1px)}
+    /* responsive tweaks */
+    @media (max-width:640px){
+      #courses h2.sec{font-size:1.6rem}
+      #courses h3{font-size:1.05rem}
+    }
+  </style>
+
   <div class="wrap">
     <h2 class="sec">おすすめコース</h2>
     <p class="lead">診断結果と現状レベルに合わせて、最短で成果につながるコースを提示します。</p>
@@ -56,7 +88,7 @@
       </div>
     </div>
 
-    <!-- 課題例：一行リスト（おすすめコース直下に表示） -->
+    <!-- 課題例 -->
     <div class="row">
       <div class="card pad">
         <h4 class="sub">ENTRY 課題例</h4>
