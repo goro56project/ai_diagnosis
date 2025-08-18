@@ -18,7 +18,7 @@
     #diag-detail .bullets{margin:.4rem 0 0 1.2rem}
     /* ボタン */
     #diag-detail .go{display:inline-block;margin-top:8px;border:1px solid #111827;border-radius:999px;padding:10px 16px;text-decoration:none;background:#111827;color:#fff}
-    /* コース強調（LP内で使う可能性があるため残置、遷移型でも害なし） */
+    /* （LP内で使う可能性があるため残置。遷移型でも害なし） */
     #courses .card.__hl{outline:3px solid #7356b6;box-shadow:0 10px 26px rgba(115,86,182,.25)}
   </style>
 
@@ -58,21 +58,21 @@
       </div>
     </div>
 
-    <!-- レベル別アドバイス（長め） -->
+    <!-- レベル別アドバイス -->
     <div class="card" id="lv-adv">
       <h3 style="margin:0 0 6px;">いまのレベル向けアドバイス</h3>
       <div id="lv-adv-body"></div>
     </div>
 
     <div style="text-align:center;margin-top:8px;">
-      <a href="#" class="go" id="dd-reco">おすすめコースを見る</a>
+      <a href="exo_course_detail.html" class="go" id="dd-reco">おすすめコースを見る</a>
     </div>
   </div>
 </section>
 
 <script>
 (function(){
-  /* ========= データ取得：URL or localStorage ========= */
+  // ---- 取得：URL or localStorage ----
   const url = new URL(location.href);
   const qScore = Number(url.searchParams.get('score'));
   const qLv    = (url.searchParams.get('lv') || '').toLowerCase();
@@ -81,36 +81,28 @@
   let stored = {};
   try { stored = JSON.parse(localStorage.getItem('ai_diag_payload')||'{}'); } catch(_){}
 
-  const score = Number.isFinite(qScore) && qScore > 0 ? qScore : (stored.score ?? null);
+  const score = Number.isFinite(qScore) && qScore>0 ? qScore : (stored.score ?? null);
   const lvKeyFromQ = qLv || (stored.lvKey || '');
+  function keyFromScore(s){ if (s>=70) return 'advanced'; if (s>=55) return 'practical'; if (s>=40) return 'middle'; return 'entry'; }
+  const lvKey = lvKeyFromQ || (Number.isFinite(score) ? keyFromScore(score) : '');
 
-  // スコア→レベル推定
-  function keyFromScore(s){
-    if (!Number.isFinite(s)) return '';
-    if (s >= 70) return 'advanced';   // 先進層（詳細ページは practical に寄せる）
-    if (s >= 55) return 'practical';  // 実践層
-    if (s >= 40) return 'middle';     // 初級〜中級
-    return 'entry';                   // 入門
-  }
-  const lvKey = lvKeyFromQ || keyFromScore(score);
-
-  // 表示条件：いずれか判明していればOK
+  // 表示条件：score or lvKey or levelLabel があれば表示
   if (!(Number.isFinite(score) || lvKey || qLevelLabel)) return;
   const sec = document.getElementById('diag-detail');
   sec.style.display = 'block';
 
-  /* ========= DOM参照 ========= */
+  // ---- DOM参照 ----
   const ddScore = document.getElementById('dd-score');
   const ddLevel = document.getElementById('dd-level');
   const ddLead  = document.getElementById('dd-lead');
   const advBody = document.getElementById('lv-adv-body');
   const recoBtn = document.getElementById('dd-reco');
 
-  /* ========= ラベル定義 ========= */
+  // ---- ラベル定義 ----
   const LV_LABEL = { entry:'入門層', middle:'初級〜中級', practical:'実践層', advanced:'先進層' };
   const levelLabel = qLevelLabel || LV_LABEL[lvKey] || '—';
 
-  /* ========= レベル別メッセージ ========= */
+  // ---- レベル別コメント ----
   const CONTENT = {
     entry: {
       lead: `
@@ -174,7 +166,7 @@
     }
   };
 
-  /* ========= 画面反映 ========= */
+  // ---- 画面反映 ----
   if (Number.isFinite(score)) ddScore.textContent = String(score);
   ddLevel.textContent = levelLabel || '—';
 
@@ -182,24 +174,15 @@
   ddLead.innerHTML = c.lead;
   advBody.innerHTML = c.adviceHTML || '';
 
-  /* ========= 「おすすめコースを見る」→ コース詳細ページへ遷移 ========= */
+  // ---- ★ここを“3行”で差し替え（詳細ページへ遷移＆クエリ引き継ぎ） ----
   if (recoBtn){
-    // レベル→詳細ページの course パラメータに変換
-    const courseMap = { entry:'entry', middle:'middle', practical:'practical', advanced:'practical' };
-    const course = courseMap[lvKey] || 'entry';
-
-    const to = new URL('exo_course_detail.html', location.href);
-    to.hash = 'contact'; // 申し込み位置へ着地
-    if (Number.isFinite(score)) to.searchParams.set('score', String(score));
-    to.searchParams.set('level', levelLabel);
-    to.searchParams.set('lv', lvKey || '');
-    to.searchParams.set('course', course);
-
-    recoBtn.href = to.toString();
-    recoBtn.rel  = 'noopener';
+    const key = lvKey || (Number.isFinite(score) ? keyFromScore(score) : 'entry');               // 推奨レベル判定
+    const course = (key==='entry')?'entry':(key==='middle')?'middle':'practical';                 // advanced は practical に寄せる
+    const qs = `?score=${encodeURIComponent(Number.isFinite(score)?String(score):'')}&level=${encodeURIComponent(levelLabel)}&lv=${encodeURIComponent(key)}&course=${encodeURIComponent(course)}`;
+    recoBtn.href = 'exo_course_detail.html' + qs;                                                 // 詳細ページへ
   }
 
-  /* ========= 計測（任意） ========= */
+  // ---- 計測（任意） ----
   if (typeof gtag === 'function') {
     gtag('event', 'detail_shown', { event_category:'Navigation', event_label: lvKey || 'unknown' });
   }
