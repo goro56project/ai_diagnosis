@@ -30,6 +30,131 @@
   footer{margin:28px 0 8px;text-align:center;color:#94a3b8}
 </style>
 </head>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const sp = new URLSearchParams(location.search);
+    const courseKey = (sp.get('course')||'entry').toLowerCase();
+    const score = sp.get('score') || '—';
+    const level = sp.get('level') || '—';
+    const lv    = (sp.get('lv')||'').toLowerCase();
+
+    const COURSES = {
+      entry: {
+        badge:'入門〜初級向け',
+        title:'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）',
+        lead:'AI初心者や40–50代のビジネス層に向けた短期ブート。安全に使い、良い指示を出し、まずは「資料/メール/デザイン補助」で成果を出すことがゴールです。うまくいった指示はテンプレ化して、誰でも再現できる状態へ。',
+        skills:[
+          'AIリテラシー：情報の扱い、社外秘/公開、NGケース、ガバナンスの基本',
+          'ChatGPT基礎：モデル・モード、要約/言い換え/トーン調整、校正・添削',
+          'プロンプト設計：目的→制約→入出力→評価観点、Few-shot、ステップ分解',
+          'スライド/デザイン補助：図解プロンプトの作り方、画像生成の基礎（バナー/挿絵）',
+          '成果の“型化”：成功指示をテンプレ化し、チームで再現'
+        ],
+        modules:[
+          '安全・ルール・型（60分）／プロンプト雛形を3本作る',
+          '資料×メール×要約（90分）／骨子→章立て→本文→要約',
+          '画像生成の基礎（60分）／バナー2案→比較→リライト',
+          'ミニ改善の回し方（60分）／Before/Afterと評価観点の言語化'
+        ],
+        hands:[
+          '10枚スライドの叩き台＋議事メモ→要約→アクション抽出＋社内案内メール',
+          '画像2点（タイトルバナー・図解アイコン）',
+          'プロンプトライブラリ（成功/失敗/評価観点つき）'
+        ],
+        outcomes:['プロンプト集（再現手順つき）','テンプレ化した資料一式','簡易SOP'],
+        after:['社内向け資料・メール・要約を短時間で安定品質へ','「良い指示の型」をチーム共有し、再現性を確保'],
+        flow:['Day1：ルールと安全／良いプロンプトの型づくり','Day2：資料・メール・要約の時短体験','Day3：画像生成でスライド素材を作る','Day4：成功した指示をテンプレ化/共有']
+      },
+      middle: {
+        badge:'初級〜中級向け',
+        title:'MIDDLE｜AI×業務改善の入口（4–6週間）',
+        lead:'うまくいく型を「半自動」にして、数字で回す段階。テンプレとチェックリストを業務の入口に差し込み、GASで受付→返信→記録→レポートまで繋ぎます。A/Bで差戻し原因TOP3から潰して、可視化まで運用。',
+        skills:[
+          '業務テンプレ整備：議事録/FAQ/メールの型化と運用',
+          'GAS入門〜半自動：フォーム→シート→自動返信→レポート',
+          '評価と改善：A/B運用／品質・再現性・時間の指標で回す',
+          '可視化：簡易KPIダッシュボード（Sheets＋自動更新）'
+        ],
+        modules:[
+          'テンプレ設計：入力→処理→出力の分解とチェックリスト化',
+          'GASで受付〜返信〜記録の一連化（Webhook/トリガー）',
+          'A/B検証の設計（プロンプト/テンプレ比較・指標の定義）',
+          'KPIダッシュボード（差戻し率・再現性・1件時間）'
+        ],
+        hands:[
+          'フォーム受付→一次返信→シート記録→週次レポートの半自動化',
+          '議事録・FAQ・メールのテンプレ3本を整備',
+          '評価指標（品質/再現性/時間）の週次レポート提出'
+        ],
+        outcomes:['“勝手に回る”半自動フロー','テンプレ/チェックリスト一式','KPIダッシュボード'],
+        after:['小さな業務を安定運用し、指標で継続改善できる','属人化を削減し、再現性を確保'],
+        flow:['Week1：テンプレとチェックリスト整備','Week2：GASで受付→返信→記録を一連化','Week3：A/B運用で差戻しTOP3を潰す','Week4：ダッシュボードで可視化・定例化']
+      },
+      practical: {
+        badge:'実践〜先進向け',
+        title:'PRACTICAL｜疑似案件で本格運用へ（6–8週間）',
+        lead:'評価・検証〜運用設計まで踏み込み、“誰がやっても同じ品質”へ。要件定義→設計→実装→納品一式まで通し、RAGのPoCも含めて運用の仕組み化を実践します。',
+        skills:[
+          '要件定義ロールプレイ：クライアント役のGPTにヒアリング',
+          '設計〜実装：データ流・権限・失敗時ハンドリング・SLA/SLO',
+          'RAG/エージェント：FAQで正答率ベンチ→改善→人へエスカレーション',
+          '運用：ログ・エラー通知・変更管理・監査可能な記録'
+        ],
+        modules:[
+          '要件定義（1ページ設計書）：目的/入力/出力/判断基準/例外/権限',
+          '実装（GAS/外部API連携）と失敗時ハンドリング',
+          'RAG PoC：1テーマで評価セット作成→正答率ベンチ',
+          '納品一式：設計書／コード／SOP／成果レポート／デモ台本'
+        ],
+        hands:[
+          '設計書ドラフト作成（データフロー/例外処理/権限）',
+          'GASコード＋SOP＋成果レポートの納品一式',
+          '3分デモ用の説明台本（または動画リンク）'
+        ],
+        outcomes:['提案〜納品まで自走できるミニ案件レベルの実力','RAG評価セットとベースラインの構築','監査可能な運用ドキュメント'],
+        after:['SLA合意・インシデント運用・変更管理を含む実務運用が可能','成功パターンをガイド化し、多部署へ横展開'],
+        flow:['Week1：要件定義＆1ページ設計書','Week2：実装と失敗時ハンドリング','Week3：RAG PoC・正答率ベンチ','Week4：納品一式・デモ・ふりかえり']
+      }
+    };
+
+    const course = COURSES[courseKey] || COURSES.entry;
+
+    // DOM 反映
+    const $ = (id) => document.getElementById(id);
+    const fill = (id, arr) => { const el=$(id); if(el) el.innerHTML = (arr||[]).map(t=>`<li>${t}</li>`).join(''); };
+
+    $('badge').textContent = course.badge;
+    $('course-title').textContent = course.title;
+    $('score-out').textContent = score;
+    $('level-out').textContent = level;
+    $('lead').textContent = course.lead;
+
+    fill('skills',   course.skills);
+    fill('modules',  course.modules);
+    fill('hands',    course.hands);
+    fill('outcomes', course.outcomes);
+    fill('after',    course.after);
+    fill('flow-list',course.flow);
+
+    // 戻るボタンは診断クエリを保持
+    const keep = new URLSearchParams();
+    if (score !== '—') keep.set('score', score);
+    if (level !== '—') keep.set('level', level);
+    if (lv) keep.set('lv', lv);
+    const back = document.getElementById('btn-back');
+    if (back) back.href = 'exo_courses.html' + (keep.toString()?('?'+keep.toString()):'');
+
+    // 申込ボタンは #contact へ
+    const apply = document.getElementById('btn-apply');
+    if (apply) apply.addEventListener('click',(e)=>{ e.preventDefault(); document.getElementById('contact').scrollIntoView({behavior:'smooth'}); });
+
+  } catch(err){
+    console.error('course detail init error:', err);
+  }
+});
+</script>
+
 <body>
   <main class="wrap">
     <!-- ヘッダー -->
