@@ -119,6 +119,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // 同じ文言のヒントが複数ある場合、#hint-detail 以外を削除
+  const dup = Array.from(document.querySelectorAll('.hint'))
+    .filter(el => el.textContent.trim() === 'メール未登録の場合、結果メール送信と詳細表示はスキップされます。'
+               && el.id !== 'hint-detail');
+  dup.forEach(el => el.remove());
+});
+</script>
 
 <body>
   <header>
@@ -193,7 +202,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <a class="btn ghost" href="#" id="btn-consult">個別相談を予約</a>
       </div>
 
-      <div class="hint" style="margin-top:10px;">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</div>
+      <div id="hint-detail" class="hint" style="margin-top:10px;">
+  メール未登録の場合、結果メール送信と詳細表示はスキップされます。
+</div>
+
     </section>
   </main>
 
