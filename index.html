@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <!-- GA4 / EVH Site -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){ dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, debug_mode: true });
-</script>
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>AI偏差値診断｜メール登録→診断→結果メール</title>
+
+  <!-- GA4 (一箇所に集約／重複削除) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QFQZF4F1QW', {
+      send_page_view: true,
+      transport_type: 'beacon',
+      debug_mode: true
+    });
+  </script>
+
   <style>
     :root { --brand:#7356b6; --ink:#222; --card:#fff; --bg:#f5f3ff; --muted:#666; }
     *{ box-sizing:border-box; }
@@ -44,25 +49,6 @@
     .hint{ font-size:12px; color:#777; }
   </style>
 </head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  // 既定で page_view が送られます
-  gtag('config', 'G-QFQZF4F1QW', { transport_type: 'beacon' });
-</script>
-<!-- GA4 クリック計測（Hub遷移）-->
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    // ExoVisionary Hubを見る（外部の exo_lp.html へ）
-    const hubLink = document.querySelector('a[href="https://goro56project.github.io/ai_diagnosis/exo_lp.html"]');
-    hubLink?.addEventListener('click', () => {
-      if (window.gtag) gtag('event', 'open_hub');
-    });
-  });
-</script>
 
 <body>
   <header>
@@ -118,8 +104,8 @@
       <ul id="result-bullets" class="bullets"></ul>
 
       <div class="row" style="margin-top:14px;">
-        <!-- ★ このリンクを“クリック送信”に変更（id=lp-link を必ず付与） -->
-        <a id="lp-link" class="btn primary" href="./exo_lp.html">ExoVisionary Hubを見る</a>
+        <!-- ★ 修正：LPへのリンクを同一リポの exo_lp.html に固定。計測はJSで送信 -->
+        <a id="lp-link" class="btn primary" href="./exo_lp.html#courses">ExoVisionary Hubを見る</a>
         <a class="btn ghost" href="#" id="btn-consult">個別相談を予約</a>
       </div>
 
@@ -131,7 +117,7 @@
   <script>
   /*** 設定 ***/
   const GAS_URL = "https://script.google.com/macros/s/AKfycbwg9IuBV3PKyfkepUdoRYI0J5wbQtX8NLU11BJl-UScoQSr9LRTNqnnofnX_6KDlvH0_w/exec"; // 変更可
-  const LP_PATH = "./exo_lp.html"; // LPファイル（同一リポ内）
+  const LP_PATH = "./exo_lp.html"; // LPファイル（同一フォルダ）
 
   /*** 状態 ***/
   const state = {
@@ -241,7 +227,7 @@
     }catch(_){ /* 失敗してもUIは継続 */ }
   }
 
-  /*** クリックでLPへ安全に値を渡す（この回答のポイント） ***/
+  /*** LP遷移：クエリ引き継ぎ＋計測（open_hub） ***/
   (function initClickSend(){
     const link = document.getElementById("lp-link");
     if(!link) return;
@@ -257,20 +243,29 @@
       state.lvKey      = lv.key;
       renderResult(); // 表示も更新
 
+      // GA4 計測
+      if (typeof gtag === "function") {
+        gtag('event', 'open_hub', {
+          event_category: 'Navigation',
+          event_label: 'to_exo_lp'
+        });
+      }
+
       // URLにクエリで付与
       const url = new URL(LP_PATH, location.href);
       url.searchParams.set("score", String(state.score));
       url.searchParams.set("level", state.levelLabel);
       url.searchParams.set("lv",    state.lvKey);
-      if (!url.hash) url.hash = "#flow";
+      // デフォルトはコースへ
+      url.hash = "#courses";
 
       // バックアップ（同一ブラウザなら読める）
       localStorage.setItem("ai_diag_payload",
         JSON.stringify({ score:state.score, levelLabel:state.levelLabel, lvKey:state.lvKey, ts:Date.now() })
       );
 
-      // 遷移
-      location.href = url.toString();
+      // 送信時間をわずかに確保してから遷移
+      setTimeout(()=>{ location.href = url.toString(); }, 120);
     });
   })();
 
@@ -309,64 +304,68 @@
     alert("個別相談の導線を設定してください（Calendly/フォーム等のURL）");
   });
   </script>
+
+  <!-- CTA 計測（既存のidがあれば拾う） -->
   <script>
-window.addEventListener('DOMContentLoaded', () => {
-  // ① 無料説明会に申込（id="cta-apply" のリンク/ボタン）
-  const btnApply = document.getElementById('cta-apply');
-  if (btnApply) {
-    btnApply.addEventListener('click', function (e) {
-      const url = this.href;
-      // カスタムイベント送信
-      gtag('event', 'qualify_lead', {
-        event_category: 'CTA',
-        event_label: '無料説明会に申込',
-        value: 1
+  window.addEventListener('DOMContentLoaded', () => {
+    // ① 無料説明会に申込（id="cta-apply"）
+    const btnApply = document.getElementById('cta-apply');
+    if (btnApply) {
+      btnApply.addEventListener('click', function (e) {
+        const url = this.href;
+        if (typeof gtag === "function") {
+          gtag('event', 'qualify_lead', {
+            event_category: 'CTA',
+            event_label: '無料説明会に申込',
+            value: 1
+          });
+        }
+        if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
+          e.preventDefault();
+          setTimeout(() => { location.href = url; }, 250);
+        }
       });
-      // 送信時間を確保してから遷移（新規タブ/⌘クリックはそのまま）
-      if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
-        e.preventDefault();
-        setTimeout(() => { location.href = url; }, 250);
-      }
-    });
-  }
+    }
 
-  // ② 個別相談を予約（id="cta-1on1"）
-  const btn1on1 = document.getElementById('cta-1on1');
-  if (btn1on1) {
-    btn1on1.addEventListener('click', function (e) {
-      const url = this.href;
-      gtag('event', 'close_convert_lead', {
-        event_category: 'CTA',
-        event_label: '個別相談を予約',
-        value: 1
+    // ② 個別相談を予約（id="cta-1on1"）
+    const btn1on1 = document.getElementById('cta-1on1');
+    if (btn1on1) {
+      btn1on1.addEventListener('click', function (e) {
+        const url = this.href;
+        if (typeof gtag === "function") {
+          gtag('event', 'close_convert_lead', {
+            event_category: 'CTA',
+            event_label: '個別相談を予約',
+            value: 1
+          });
+        }
+        if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
+          e.preventDefault();
+          setTimeout(() => { location.href = url; }, 250);
+        }
       });
-      if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
-        e.preventDefault();
-        setTimeout(() => { location.href = url; }, 250);
-      }
-    });
-  }
+    }
 
-  // ③ 将来用：購入（id="cta-purchase" があれば）
-  const btnPurchase = document.getElementById('cta-purchase');
-  if (btnPurchase) {
-    btnPurchase.addEventListener('click', function (e) {
-      const url = this.href;
-      gtag('event', 'purchase', {
-        currency: 'JPY',
-        value: 0,               // 実額があるなら差し替え
-        event_category: 'CTA',
-        event_label: '購入/決済'
+    // ③ 将来用：購入（id="cta-purchase"）
+    const btnPurchase = document.getElementById('cta-purchase');
+    if (btnPurchase) {
+      btnPurchase.addEventListener('click', function (e) {
+        const url = this.href;
+        if (typeof gtag === "function") {
+          gtag('event', 'purchase', {
+            currency: 'JPY',
+            value: 0,
+            event_category: 'CTA',
+            event_label: '購入/決済'
+          });
+        }
+        if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
+          e.preventDefault();
+          setTimeout(() => { location.href = url; }, 250);
+        }
       });
-      if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
-        e.preventDefault();
-        setTimeout(() => { location.href = url; }, 250);
-      }
-    });
-  }
-});
-</script>
-
+    }
+  });
+  </script>
 </body>
 </html>
-
