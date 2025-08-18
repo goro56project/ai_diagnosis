@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>おすすめコース｜ExoVisionary Hub</title>
+
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type: 'beacon' });
+  </script>
+
+  <style>
+    :root{ --brand:#7356b6; --ink:#111827; --muted:#475569; --card:#fff; --line:#e5e7eb; --bg:#f7f6ff; }
+    *{ box-sizing:border-box }
+    body{ margin:0; color:var(--ink); background:var(--bg); font-family:system-ui,-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",Meiryo,Segoe UI,Arial,sans-serif }
+    a{ color:inherit }
+    header{ background:#fff; border-bottom:1px solid var(--line) }
+    header .wrap{ max-width:1100px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; gap:10px; justify-content:space-between }
+    header .brand{ font-weight:800; letter-spacing:.02em }
+    header .back{ text-decoration:none; border:1px solid var(--line); padding:8px 12px; border-radius:10px; color:#334155; background:#fff }
+    main{ max-width:1100px; margin:0 auto; padding:24px 16px 80px }
+
+    /* Hero */
+    .hero{ background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 20px rgba(0,0,0,.06); padding:22px; margin:14px 0 24px }
+    .hero h1{ margin:0 0 8px; font-size:clamp(22px, 3.4vw, 28px) }
+    .score-row{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:8px 0 6px }
+    .score-badge{ font-size:clamp(46px, 6vw, 64px); font-weight:900; color:var(--brand); letter-spacing:.01em }
+    .score-label{ display:inline-block; background:#eef2ff; color:#3730a3; border-radius:999px; padding:.35em .8em; font-weight:700 }
+    .hero p{ color:var(--muted); margin:4px 0 10px; line-height:1.7 }
+    .hero .btnrow{ display:flex; gap:10px; flex-wrap:wrap }
+    .btn{ display:inline-block; border:1px solid #111827; padding:10px 14px; border-radius:999px; text-decoration:none; }
+    .btn.primary{ background:#111827; color:#fff }
+    .btn.ghost{ background:#fff; color:#111827 }
+
+    /* Courses */
+    .row{ display:flex; flex-wrap:wrap; gap:24px; margin:6px 0 24px }
+    .card{ flex:1 1 320px; background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:20px }
+    .badge{ display:inline-block; background:#eef6ff; color:#2563eb; border-radius:999px; padding:4px 10px; font-size:.85rem; margin:0 0 6px }
+    .card h3{ font-size:1.2rem; margin:6px 0 10px; line-height:1.45 }
+    .bullets{ list-style:none; margin:0; padding:0 }
+    .bullets li{ line-height:1.6; margin:8px 0 }
+    .bullets li::before{ content:"✓"; margin-right:8px }
+    .note{ background:#f8fafc; border:1px dashed #e2e8f0; border-radius:12px; padding:10px 12px; margin:12px 0 0; color:#0f172a }
+    .btnrow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px }
+    .__hl{ outline:3px solid var(--brand); box-shadow:0 10px 26px rgba(115,86,182,.25) }
+
+    /* Compare */
+    .compare{ background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px; margin:10px 0 26px }
+    .compare h3{ margin:4px 0 10px; font-size:1.1rem }
+    table{ width:100%; border-collapse:collapse; font-size:.95rem }
+    th,td{ border:1px solid #e5e7eb; padding:10px 8px; text-align:left }
+    th{ background:#f8fafc }
+    td.c{ text-align:center }
+
+    /* Footer CTA */
+    .cta{ text-align:center; margin-top:26px }
+    .cta .btn{ padding:12px 18px; font-weight:700 }
+
+    @media (max-width:720px){
+      .score-badge{ font-size:48px }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand">ExoVisionary Hub</div>
+      <a id="back-detail" class="back" href="./exo_lp.html#diag-detail">診断結果の詳細に戻る</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero / Personal recommendation -->
+    <section class="hero" id="hero">
+      <h1>あなたへのおすすめコース</h1>
+      <div class="score-row">
+        <div class="score-badge" id="hero-score">--</div>
+        <div class="score-label" id="hero-level">--</div>
+      </div>
+      <p id="hero-lead">
+        診断結果に基づき、いま最短で成果につながる学習ルートをご用意しました。下のコースは、
+        <b id="hero-reco">—</b> を中心に組んでいます。
+      </p>
+      <div class="btnrow">
+        <a id="hero-apply" class="btn primary" href="#contact">このコースで申し込む</a>
+        <a class="btn ghost" href="#course-list">コース一覧を見る</a>
+      </div>
+    </section>
+
+    <!-- Courses -->
+    <section id="course-list">
+      <h2 style="margin:0 0 10px;font-size:1.5rem;">コース一覧</h2>
+      <p style="color:var(--muted);margin:0 0 12px;">3つのステップで、AI基礎 → 半自動化 → 本格運用までを滑らかに接続します。</p>
+
+      <div class="row">
+        <!-- ENTRY -->
+        <article class="card" id="card-entry" data-key="entry">
+          <p class="badge">入門〜初級向け</p>
+          <h3>ENTRY：AI基礎＆日常業務の成功体験（2–3週間）</h3>
+          <ul class="bullets">
+            <li><b>AIリテラシー入門：</b>安全な使い方／情報の扱い／NGケース</li>
+            <li><b>ChatGPT基礎：</b>目的→制約→出力形式→評価の型</li>
+            <li><b>日常業務に適用：</b>プレゼン下書き・要約・メール文案</li>
+            <li><b>デザイン支援：</b>画像生成でバナーやスライド素材を作成</li>
+            <li><b>改善ループ：</b>提出→GPTレビュー→再提出で上達</li>
+          </ul>
+          <p class="note">成果：<b>「AIで資料とデザインが作れた」</b>という成功体験／基礎の自信がつく</p>
+          <div class="btnrow">
+            <a class="btn primary" id="apply-entry" href="#contact">このコースで申し込む</a>
+            <a class="btn" href="#flow">学習の流れ</a>
+          </div>
+        </article>
+
+        <!-- MIDDLE -->
+        <article class="card" id="card-middle" data-key="middle">
+          <p class="badge">初級〜中級向け</p>
+          <h3>MIDDLE：AI×業務改善の入口（4–6週間）</h3>
+          <ul class="bullets">
+            <li><b>業務テンプレ整備：</b>議事録・FAQ・メールの型化と運用</li>
+            <li><b>GAS入門〜半自動：</b>フォーム→シート→自動返信→レポート</li>
+            <li><b>評価・改善：</b>A/B運用／品質・再現性・時間の指標で回す</li>
+            <li><b>可視化：</b>簡易KPIダッシュボード（Sheets＋自動更新）</li>
+          </ul>
+          <p class="note">成果：小さな業務が <b>“勝手に回る” 半自動フロー</b> を構築</p>
+          <div class="btnrow">
+            <a class="btn primary" id="apply-middle" href="#contact">このコースで申し込む</a>
+            <a class="btn" href="#flow">学習の流れ</a>
+          </div>
+        </article>
+
+        <!-- PRACTICAL -->
+        <article class="card" id="card-practical" data-key="practical">
+          <p class="badge">実践〜先進向け</p>
+          <h3>PRACTICAL：疑似案件で本格運用へ（6–8週間）</h3>
+          <ul class="bullets">
+            <li><b>要件定義ロールプレイ：</b>GPTがクライアント役でヒアリング演習</li>
+            <li><b>設計〜実装：</b>データ流・権限・失敗時ハンドリング・SLA</li>
+            <li><b>納品一式：</b>設計書／GASコード／SOP／成果レポート／デモ台本</li>
+          </ul>
+          <p class="note">成果：<b>提案〜納品まで自走</b>できるミニ案件レベルの実力</p>
+          <div class="btnrow">
+            <a class="btn primary" id="apply-practical" href="#contact">このコースで申し込む</a>
+            <a class="btn" href="#flow">学習の流れ</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Compare -->
+    <section class="compare">
+      <h3>コース比較（ざっくり早見表）</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>ENTRY</th>
+            <th>MIDDLE</th>
+            <th>PRACTICAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>期間の目安</td><td class="c">2–3週</td><td class="c">4–6週</td><td class="c">6–8週</td></tr>
+          <tr><td>主な目的</td><td>基礎＋成功体験</td><td>半自動化の構築</td><td>本格運用の設計〜実装</td></tr>
+          <tr><td>成果物</td><td>資料/画像/プロンプト一式</td><td>テンプレ群・GAS小プロジェクト</td><td>設計書・GASコード・SOP・レポート</td></tr>
+          <tr><td>想定レベル</td><td>入門〜初級</td><td>初級〜中級</td><td>実践〜先進</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="cta">
+      <a id="cta-main-apply" class="btn primary" href="#contact">無料説明会に申込</a>
+    </div>
+  </main>
+
+  <script>
+    // --- Query handling ---
+    const sp = new URLSearchParams(location.search);
+    const score = Number(sp.get('score'));
+    const levelLabel = sp.get('level') || '';
+    const lvKeyRaw = sp.get('lv') || '';
+    const lv = (lvKeyRaw || '').toLowerCase();
+
+    const fallbackKey = !isNaN(score) ? (score>=70?'practical': score>=55?'practical': score>=40?'middle':'entry') : 'entry';
+    const key = lv || fallbackKey;
+
+    // Hero
+    document.getElementById('hero-score').textContent = isNaN(score) ? '--' : String(score);
+    document.getElementById('hero-level').textContent = levelLabel || (key==='entry'?'入門層': key==='middle'?'初級〜中級':'実践層');
+
+    const RECO_NAME = { entry:'ENTRY（AI基礎）', middle:'MIDDLE（AI×業務改善）', practical:'PRACTICAL（本格運用）' };
+    document.getElementById('hero-reco').textContent = RECO_NAME[key] || 'この順番';
+
+    // Lead text by level
+    const LEADS = {
+      entry: 'まずは安全な使い方とプロンプトの型を身につけ、短期で成功体験を作るのが最短です。資料作成・要約・デザイン作成の「使える実感」を出しましょう。',
+      middle: 'テンプレ整備とGASの半自動化で、同じ作業を繰り返さない仕組みに。品質/再現性/時間の指標を見ながら改善を回す運用に入ります。',
+      practical: '要件定義→設計→実装→運用までを一本の線でつなぎ、本番で耐える仕組みに。小規模案件を自走できるドキュメント/コード/運用体制を整えます。'
+    };
+    document.getElementById('hero-lead').insertAdjacentText('beforeend','');
+
+    // Highlight recommended card & wire CTA
+    const cardId = 'card-' + key;
+    const card = document.getElementById(cardId);
+    if (card){ card.classList.add('__hl'); card.scrollIntoView({behavior:'smooth', block:'start'}); }
+
+    // Back link keeps query
+    const back = document.getElementById('back-detail');
+    back.href = './exo_lp.html?' + sp.toString() + '#diag-detail';
+
+    // Top apply -> point to the recommended course
+    const heroApply = document.getElementById('hero-apply');
+    heroApply.addEventListener('click', () => {
+      gtag && gtag('event','course_apply_click',{event_category:'CTA',event_label:key});
+    });
+
+    // Per-course apply tracking
+    [['apply-entry','entry'],['apply-middle','middle'],['apply-practical','practical'],['cta-main-apply','global']].forEach(([id,label])=>{
+      const el = document.getElementById(id);
+      if(el){
+        el.addEventListener('click', ()=>{
+          gtag && gtag('event','course_apply_click',{event_category:'CTA',event_label:label});
+        });
+      }
+    });
+
+    // Insert level-specific hero lead after DOM is ready
+    window.addEventListener('DOMContentLoaded', ()=>{
+      const p = document.getElementById('hero-lead');
+      p.textContent = LEADS[key];
+    });
+  </script>
+</body>
+</html>
