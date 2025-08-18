@@ -1,92 +1,236 @@
-<!-- ▼▼ 診断結果の詳細（クエリがある時だけ表示） ▼▼ -->
+<!-- ▼▼ 診断結果の詳細（URLまたはlocalStorageにデータがある時だけ表示） ▼▼ -->
 <section id="diag-detail" style="display:none;">
   <style>
     #diag-detail .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
     #diag-detail .card{background:#fff;border:1px solid #e9ecef;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:18px;margin:14px 0}
-    #diag-detail .kv{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-    #diag-detail .score{font-size:28px;font-weight:700;color:#7356b6}
-    #diag-detail .pill{display:inline-block;background:#eef2ff;color:#3730a3;border-radius:999px;padding:.25em .7em}
-    #diag-detail .note{color:#475569}
-    #diag-detail .go{display:inline-block;margin-top:8px;border:1px solid #111827;border-radius:999px;padding:8px 14px;text-decoration:none;background:#111827;color:#fff}
+    /* ヒーロー */
+    #diag-detail .kv{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
+    #diag-detail .score-label{font-weight:700;color:#475569}
+    #diag-detail .score{
+      font-size:clamp(64px,10vw,112px);
+      font-weight:900;line-height:1;letter-spacing:.02em;font-variant-numeric:tabular-nums;color:#5b46b0
+    }
+    #diag-detail .pill{display:inline-block;background:#eef2ff;color:#3730a3;border-radius:999px;padding:.3em .8em;font-size:1rem}
+    #diag-detail .lead{line-height:1.8;color:#334155}
+    /* 共通ボックス */
+    #diag-detail .kpi-box{background:#fafafa;border:1px dashed #ddd;border-radius:12px;padding:10px 12px;margin-top:8px}
+    #diag-detail .kpi-title{font-weight:700;margin-bottom:6px}
+    #diag-detail .bullets{margin:.4rem 0 0 1.2rem}
+    #diag-detail .steps{margin:.4rem 0 0 1.2rem}
+    /* ボタン */
+    #diag-detail .go{display:inline-block;margin-top:8px;border:1px solid #111827;border-radius:999px;padding:10px 16px;text-decoration:none;background:#111827;color:#fff}
+    /* コース強調 */
     #courses .card.__hl{outline:3px solid #7356b6;box-shadow:0 10px 26px rgba(115,86,182,.25)}
   </style>
+
   <div class="wrap">
     <div class="card">
+      <h2 style="margin:0 0 10px;">診断結果の詳細</h2>
       <div class="kv">
-        <h2 style="margin:0;">診断結果の詳細</h2>
+        <span class="score-label">AI偏差値</span>
         <div class="score" id="dd-score">--</div>
         <div class="pill"  id="dd-level">--</div>
       </div>
-      <p class="note" id="dd-lead" style="margin:.4rem 0;">読み込み中…</p>
-      <ul id="dd-points" style="margin:.2rem 0 0 1.2rem;"></ul>
-      <div style="margin-top:8px;">
-        <a href="#courses" class="go" id="dd-reco">おすすめコースを見る</a>
+      <div class="lead" id="dd-lead" style="margin:.6rem 0;">読み込み中…</div>
+    </div>
+
+    <!-- スコアの意味 -->
+    <div class="card">
+      <h3 style="margin:0 0 6px;">このスコアの意味</h3>
+      <p class="lead" style="margin:.4rem 0 0;">
+        <b>AI偏差値は、10項目の自己評価を100点換算した「現在地指標」</b>です。点数が高い＝万能ではなく、
+        <b>“測って回す力（運用力）の成熟度”</b>を見ています。自己評価はブレる前提なので、<b>同じ設問で月1回</b>の再計測をおすすめします。
+        改善は「数週でのトレンド」を見ましょう。
+      </p>
+    </div>
+
+    <!-- 測りかた（共通） -->
+    <div class="card">
+      <h3 style="margin:0 0 6px;">業務効率の“測りかた”</h3>
+      <p class="lead" style="margin:.4rem 0 6px;">改善は <b>測る → 試す → 仕組みにする</b> が最短。まずは <b>時間／品質／再現性</b> の3軸に絞ります。</p>
+      <ul class="bullets">
+        <li><b>時間（工数）</b>：1件あたり時間／週あたり時間（例：一次返信 <b>6分→2分</b>）</li>
+        <li><b>品質</b>：差戻し率・レビュー指摘数・誤り率（例：差戻し率 <b>18%→7%</b>）</li>
+        <li><b>再現性</b>：テンプレ適用率・自動化比率（例：適用率 <b>40%→90%</b>）</li>
+      </ul>
+      <div class="kpi-box">
+        <div class="kpi-title">KPI雛形（シート列例）</div>
+        <code>案件/担当 | 日付 | 件数 | 総時間[min] | 1件時間[min] | 差戻し率[%] | 誤り率[%] | テンプレ適用率[%] | 自動化比率[%] | メモ</code>
       </div>
+    </div>
+
+    <!-- レベル別アドバイス（出し分けで長め） -->
+    <div class="card" id="lv-adv">
+      <h3 style="margin:0 0 6px;">いまのレベル向けアドバイス</h3>
+      <div id="lv-adv-body"></div>
+    </div>
+
+    <!-- 7日プラン（共通だが本文は長めの行動指示） -->
+    <div class="card" id="plan7">
+      <h3 style="margin:0 0 6px;">次の7日プラン（まずはここから）</h3>
+      <ol class="steps" id="plan7-list"></ol>
+    </div>
+
+    <div style="text-align:center;margin-top:8px;">
+      <a href="#courses" class="go" id="dd-reco">おすすめコースを見る</a>
     </div>
   </div>
 </section>
 
 <script>
 (function(){
-  // 受け取り
-  const p = new URLSearchParams(location.search);
-  const score = Number(p.get('score'));
-  const level = p.get('level') || '';
-  const lvKey = (p.get('lv') || '').toLowerCase();
+  // ---- 取得：URL or localStorage ----
+  const url = new URL(location.href);
+  const qScore = Number(url.searchParams.get('score'));
+  const qLv    = (url.searchParams.get('lv') || '').toLowerCase();
+  const qLevelLabel = url.searchParams.get('level') || '';
 
-  // どれかあれば表示
-  if (!isNaN(score) || level || lvKey) {
-    const sec = document.getElementById('diag-detail');
-    sec.style.display = 'block';
+  let stored = {};
+  try { stored = JSON.parse(localStorage.getItem('ai_diag_payload')||'{}'); } catch(_){}
 
-    // 文面
-    const LEADS = {
-      entry:"まずは安全な使い方と“良いプロンプトの型”を身につけ、短期で成果を出す土台を作りましょう。",
-      middle:"品質と効率を同時に上げるため、テンプレ整備と半自動化、指標による改善運用を回していきます。",
-      practical:"要件定義〜設計〜運用まで仕組み化し、再現性のある実務レベルを目指します。"
-    };
-    const POINTS = {
-      entry:["基本リテラシーと安全ルール","プロンプトの型づくり","まずは小さく成功体験を積む"],
-      middle:["テンプレ整備と自動化の入口","A/B検証とKPI運用","小さな業務を“勝手に回す”"],
-      practical:["要件整理と設計書の整備","SLA/ガバナンスの設計","RAG/エージェントの展開"]
-    };
+  const score = Number.isFinite(qScore) && qScore>0 ? qScore : (stored.score ?? null);
+  const lvKeyFromQ = qLv || (stored.lvKey || '');
+  function keyFromScore(s){ if (s>=70) return 'advanced'; if (s>=55) return 'practical'; if (s>=40) return 'middle'; return 'entry'; }
+  const lvKey = lvKeyFromQ || (Number.isFinite(score) ? keyFromScore(score) : '');
 
-    const ddScore = document.getElementById('dd-score');
-    const ddLevel = document.getElementById('dd-level');
-    const ddLead  = document.getElementById('dd-lead');
-    const ddPts   = document.getElementById('dd-points');
+  // 表示条件：score or lvKey or levelLabel があれば表示
+  if (!(Number.isFinite(score) || lvKey || qLevelLabel)) return;
+  const sec = document.getElementById('diag-detail');
+  sec.style.display = 'block';
 
-    if (!isNaN(score)) ddScore.textContent = String(score);
-    ddLevel.textContent = level || (lvKey==='entry'?'入門層': lvKey==='middle'?'初級〜中級':'実践層');
-    const key = lvKey || (score>=70?'practical': score>=55?'practical': score>=40?'middle':'entry');
+  // ---- DOM参照 ----
+  const ddScore = document.getElementById('dd-score');
+  const ddLevel = document.getElementById('dd-level');
+  const ddLead  = document.getElementById('dd-lead');
+  const advBody = document.getElementById('lv-adv-body');
+  const planOL  = document.getElementById('plan7-list');
 
-    ddLead.textContent = LEADS[key];
-    ddPts.innerHTML = (POINTS[key]||[]).map(t=>`<li>${t}</li>`).join('');
+  // ---- ラベル定義 ----
+  const LV_LABEL = { entry:'入門層', middle:'初級〜中級', practical:'実践層', advanced:'先進層' };
+  const levelLabel = qLevelLabel || LV_LABEL[lvKey] || '—';
 
-    // おすすめカードをハイライト
-    const cards = document.querySelectorAll('#courses .row .card');
-    const mapIndex = { entry:0, middle:1, practical:2 };
-    const idx = mapIndex[key];
+  // ---- レベル別 長めコメント & 要点 ----
+  const CONTENT = {
+    entry: {
+      lead: `
+        <p><b>まずは「怖さ」をなくして、毎日触れるタスクで小さな成功体験を積むフェーズ。</b><br>
+        ChatGPTで資料のたたき台やメール草案を<b>毎日1本</b>作り、<b>1件あたり時間の短縮</b>と<b>差戻し率の低下</b>を数字で確認しましょう。
+        いきなり完璧を狙わず、<b>完成サンプル／失敗例／チェックリスト</b>を用意して“良い状態の再現”に集中。
+        画像生成やスライド素材作りも<b>定型化</b>すれば、迷いが減って成果が安定します。</p>
+      `,
+      adviceHTML: `
+        <ul class="bullets">
+          <li>禁止事項とデータの扱い（社外秘の境界／公開データの使い分け）を先に確認</li>
+          <li>「目的→制約→入出力→評価観点」で<b>プロンプト雛形を3本</b>作る</li>
+          <li>毎日1タスクで<b>Before/After</b>を記録（6分→4分→2分…の推移）</li>
+        </ul>
+      `,
+      plan: [
+        'Day1：KPIシート作成＆現状値を記録（時間・品質・再現性の3軸のみ）',
+        'Day2：出力の完成サンプルと失敗例を用意（良し悪しの基準を固定）',
+        'Day3：プロンプトをテンプレ化（目的→制約→入出力→評価観点）',
+        'Day4：半自動（人→AI→人）で運用開始、失敗は必ずログへ',
+        'Day5：実行者・所要時間・エラーを記録、失敗時通知を導入',
+        'Day6：差戻し原因TOP3をA/Bで潰す（数字で意思決定）',
+        'Day7：Before/Afterを共有（時間・品質・再現性の3枚グラフ）'
+      ]
+    },
+    middle: {
+      lead: `
+        <p><b>うまくいく型を「半自動」にして、数字で回す段階。</b><br>
+        テンプレとチェックリストを<b>業務の入口に差し込む</b>だけで、バラツキが一気に減ります。
+        <b>GAS</b>で「フォーム→一次返信→シート記録→週次レポート」をつなぎ、<b>人⇔AIのバトン</b>を明確に。
+        A/Bでプロンプトやテンプレを比較し、<b>差戻し原因TOP3</b>から潰すとスピードが出ます。</p>
+      `,
+      adviceHTML: `
+        <ul class="bullets">
+          <li>議事録・FAQ・メールの<b>テンプレ整備</b>と差し込み運用</li>
+          <li><b>A/B検証</b>で差戻し率と時間を同時に改善</li>
+          <li><b>GAS自動化</b>：受付→返信→記録→レポートを一連で</li>
+        </ul>
+      `,
+      plan: [
+        'Week1：対象業務を1つ選び、テンプレ＋チェックリストを整備',
+        'Week2：GASで受付→返信→集計→週次レポート自動化',
+        'Week3：A/Bで差戻し減を達成、ダッシュボード定着',
+        'Week4：仕組みをもう1業務へ横展開'
+      ]
+    },
+    practical: {
+      lead: `
+        <p><b>評価・検証〜運用設計まで踏み込み、“誰がやっても同じ品質”へ。</b><br>
+        業務を「入力→処理→出力」に分解し、<b>1ページ設計書</b>に<b>完成サンプル／失敗例／再実行手順／権限</b>まで明記。
+        ログを残し、<b>エラー通知・変更履歴</b>を標準化すると<b>再現性が急上昇</b>します。
+        RAGはまず<b>1テーマ</b>に絞ってPoC、<b>正答率ベンチ</b>で改善を回します。</p>
+      `,
+      adviceHTML: `
+        <ul class="bullets">
+          <li><b>設計書</b>：目的／入力ソース／出力フォーマット／判断基準／例外／権限</li>
+          <li><b>ガバナンス</b>：応答時間・許容エラー率・ログ保存／通知・変更管理</li>
+          <li><b>RAG/エージェント</b>：FAQ50件で正答率ベンチ→失敗は人間へエスカレーション</li>
+        </ul>
+      `,
+      plan: [
+        'Week1：1ページ設計書を作成（完成サンプル／失敗例付き）',
+        'Week2：ログ保存＋アラート通知を導入（Sheets＋メール/Chat）',
+        'Week3：RAG小規模PoC（対象1テーマ／評価セット作成）',
+        'Week4：ダッシュボードでSLAの可視化・運用レビュー'
+      ]
+    },
+    advanced: {
+      lead: `
+        <p><b>本番運用の横展開と最適化。安全性・コスト・信頼性で差をつける段階。</b><br>
+        SLO/SLAを<b>数値で合意</b>し、インシデント対応は<b>通知→一次切り分け→MTTR短縮</b>を仕組みに。
+        <b>1出力単価</b>を可視化してモデル選定をA/B、ドキュメントは<b>監査可能なログ</b>で守ります。
+        成功パターンは<b>ガイド化→多部署へ横展開</b>。組織として“回る仕組み”を磨きます。</p>
+      `,
+      adviceHTML: `
+        <ul class="bullets">
+          <li><b>SLO/SLAの展開</b>とインシデント運用（MTTR短縮）</li>
+          <li><b>コスト最適化</b>：1出力単価の可視化・モデル選定A/B</li>
+          <li><b>横展開</b>：ナレッジ共有・レビュー定例・監査ログ</li>
+        </ul>
+      `,
+      plan: [
+        'Week1：SLO定義とインシデント運用（通知・MTTR）を明文化',
+        'Week2：1出力単価の可視化とモデル最適化A/B',
+        'Week3：横展開ガイド作成とレビュー会の定例化',
+        'Week4：自動化比率70%へ向けたボトルネック潰し'
+      ]
+    }
+  };
+
+  // ---- 画面反映 ----
+  if (Number.isFinite(score)) ddScore.textContent = String(score);
+  ddLevel.textContent = levelLabel || '—';
+
+  const c = CONTENT[lvKey] || CONTENT.entry;
+  ddLead.innerHTML = c.lead;
+  const plan = c.plan || [];
+  planOL.innerHTML = plan.map(item=>`<li>${item}</li>`).join('');
+
+  // ---- 計測（任意） ----
+  if (typeof gtag === 'function') {
+    gtag('event', 'detail_shown', { event_category:'Navigation', event_label: lvKey || 'unknown' });
+  }
+
+  // ---- 「おすすめコースを見る」クリックでスクロール＆ハイライト ----
+  document.getElementById('dd-reco').addEventListener('click', function(e){
+    e.preventDefault();
+    const mapIndex = { entry:0, middle:1, practical:2, advanced:2 }; // advancedはpracticalを強調
+    const cards = document.querySelectorAll('#courses .row .card, #courses [data-card]');
+    const idx = mapIndex[lvKey] ?? 0;
     if (cards[idx]) {
-      // スクロール
       document.getElementById('courses').scrollIntoView({ behavior:'smooth', block:'start' });
       cards[idx].classList.add('__hl');
       setTimeout(()=>cards[idx].classList.remove('__hl'), 5000);
+    } else {
+      location.hash = '#courses';
     }
-
-    // クリックで #courses へ
-    document.getElementById('dd-reco').addEventListener('click', function(){
-      document.getElementById('courses').scrollIntoView({ behavior:'smooth', block:'start' });
-    });
-
-    // 計測（任意）
-    if (typeof gtag === 'function') {
-      gtag('event', 'detail_shown', { event_category:'Navigation', event_label:key });
-    }
-  }
+  });
 })();
 </script>
-<!-- ▲▲ ここまで追加 ▲▲ -->
+<!-- ▲▲ ここまで：診断結果の詳細 ▲▲ -->
 
 <section id="courses">
   <div style="max-width:1100px;margin:0 auto;padding:0 16px;">
@@ -94,9 +238,9 @@
     <p style="color:#475569;margin-bottom:10px;">診断結果と現状レベルに合わせて、最短で成果につながるコースを提示します。</p>
 
     <!-- 3カラム行 -->
-    <div style="display:flex;flex-wrap:wrap;gap:24px;margin:16px 0 32px;">
+    <div class="row" style="display:flex;flex-wrap:wrap;gap:24px;margin:16px 0 32px;">
       <!-- ENTRY -->
-      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+      <div class="card" data-card style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
         <p style="display:inline-block;background:#eef6ff;color:#2563eb;border-radius:999px;padding:4px 10px;font-size:.85rem;margin:0 0 6px;">入門〜初級向け</p>
         <h3 style="font-size:1.2rem;line-height:1.4;margin:6px 0 12px;">ENTRY：AI基礎＆日常業務の成功体験（2–3週間）</h3>
         <ul style="list-style:none;margin:0;padding:0;">
@@ -116,7 +260,7 @@
       </div>
 
       <!-- MIDDLE -->
-      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+      <div class="card" data-card style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
         <p style="display:inline-block;background:#eef6ff;color:#2563eb;border-radius:999px;padding:4px 10px;font-size:.85rem;margin:0 0 6px;">初級〜中級向け</p>
         <h3 style="font-size:1.2rem;line-height:1.4;margin:6px 0 12px;">MIDDLE：AI×業務改善の入口（4–6週間）</h3>
         <ul style="list-style:none;margin:0;padding:0;">
@@ -135,7 +279,7 @@
       </div>
 
       <!-- PRACTICAL -->
-      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+      <div class="card" data-card style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
         <p style="display:inline-block;background:#eef6ff;color:#2563eb;border-radius:999px;padding:4px 10px;font-size:.85rem;margin:0 0 6px;">実践〜先進向け</p>
         <h3 style="font-size:1.2rem;line-height:1.4;margin:6px 0 12px;">PRACTICAL：疑似案件で本格運用へ（6–8週間）</h3>
         <ul style="list-style:none;margin:0;padding:0;">
@@ -155,7 +299,7 @@
 
     <!-- 課題例（1行カード×3） -->
     <div style="display:flex;flex-wrap:wrap;gap:24px;margin:16px 0 32px;">
-      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+      <div class="card" data-card style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
         <h4 style="font-size:1rem;margin:0 0 10px;color:#334155;">ENTRY 課題例</h4>
         <ul style="list-style:none;margin:0;padding:0;">
           <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>プレゼン下書き／要約／話者ノート作成</li>
@@ -163,7 +307,7 @@
           <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>プロンプトと改善履歴を提出（GPT自動レビュー）</li>
         </ul>
       </div>
-      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+      <div class="card" data-card style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
         <h4 style="font-size:1rem;margin:0 0 10px;color:#334155;">MIDDLE 課題例</h4>
         <ul style="list-style:none;margin:0;padding:0;">
           <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>フォーム受付→自動返信→集計→レポートの半自動化</li>
@@ -171,7 +315,7 @@
           <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>テンプレ3本（議事録・FAQ・メール）を整備</li>
         </ul>
       </div>
-      <div style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+      <div class="card" data-card style="flex:1 1 320px;background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
         <h4 style="font-size:1rem;margin:0 0 10px;color:#334155;">PRACTICAL 課題例</h4>
         <ul style="list-style:none;margin:0;padding:0;">
           <li style="margin:8px 0;line-height:1.6;"><span style="margin-right:8px;">•</span>要件定義書／データフロー／失敗時対応の設計書ドラフト</li>
@@ -182,7 +326,7 @@
     </div>
 
     <!-- 卒業・ロースター案内 -->
-    <div style="background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
+    <div class="card" data-card style="background:#fff;border:1px solid #e9ecef;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:20px;">
       <p style="background:#f8fafc;border:1px dashed #e2e8f0;border-radius:12px;padding:10px 12px;margin:0;color:#0f172a;">
         卒業判定はGPTが自動採点（80点以上で合格）。<br>
         合格者は <b>56projectロースター</b> への登録審査に進めます（拡販フェーズ案件での参画を想定）。
@@ -190,4 +334,3 @@
     </div>
   </div>
 </section>
-
