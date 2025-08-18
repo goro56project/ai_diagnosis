@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>コース詳細 | ExoVisionary Hub</title>
+  <style>
+    :root{ --ink:#0f172a; --muted:#475569; --line:#e5e7eb; --card:#fff; --brand:#111827; --accent:#7356b6; }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; color:var(--ink); background:#f7f7fb; }
+    header{ background:#fff; border-bottom:1px solid var(--line); }
+    header .wrap{ max-width:1100px; margin:0 auto; padding:16px; }
+    h1{ margin:6px 0; font-size:clamp(20px,3.6vw,28px); }
+    .lead{ color:var(--muted); margin:4px 0 0; }
+    main{ max-width:1100px; margin:0 auto; padding:16px; }
+    .card{ background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:20px; margin:14px 0; }
+    .tag{ display:inline-block; background:#eef2ff; color:#3730a3; border-radius:999px; padding:4px 10px; font-size:.85rem; }
+    h2{ font-size:1.2rem; margin:0 0 8px; }
+    h3{ font-size:1.05rem; margin:0 0 6px; }
+    ul{ margin:.2rem 0 .6rem 1.2rem; }
+    li{ line-height:1.7; margin:.2rem 0; }
+    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+    .btn{ display:inline-block; border-radius:999px; padding:10px 16px; text-decoration:none; font-weight:600; }
+    .btn.primary{ background:var(--brand); color:#fff; border:1px solid var(--brand); }
+    .btn.ghost{ background:#fff; color:var(--ink); border:1px solid #cbd5e1; }
+    .price{ font-weight:800; color:#16a34a; margin-left:6px; }
+    .note{ color:var(--muted); }
+    .pill{ display:inline-block; background:#eee; border-radius:999px; padding:.2em .6em; font-size:.9rem; }
+    .kpi{ background:#f8fafc; border:1px dashed #e2e8f0; border-radius:12px; padding:10px 12px; }
+    footer{ color:#64748b; font-size:12px; text-align:center; padding:24px 16px; }
+    .warn{ color:#b45309; background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; border-radius:10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <span class="tag" id="tag-level">入門〜初級向け</span>
+      <h1 id="title">ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）</h1>
+      <p class="lead" id="subtitle">診断スコア：<span id="score">—</span>／レベル：<span id="level">—</span></p>
+      <div class="cta-row">
+        <a class="btn primary" href="#contact" id="cta-top">この内容で申し込む <span class="price">¥980</span></a>
+        <a class="btn ghost" href="#flow">学習の流れ</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ENTRY 詳細（あなたの原文を忠実に掲載） -->
+    <section class="card" id="entry-detail">
+      <h2>対象</h2>
+      <p class="note">AI初心者／40–50代のビジネス層。まずは資料作成・メール・デザイン補助で成果を出したい方向け。</p>
+
+      <h2>目標</h2>
+      <p>「安全に使える」「良い指示が出せる」「小さく成果を出せる」を最短で獲得。</p>
+
+      <h2>学べること（コアスキル）</h2>
+      <ul>
+        <li><b>AIリテラシー：</b>情報の扱い、社外秘/公開、NGケース、ガバナンスの基本</li>
+        <li><b>ChatGPT基礎：</b>モデル・モード、要約/言い換え/トーン調整、校正・添削</li>
+        <li><b>プロンプト設計：</b>目的→制約→入出力→評価観点、Few-shot、ステップ分解</li>
+        <li><b>スライド・デザイン補助：</b>図解プロンプトの作り方、画像生成の基礎（バナー/挿絵）</li>
+        <li><b>成果の“型化”：</b>うまくいった指示をテンプレ化し、誰でも再現できるようにする</li>
+      </ul>
+
+      <h2>モジュール（例）</h2>
+      <ul>
+        <li>安全・ルール・型（60分）／プロンプト雛形を3本作る</li>
+        <li>資料×メール×要約（90分）／スライドの骨子→章立て→本文→要約</li>
+        <li>画像生成の基礎（60分）／バナー2案→比較→リライト</li>
+        <li>ミニ改善の回し方（60分）／Before/Afterと評価観点の言語化</li>
+      </ul>
+
+      <h2>ハンズオン / 課題</h2>
+      <ul>
+        <li>「10枚スライドの叩き台」＋「議事メモ→要約→アクション抽出」＋「社内案内メール」</li>
+        <li>画像2点（タイトルバナー・図解アイコン）</li>
+        <li>プロンプトライブラリ（成功例/失敗例/評価観点を添付）</li>
+      </ul>
+
+      <h2>成果物</h2>
+      <ul>
+        <li>プロンプト集（再現手順付き）</li>
+        <li>テンプレ化した資料一式</li>
+        <li>簡易SOP</li>
+      </ul>
+
+      <h2>受講後にできること</h2>
+      <ul>
+        <li>社内向け資料・メール・要約を安定した品質で短時間に作成</li>
+        <li>「良い指示の型」をチームで共有し、再現性を確保</li>
+      </ul>
+
+      <div class="cta-row">
+        <a class="btn primary" href="#contact">この内容で申し込む <span class="price">¥980</span></a>
+        <a class="btn ghost" href="exo_courses.html">コース一覧に戻る</a>
+      </div>
+    </section>
+
+    <!-- 中級/実践は準備中の簡易プレースホルダ（後で埋めます） -->
+    <section class="card" id="middle-detail" style="display:none;">
+      <span class="pill">準備中</span>
+      <h2>MIDDLE｜AI×業務改善の入口（4–6週間）</h2>
+      <p class="note">ENTRYの学びを土台に、テンプレ整備・GAS半自動化・A/B運用・KPI可視化へ。詳細は追って公開します。</p>
+      <div class="cta-row"><a class="btn ghost" href="exo_courses.html">コース一覧に戻る</a></div>
+    </section>
+
+    <section class="card" id="practical-detail" style="display:none;">
+      <span class="pill">準備中</span>
+      <h2>PRACTICAL｜疑似案件で本格運用へ（6–8週間）</h2>
+      <p class="note">要件定義〜設計〜実装〜納品一式まで通しで実施。RAGのPoCも含めて運用の仕組み化へ。詳細は追って公開します。</p>
+      <div class="cta-row"><a class="btn ghost" href="exo_courses.html">コース一覧に戻る</a></div>
+    </section>
+
+    <!-- 学習の流れ（簡易） -->
+    <section class="card" id="flow">
+      <h2>学習の流れ（ENTRY 例）</h2>
+      <ul>
+        <li>Day1：ルールと安全／良いプロンプトの型づくり</li>
+        <li>Day2：資料・メール・要約の時短体験</li>
+        <li>Day3：画像生成でスライド素材を作る</li>
+        <li>Day4：成功した指示をテンプレ化／共有</li>
+      </ul>
+    </section>
+
+    <!-- 申込導線（必要に応じて Stripe / フォームに差し替え） -->
+    <section class="card" id="contact">
+      <h2>お申し込み / お問い合わせ</h2>
+      <p class="warn">※ 決済・フォーム未設定です。ここに Stripe の支払いリンクや Googleフォーム / Typeform を設置してください。</p>
+      <ul>
+        <li>推奨：Stripe 支払いリンク（¥980, 商品名：ENTRYコース）</li>
+        <li>フォーム：氏名・メール・希望開始時期・請求書要否</li>
+      </ul>
+      <div class="cta-row">
+        <a class="btn primary" href="#">Stripe決済リンク（仮）</a>
+        <a class="btn ghost" href="#">お問い合わせフォーム（仮）</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>© ExoVisionary Hub</footer>
+
+  <script>
+    // クエリで course / score / level / lv を受け取り、表示を切り替え
+    const qs = new URLSearchParams(location.search);
+    const course = (qs.get('course') || 'entry').toLowerCase();
+    const score  = qs.get('score') || '—';
+    const level  = qs.get('level') || '—';
+
+    document.getElementById('score').textContent = score;
+    document.getElementById('level').textContent = level;
+
+    const map = {
+      entry : { tag:'入門〜初級向け', title:'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）', show:'entry-detail' },
+      middle: { tag:'初級〜中級向け', title:'MIDDLE｜AI×業務改善の入口（4–6週間）', show:'middle-detail' },
+      practical: { tag:'実践〜先進向け', title:'PRACTICAL｜疑似案件で本格運用へ（6–8週間）', show:'practical-detail' },
+      advanced: { tag:'先進層向け', title:'PRACTICAL｜疑似案件で本格運用へ（6–8週間）', show:'practical-detail' }
+    };
+    const conf = map[course] || map.entry;
+    document.getElementById('tag-level').textContent = conf.tag;
+    document.getElementById('title').textContent = conf.title;
+
+    // 表示切り替え
+    ['entry-detail','middle-detail','practical-detail'].forEach(id=>{
+      document.getElementById(id).style.display = (id===conf.show)?'block':'none';
+    });
+
+    // トップCTAは #contact に飛ぶ
+    document.getElementById('cta-top').addEventListener('click', ()=> {
+      // ここで計測入れるなら gtag('event', 'detail_apply_click', {...})
+    });
+  </script>
+</body>
+</html>
