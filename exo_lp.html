@@ -197,3 +197,16 @@
 <!-- ▲▲ ここまで：診断結果の詳細 ▲▲ -->
 
 <!-- 以下、#courses セクションはそのままでOK（変更なし） -->
+<script>
+  // 「おすすめコースを見る」を exo_courses.html へ遷移させ、
+  // さらに score/level/lv のクエリもそのまま引き継ぐ。
+  // 既存のクリックハンドラを無効化するため、要素ごと置き換えます。
+  document.addEventListener('DOMContentLoaded', function(){
+    const link = document.getElementById('dd-reco');
+    if (!link) return;
+    const newLink = link.cloneNode(true);            // 既存のイベントを持たないクローンを作成
+    newLink.href = 'exo_courses.html' + location.search;  // クエリ付きで遷移
+    link.replaceWith(newLink);                       // 置き換え＝古いハンドラも消える
+  });
+</script>
+
