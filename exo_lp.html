@@ -1,3 +1,93 @@
+<!-- ▼▼ 診断結果の詳細（クエリがある時だけ表示） ▼▼ -->
+<section id="diag-detail" style="display:none;">
+  <style>
+    #diag-detail .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+    #diag-detail .card{background:#fff;border:1px solid #e9ecef;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:18px;margin:14px 0}
+    #diag-detail .kv{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    #diag-detail .score{font-size:28px;font-weight:700;color:#7356b6}
+    #diag-detail .pill{display:inline-block;background:#eef2ff;color:#3730a3;border-radius:999px;padding:.25em .7em}
+    #diag-detail .note{color:#475569}
+    #diag-detail .go{display:inline-block;margin-top:8px;border:1px solid #111827;border-radius:999px;padding:8px 14px;text-decoration:none;background:#111827;color:#fff}
+    #courses .card.__hl{outline:3px solid #7356b6;box-shadow:0 10px 26px rgba(115,86,182,.25)}
+  </style>
+  <div class="wrap">
+    <div class="card">
+      <div class="kv">
+        <h2 style="margin:0;">診断結果の詳細</h2>
+        <div class="score" id="dd-score">--</div>
+        <div class="pill"  id="dd-level">--</div>
+      </div>
+      <p class="note" id="dd-lead" style="margin:.4rem 0;">読み込み中…</p>
+      <ul id="dd-points" style="margin:.2rem 0 0 1.2rem;"></ul>
+      <div style="margin-top:8px;">
+        <a href="#courses" class="go" id="dd-reco">おすすめコースを見る</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  // 受け取り
+  const p = new URLSearchParams(location.search);
+  const score = Number(p.get('score'));
+  const level = p.get('level') || '';
+  const lvKey = (p.get('lv') || '').toLowerCase();
+
+  // どれかあれば表示
+  if (!isNaN(score) || level || lvKey) {
+    const sec = document.getElementById('diag-detail');
+    sec.style.display = 'block';
+
+    // 文面
+    const LEADS = {
+      entry:"まずは安全な使い方と“良いプロンプトの型”を身につけ、短期で成果を出す土台を作りましょう。",
+      middle:"品質と効率を同時に上げるため、テンプレ整備と半自動化、指標による改善運用を回していきます。",
+      practical:"要件定義〜設計〜運用まで仕組み化し、再現性のある実務レベルを目指します。"
+    };
+    const POINTS = {
+      entry:["基本リテラシーと安全ルール","プロンプトの型づくり","まずは小さく成功体験を積む"],
+      middle:["テンプレ整備と自動化の入口","A/B検証とKPI運用","小さな業務を“勝手に回す”"],
+      practical:["要件整理と設計書の整備","SLA/ガバナンスの設計","RAG/エージェントの展開"]
+    };
+
+    const ddScore = document.getElementById('dd-score');
+    const ddLevel = document.getElementById('dd-level');
+    const ddLead  = document.getElementById('dd-lead');
+    const ddPts   = document.getElementById('dd-points');
+
+    if (!isNaN(score)) ddScore.textContent = String(score);
+    ddLevel.textContent = level || (lvKey==='entry'?'入門層': lvKey==='middle'?'初級〜中級':'実践層');
+    const key = lvKey || (score>=70?'practical': score>=55?'practical': score>=40?'middle':'entry');
+
+    ddLead.textContent = LEADS[key];
+    ddPts.innerHTML = (POINTS[key]||[]).map(t=>`<li>${t}</li>`).join('');
+
+    // おすすめカードをハイライト
+    const cards = document.querySelectorAll('#courses .row .card');
+    const mapIndex = { entry:0, middle:1, practical:2 };
+    const idx = mapIndex[key];
+    if (cards[idx]) {
+      // スクロール
+      document.getElementById('courses').scrollIntoView({ behavior:'smooth', block:'start' });
+      cards[idx].classList.add('__hl');
+      setTimeout(()=>cards[idx].classList.remove('__hl'), 5000);
+    }
+
+    // クリックで #courses へ
+    document.getElementById('dd-reco').addEventListener('click', function(){
+      document.getElementById('courses').scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+
+    // 計測（任意）
+    if (typeof gtag === 'function') {
+      gtag('event', 'detail_shown', { event_category:'Navigation', event_label:key });
+    }
+  }
+})();
+</script>
+<!-- ▲▲ ここまで追加 ▲▲ -->
+
 <section id="courses">
   <div style="max-width:1100px;margin:0 auto;padding:0 16px;">
     <h2 style="font-size:1.8rem;margin:8px 0 6px;">おすすめコース</h2>
