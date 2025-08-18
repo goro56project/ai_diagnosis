@@ -5,21 +5,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>AI偏差値診断｜メール登録→診断→結果メール</title>
 
-  <!-- GA4 (一箇所に集約／重複削除) -->
+  <!-- GA4 (一箇所に集約) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
-    gtag('config', 'G-QFQZF4F1QW', {
-      send_page_view: true,
-      transport_type: 'beacon',
-      debug_mode: true
-    });
+    gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type: 'beacon', debug_mode: true });
   </script>
 
   <style>
-    :root { --brand:#7356b6; --ink:#222; --card:#fff; --bg:#f5f3ff; --muted:#666; }
+    :root { --brand:#7356b6; --ink:#222; --card:#fff; --bg:#f5f3ff; --muted:#666; --warn:#b45309; }
     *{ box-sizing:border-box; }
     body{ font-family:system-ui, -apple-system, Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin:0; color:var(--ink); background:var(--bg);}
     header{ background:#fff; border-bottom:1px solid #eee; padding:18px; text-align:center; }
@@ -38,6 +34,7 @@
     .btn.primary{ background:var(--brand); border-color:var(--brand); color:#fff; }
     .btn.ghost{ background:#fff; border-color:#ddd; color:var(--ink); }
     .btn.block{ width:100%; text-align:center; }
+    .btn[aria-disabled="true"]{ opacity:.6; cursor:not-allowed; }
     .pill{ display:inline-block; background:#eee; padding:.25em .6em; border-radius:999px; font-size:.9em;}
     fieldset{ border:1px solid #eee; border-radius:12px; padding:14px; margin:10px 0;}
     .qgrid{ display:grid; grid-template-columns: 1fr repeat(5, minmax(60px, 80px)); gap:8px 12px; align-items:center;}
@@ -47,6 +44,8 @@
     ul.bullets{ margin:8px 0 0 20px; }
     .right{ text-align:right; }
     .hint{ font-size:12px; color:#777; }
+    .warn{ font-size:12px; color:var(--warn); background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; border-radius:10px; }
+    .focus{ outline:2px solid var(--brand); outline-offset:2px; }
   </style>
 </head>
 
@@ -58,15 +57,18 @@
 
   <main>
     <!-- STEP 1: メール登録（任意） -->
-    <section class="card">
+    <section class="card" id="sec-register">
       <h2>STEP 1｜診断結果をメールで受け取る（任意）</h2>
-      <p class="lead muted">登録すると、診断後に同じ内容をメールでお送りします。未登録でも診断は可能です。</p>
+      <p class="lead muted">
+        登録すると、<b>診断の詳細（解説・おすすめコース）</b>が表示できるようになります。<br>
+        未登録でも簡易結果は見られますが、<b>詳細を見るには登録が必要</b>です。
+      </p>
       <div class="row">
         <input id="email" type="email" inputmode="email" placeholder="メールアドレスを入力" style="flex:1;min-width:240px;">
         <button id="btn-register" class="btn primary">登録する</button>
         <button id="btn-skip" class="btn ghost">登録せずに診断へ</button>
       </div>
-      <div class="hint">送信先の管理：Google スプレッドシート（自動作成）／ 用途は診断に関するご連絡のみ。不要時はいつでも停止できます。</div>
+      <div id="register-note" class="hint">送信先の管理：Google スプレッドシート（自動作成）／ 用途は診断に関するご連絡のみ。不要時はいつでも停止できます。</div>
     </section>
 
     <!-- STEP 2: 設問 -->
@@ -83,7 +85,7 @@
         <div class="choice">とてもある</div>
       </div>
 
-      <!-- 質問テンプレ（JSが生成でもOKだが、ここでは直書き） -->
+      <!-- 質問生成先 -->
       <div id="questions"></div>
 
       <div class="right" style="margin-top:14px;">
@@ -103,13 +105,17 @@
       <p id="result-lead" class="lead muted" style="margin-top:4px;">診断後にサマリを表示します。</p>
       <ul id="result-bullets" class="bullets"></ul>
 
+      <div id="detail-lock-msg" class="warn" style="display:none; margin-top:10px;">
+        ※ <b>メール登録が必要です。</b>登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
+      </div>
+
       <div class="row" style="margin-top:14px;">
-        <!-- ★ 修正：LPへのリンクを同一リポの exo_lp.html に固定。計測はJSで送信 -->
-        <a id="lp-link" class="btn primary" href="./exo_lp.html#courses">ExoVisionary Hubを見る</a>
+        <!-- ここが詳細表示ボタン（メール登録がないと無効） -->
+        <a id="lp-link" class="btn primary" href="./exo_lp.html#courses" aria-disabled="true" title="メール登録すると詳細を表示できます">診断結果の詳細を見る</a>
         <a class="btn ghost" href="#" id="btn-consult">個別相談を予約</a>
       </div>
 
-      <div class="hint" style="margin-top:10px;">メール未登録のため、結果メールの送信はスキップしました。</div>
+      <div class="hint" style="margin-top:10px;">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</div>
     </section>
   </main>
 
@@ -189,6 +195,10 @@
   const $lvLabel  = document.getElementById("lv-label");
   const $lead     = document.getElementById("result-lead");
   const $bullets  = document.getElementById("result-bullets");
+  const $lpLink   = document.getElementById("lp-link");
+  const $lockMsg  = document.getElementById("detail-lock-msg");
+  const $email    = document.getElementById("email");
+  const $secReg   = document.getElementById("sec-register");
 
   const LEADS = {
     entry:"まずは安全な使い方と型を整えて、短期で成果を出す土台を作ります。",
@@ -218,6 +228,11 @@
     $lvLabel.textContent  = state.levelLabel || "--";
     $lead.textContent     = LEADS[state.lvKey] || "";
     $bullets.innerHTML    = (BULLETS[state.lvKey]||[]).map(t=>`<li>${t}</li>`).join("");
+    // 詳細ボタンのロック表示
+    const locked = !state.email;
+    $lpLink.setAttribute('aria-disabled', locked ? 'true' : 'false');
+    $lpLink.title = locked ? 'メール登録すると詳細を表示できます' : '診断結果の詳細を見る';
+    $lockMsg.style.display = locked ? 'block' : 'none';
   }
 
   /*** GAS 連携（任意） ***/
@@ -229,26 +244,29 @@
 
   /*** LP遷移：クエリ引き継ぎ＋計測（open_hub） ***/
   (function initClickSend(){
-    const link = document.getElementById("lp-link");
-    if(!link) return;
-
-    link.addEventListener("click", (e)=>{
+    $lpLink.addEventListener("click", (e)=>{
       e.preventDefault();
 
-      // 直前の選択から再計算（常に最新）
+      // 直前の選択から再計算
       state.answers = gatherAnswers();
       state.score   = calcScore(state.answers);
       const lv      = levelFrom(state.score);
       state.levelLabel = lv.label;
       state.lvKey      = lv.key;
-      renderResult(); // 表示も更新
+      renderResult();
+
+      // ガード：メール未登録は遷移させない
+      if (!state.email){
+        // フォームへ誘導
+        $secReg.scrollIntoView({behavior:"smooth", block:"start"});
+        $email.classList.add('focus');
+        setTimeout(()=> $email.classList.remove('focus'), 1500);
+        return;
+      }
 
       // GA4 計測
       if (typeof gtag === "function") {
-        gtag('event', 'open_hub', {
-          event_category: 'Navigation',
-          event_label: 'to_exo_lp'
-        });
+        gtag('event', 'open_hub', { event_category: 'Navigation', event_label: 'to_exo_lp' });
       }
 
       // URLにクエリで付与
@@ -256,26 +274,26 @@
       url.searchParams.set("score", String(state.score));
       url.searchParams.set("level", state.levelLabel);
       url.searchParams.set("lv",    state.lvKey);
-      // デフォルトはコースへ
       url.hash = "#courses";
 
-      // バックアップ（同一ブラウザなら読める）
+      // バックアップ
       localStorage.setItem("ai_diag_payload",
         JSON.stringify({ score:state.score, levelLabel:state.levelLabel, lvKey:state.lvKey, ts:Date.now() })
       );
 
-      // 送信時間をわずかに確保してから遷移
       setTimeout(()=>{ location.href = url.toString(); }, 120);
     });
   })();
 
   /*** イベント ***/
   document.getElementById("btn-register").addEventListener("click", async ()=>{
-    const v = (document.getElementById("email").value||"").trim();
+    const v = ($email.value||"").trim();
     if(!v || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){ alert("メールアドレスを入力してください"); return; }
     state.email = v;
     await postGAS({ type:"register", email:v });
-    alert("登録しました。診断後に結果メールをお送りします。");
+    document.getElementById("register-note").innerHTML = "登録しました。診断後に<b>詳細（解説・おすすめコース）</b>を表示できます。";
+    renderResult();
+    alert("登録しました。診断後に詳細を見ることができます。");
   });
 
   document.getElementById("btn-skip").addEventListener("click", ()=>{
@@ -294,7 +312,7 @@
     if (state.email){
       await postGAS({ type:"result", email:state.email, score:state.score, answers:state.answers });
     }
-    // 結果までスムーズにスクロール
+    // 結果へスクロール
     document.getElementById("result-card").scrollIntoView({behavior:"smooth"});
   });
 
@@ -302,69 +320,6 @@
   document.getElementById("btn-consult").addEventListener("click",(e)=>{
     e.preventDefault();
     alert("個別相談の導線を設定してください（Calendly/フォーム等のURL）");
-  });
-  </script>
-
-  <!-- CTA 計測（既存のidがあれば拾う） -->
-  <script>
-  window.addEventListener('DOMContentLoaded', () => {
-    // ① 無料説明会に申込（id="cta-apply"）
-    const btnApply = document.getElementById('cta-apply');
-    if (btnApply) {
-      btnApply.addEventListener('click', function (e) {
-        const url = this.href;
-        if (typeof gtag === "function") {
-          gtag('event', 'qualify_lead', {
-            event_category: 'CTA',
-            event_label: '無料説明会に申込',
-            value: 1
-          });
-        }
-        if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
-          e.preventDefault();
-          setTimeout(() => { location.href = url; }, 250);
-        }
-      });
-    }
-
-    // ② 個別相談を予約（id="cta-1on1"）
-    const btn1on1 = document.getElementById('cta-1on1');
-    if (btn1on1) {
-      btn1on1.addEventListener('click', function (e) {
-        const url = this.href;
-        if (typeof gtag === "function") {
-          gtag('event', 'close_convert_lead', {
-            event_category: 'CTA',
-            event_label: '個別相談を予約',
-            value: 1
-          });
-        }
-        if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
-          e.preventDefault();
-          setTimeout(() => { location.href = url; }, 250);
-        }
-      });
-    }
-
-    // ③ 将来用：購入（id="cta-purchase"）
-    const btnPurchase = document.getElementById('cta-purchase');
-    if (btnPurchase) {
-      btnPurchase.addEventListener('click', function (e) {
-        const url = this.href;
-        if (typeof gtag === "function") {
-          gtag('event', 'purchase', {
-            currency: 'JPY',
-            value: 0,
-            event_category: 'CTA',
-            event_label: '購入/決済'
-          });
-        }
-        if (!(e.ctrlKey || e.metaKey || this.target === '_blank')) {
-          e.preventDefault();
-          setTimeout(() => { location.href = url; }, 250);
-        }
-      });
-    }
   });
   </script>
 </body>
