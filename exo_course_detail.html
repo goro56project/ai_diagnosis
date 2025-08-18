@@ -1,234 +1,180 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>コース詳細｜ExoVisionary Hub</title>
-  <style>
-    :root{--ink:#0f172a;--muted:#475569;--brand:#111827;--accent:#7356b6;--bg:#f6f7fb}
-    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;color:var(--ink);background:var(--bg)}
-    header{background:#fff;border-bottom:1px solid #eceff3}
-    .wrap{max-width:1100px;margin:0 auto;padding:18px 16px}
-    .tag{display:inline-block;background:#eef2ff;color:#3730a3;border-radius:999px;padding:.25em .7em;font-size:.85rem}
-    h1{font-size:clamp(22px,3.6vw,34px);margin:.25rem 0 .5rem;font-weight:800;letter-spacing:.01em}
-    .muted{color:var(--muted)}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{display:inline-block;border-radius:999px;padding:12px 18px;text-decoration:none;font-weight:700}
-    .btn.primary{background:var(--brand);color:#fff;border:1px solid var(--brand)}
-    .btn.ghost{background:#fff;color:var(--ink);border:1px solid #cbd5e1}
-    .card{background:#fff;border:1px solid #e9edf2;border-radius:16px;box-shadow:0 6px 22px rgba(0,0,0,.06);padding:18px;margin:14px 0}
-    .list{list-style:none;margin:0;padding:0}
-    .list li{margin:8px 0;line-height:1.7}
-    .sub{font-size:14px;color:#64748b}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    @media (max-width:900px){.grid-2{grid-template-columns:1fr}}
-    /* アンカー */
-    a.anchor{position:relative;top:-64px;visibility:hidden}
-    /* 下部ボックス */
-    .callout{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:12px;padding:10px 12px}
-    footer{color:#94a3b8;text-align:center;padding:30px 0}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>コース詳細 | ExoVisionary Hub</title>
+<style>
+  :root{--ink:#0f172a;--muted:#475569;--brand:#111827;--pill:#eef2ff;--pill-ink:#3730a3;--card:#fff;--line:#e9ecef;--bg:#f6f7fb}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Meiryo,sans-serif;color:var(--ink);background:var(--bg)}
+  .wrap{max-width:1100px;margin:0 auto;padding:18px 16px 48px}
+  .pill{display:inline-block;background:var(--pill);color:var(--pill-ink);padding:.35em .8em;border-radius:999px;font-size:.9rem}
+  h1{font-size:clamp(24px,4vw,36px);margin:.4rem 0 0}
+  .muted{color:var(--muted)}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .btn{display:inline-block;border:1px solid var(--brand);background:var(--brand);color:#fff;padding:12px 16px;border-radius:999px;text-decoration:none}
+  .btn.ghost{background:#fff;color:var(--ink);border-color:#cbd5e1}
+  .btn.small{padding:8px 12px}
+  .price{font-weight:700}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:18px;margin:14px 0}
+  h2{font-size:1.4rem;margin:.2rem 0 .6rem}
+  h3{font-size:1.1rem;margin:.2rem 0 .4rem}
+  ul{margin:.1rem 0 .6rem 1.2rem}
+  code.inline{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:2px 6px}
+  .lead{line-height:1.8}
+  .kv-score{font-variant-numeric:tabular-nums;font-weight:800}
+  .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  @media (max-width:860px){.grid-2{grid-template-columns:1fr}}
+  .warn{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:10px 12px}
+  footer{margin:28px 0 8px;text-align:center;color:#94a3b8}
+</style>
 </head>
 <body>
-
-<header>
-  <div class="wrap">
-    <span id="lv-tag" class="tag">コース</span>
-    <h1 id="title">コース名（自動）</h1>
-    <div class="muted" id="scoreline">診断スコア：— / レベル：—</div>
-    <div class="row" style="margin-top:10px">
-      <a id="apply-btn" class="btn primary" href="#contact">この内容で申し込む ¥980</a>
-      <a class="btn ghost" href="#flow">学習の流れ</a>
-      <a id="back-list" class="btn ghost" href="exo_courses.html">コース一覧に戻る</a>
+  <main class="wrap">
+    <!-- ヘッダー -->
+    <div class="row">
+      <span class="pill" id="badge">コース</span>
     </div>
-  </div>
-</header>
-
-<main class="wrap">
-  <!-- ========= ENTRY ========= -->
-  <section data-course="entry" class="course card" style="display:none">
-    <a id="entry" class="anchor"></a>
-    <h2 style="margin:0 0 6px">ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）</h2>
-    <p class="sub">対象：AI初心者／40–50代のビジネス層。まずは資料・メール・デザイン補助で成果を出したい方向け。</p>
-
-    <div class="card">
-      <h3 style="margin:0 0 8px">目標</h3>
-      <p>「安全に使える」「良い指示が出せる」「小さく成果を出せる」を最短で獲得。</p>
+    <h1 id="course-title">コース名（自動）</h1>
+    <p class="muted" style="margin:.35rem 0 1rem">
+      診断スコア：<span id="score-out">—</span> ／ レベル：<span id="level-out">—</span>
+    </p>
+    <div class="row" style="margin:.2rem 0 1rem">
+      <a href="#contact" class="btn" id="btn-apply">この内容で申し込む <span class="price">¥980</span></a>
+      <a href="#flow" class="btn ghost">学習の流れ</a>
+      <a href="exo_courses.html" class="btn ghost" id="btn-back">コース一覧に戻る</a>
     </div>
 
-    <div class="grid-2">
-      <div class="card">
-        <h3 style="margin:0 0 8px">学べること（コアスキル）</h3>
-        <ul class="list">
-          <li><b>AIリテラシー：</b>情報の扱い、社外秘/公開、NGケース、ガバナンスの基本</li>
-          <li><b>ChatGPT基礎：</b>モデル・モード、要約/言い換え/トーン調整、校正・添削</li>
-          <li><b>プロンプト設計：</b>目的→制約→入出力→評価観点、Few-shot、ステップ分解</li>
-          <li><b>スライド・デザイン補助：</b>図解プロンプト、画像生成の基礎（バナー/挿絵）</li>
-          <li><b>成果の“型化”：</b>成功した指示をテンプレ化し、誰でも再現できる状態に</li>
-        </ul>
+    <!-- 概要 -->
+    <section class="card" id="summary">
+      <h2>このコースで狙うこと</h2>
+      <p class="lead" id="lead"></p>
+      <div class="grid-2">
+        <div>
+          <h3>学べること（コアスキル）</h3>
+          <ul id="skills"></ul>
+        </div>
+        <div>
+          <h3>モジュール（例）</h3>
+          <ul id="modules"></ul>
+        </div>
       </div>
-      <div class="card">
-        <h3 style="margin:0 0 8px">モジュール（例）</h3>
-        <ul class="list">
-          <li>安全・ルール・型（60分）／プロンプト雛形を3本作成</li>
-          <li>資料×メール×要約（90分）／骨子→章立て→本文→要約</li>
-          <li>画像生成の基礎（60分）／バナー2案→比較→リライト</li>
-          <li>ミニ改善の回し方（60分）／Before/Afterと評価観点の言語化</li>
-        </ul>
+      <div class="grid-2">
+        <div>
+          <h3>ハンズオン / 課題</h3>
+          <ul id="hands"></ul>
+        </div>
+        <div>
+          <h3>成果物</h3>
+          <ul id="outcomes"></ul>
+          <h3 style="margin-top:.8rem">受講後にできること</h3>
+          <ul id="after"></ul>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="grid-2">
-      <div class="card">
-        <h3 style="margin:0 0 8px">ハンズオン/課題</h3>
-        <ul class="list">
-          <li>「10枚スライドの叩き台」＋「議事メモ→要約→アクション抽出」＋「社内案内メール」</li>
-          <li>画像2点（タイトルバナー・図解アイコン）</li>
-          <li>プロンプトライブラリ（成功例/失敗例/評価観点付き）</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3 style="margin:0 0 8px">成果物 / 受講後にできること</h3>
-        <ul class="list">
-          <li>成果物：プロンプト集、テンプレ化した資料一式、簡易SOP</li>
-          <li>できること：社内向け資料・メール・要約を安定品質で短時間に作成／良い指示の型をチーム共有</li>
-        </ul>
-      </div>
-    </div>
+    <!-- 学習の流れ -->
+    <section class="card" id="flow">
+      <h2>学習の流れ</h2>
+      <ul id="flow-list"></ul>
+    </section>
 
-    <div id="flow" class="card">
-      <h3 style="margin:0 0 8px">学習の流れ（ENTRY例）</h3>
-      <ul class="list">
-        <li>Day1：ルールと安全／良いプロンプトの型づくり</li>
-        <li>Day2：資料・メール・要約の時短体験</li>
-        <li>Day3：画像生成でスライド素材を作る</li>
-        <li>Day4：成功した指示をテンプレ化／共有</li>
+    <!-- 申込/問合せ -->
+    <section class="card" id="contact">
+      <h2>お申し込み / お問い合わせ</h2>
+      <p class="warn">※ 決済・フォームは未設定です。ここに Stripe の支払いリンクや Googleフォーム / Typeform を設置してください。</p>
+      <ul class="muted" style="margin:.6rem 0 1rem 1.2rem">
+        <li>推奨：Stripe 支払いリンク（<span class="price">¥980</span>、商品名：各コース名）</li>
+        <li>フォーム項目：氏名・メール・希望開始時期・請求書要否 など</li>
       </ul>
-    </div>
-  </section>
-
-  <!-- ========= MIDDLE ========= -->
-  <section data-course="middle" class="course card" style="display:none">
-    <a id="middle" class="anchor"></a>
-    <h2 style="margin:0 0 6px">MIDDLE｜AI×業務改善の入口（4–6週間）</h2>
-    <p class="sub">対象：基礎操作はできる。テンプレ整備と半自動化で「勝手に回る」小さなフローを作りたい方向け。</p>
-
-    <div class="card">
-      <h3 style="margin:0 0 8px">目標</h3>
-      <p>うまくいく型を<b>半自動</b>にし、<b>時間×品質×再現性</b>の3軸で改善を回す。</p>
-    </div>
-
-    <div class="grid-2">
-      <div class="card">
-        <h3 style="margin:0 0 8px">学べること（コアスキル）</h3>
-        <ul class="list">
-          <li><b>業務テンプレ整備：</b>議事録・FAQ・メールの型化と差し込み運用</li>
-          <li><b>GAS入門〜半自動：</b>フォーム→シート→自動返信→週次レポート</li>
-          <li><b>評価・改善：</b>A/B運用、KPIダッシュボード（Sheets自動更新）</li>
-          <li><b>ハンドオフ：</b>人⇔AIの役割分担、例外対応のルール化</li>
-        </ul>
+      <div class="row">
+        <a href="#" class="btn" id="pay-link">Stripe決済リンク（仮）</a>
+        <a href="#" class="btn ghost" id="contact-link">お問い合わせフォーム（仮）</a>
       </div>
-      <div class="card">
-        <h3 style="margin:0 0 8px">モジュール（例）</h3>
-        <ul class="list">
-          <li>テンプレ3本（議事録・FAQ・メール）を作り、入口に差し込む</li>
-          <li>GASで受付→記録→返信→レポート を連結</li>
-          <li>差戻し原因TOP3の可視化／A/B で潰す</li>
-          <li>ダッシュボード運用：週次で「時間・品質・再現性」を更新</li>
-        </ul>
-      </div>
-    </div>
+    </section>
 
-    <div class="grid-2">
-      <div class="card">
-        <h3 style="margin:0 0 8px">ハンズオン/課題</h3>
-        <ul class="list">
-          <li>半自動フロー（フォーム→返信→記録→レポート）の実装</li>
-          <li>KPIシート（1件時間/差戻し率/テンプレ適用率）を作成</li>
-          <li>A/B結果レポート：改善幅と提言を1ページで提示</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3 style="margin:0 0 8px">成果物 / 受講後にできること</h3>
-        <ul class="list">
-          <li>成果物：テンプレ3本＋GASスクリプト＋KPIダッシュボード</li>
-          <li>できること：小さな業務が<b>“勝手に回る”半自動フロー</b>を継続運用</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========= PRACTICAL ========= -->
-  <section data-course="practical" class="course card" style="display:none">
-    <a id="practical" class="anchor"></a>
-    <h2 style="margin:0 0 6px">PRACTICAL｜疑似案件で本格運用へ（6–8週間）</h2>
-    <p class="sub">対象：チーム内で本番運用を設計し、RAG/エージェントやSLA運用まで踏み込みたい方向け。</p>
-
-    <div class="card">
-      <h3 style="margin:0 0 8px">目標</h3>
-      <p>要件定義〜設計〜実装〜納品一式を通し、<b>再現性ある仕組み</b>で運用できる状態をつくる。</p>
-    </div>
-
-    <div class="grid-2">
-      <div class="card">
-        <h3 style="margin:0 0 8px">学べること（コアスキル）</h3>
-        <ul class="list">
-          <li><b>要件定義ロールプレイ：</b>GPTがクライアント役でヒアリング演習</li>
-          <li><b>設計〜実装：</b>データ流・権限・失敗時ハンドリング・SLA</li>
-          <li><b>RAG/エージェント：</b>FAQ50件で正答率ベンチ→失敗は人にエスカレーション</li>
-          <li><b>監査可能な運用：</b>ログ・通知・変更管理・SOP・成果レポート</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3 style="margin:0 0 8px">モジュール（例）</h3>
-        <ul class="list">
-          <li>1ページ設計書：目的／入力／出力／判断基準／例外／権限</li>
-          <li>PoC→パイロット：指標・SLA合意、インシデント運用</li>
-          <li>コスト最適化：1出力単価の可視化、モデル選定A/B</li>
-          <li>納品一式：設計書／GASコード／SOP／成果レポート／デモ台本</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <div class="card">
-        <h3 style="margin:0 0 8px">ハンズオン/課題</h3>
-        <ul class="list">
-          <li>要件定義書ドラフト／データフロー／例外ハンドリング設計</li>
-          <li>RAG簡易ベンチ：正答率・再現性の測定と改善記録</li>
-          <li>運用SLA・インシデント手順・変更管理の設計</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3 style="margin:0 0 8px">成果物 / 受講後にできること</h3>
-        <ul class="list">
-          <li>成果物：設計・コード・運用文書の<b>納品パッケージ</b></li>
-          <li>できること：<b>提案〜納品まで自走</b>できるミニ案件レベルの実力</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- 申込/問い合わせ -->
-  <section id="contact" class="card">
-    <h3 style="margin:0 0 8px">お申し込み / お問い合わせ</h3>
-    <p class="callout">※ 決済・フォームは未設定です。ここに Stripe の決済リンク or Googleフォーム / Typeform を設置してください。</p>
-    <ul class="list">
-      <li>推奨：Stripe 支払いリンク（<b>¥980</b>、商品名は各コース名）</li>
-      <li>フォーム項目：氏名・メール・希望開始時期・請求書要否 など</li>
-    </ul>
-    <div class="row" style="margin-top:8px">
-      <a class="btn primary" href="#" onclick="alert('Stripeリンクに差し替えてください');return false;">Stripe決済リンク（仮）</a>
-      <a class="btn ghost" href="#" onclick="alert('お問い合わせフォームURLに差し替えてください');return false;">お問い合わせフォーム（仮）</a>
-    </div>
-  </section>
-</main>
-
-<footer>© ExoVisionary Hub</footer>
+    <footer>© ExoVisionary Hub</footer>
+  </main>
 
 <script>
-(function(){
-  const params = new URLSearchParams(location.search);
-  const score = Number(params.get('score'));
-  const lv    = (params.get('lv')||'').toLowerCase();
-  const levelLabelPa
+/* ========= コース定義 ========= */
+const COURSES = {
+  entry: {
+    badge: '入門〜初級向け',
+    title: 'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）',
+    lead: 'AI初心者や40–50代のビジネス層に向けた短期ブート。安全に使い、良い指示を出し、まずは「資料/メール/デザイン補助」で成果を出すことがゴールです。うまくいった指示はテンプレ化して、誰でも再現できる状態へ。',
+    skills: [
+      'AIリテラシー：情報の扱い、社外秘/公開、NGケース、ガバナンスの基本',
+      'ChatGPT基礎：モデル・モード、要約/言い換え/トーン調整、校正・添削',
+      'プロンプト設計：目的→制約→入出力→評価観点、Few-shot、ステップ分解',
+      'スライド/デザイン補助：図解プロンプトの作り方、画像生成の基礎（バナー/挿絵）',
+      '成果の“型化”：成功指示をテンプレ化し、チームで再現'
+    ],
+    modules: [
+      '安全・ルール・型（60分）／プロンプト雛形を3本作る',
+      '資料×メール×要約（90分）／骨子→章立て→本文→要約',
+      '画像生成の基礎（60分）／バナー2案→比較→リライト',
+      'ミニ改善の回し方（60分）／Before/Afterと評価観点の言語化'
+    ],
+    hands: [
+      '10枚スライドの叩き台＋議事メモ→要約→アクション抽出＋社内案内メール',
+      '画像2点（タイトルバナー・図解アイコン）',
+      'プロンプトライブラリ（成功/失敗/評価観点つき）'
+    ],
+    outcomes: [
+      'プロンプト集（再現手順つき）',
+      'テンプレ化した資料一式',
+      '簡易SOP'
+    ],
+    after: [
+      '社内向け資料・メール・要約を短時間で安定品質へ',
+      '「良い指示の型」をチーム共有し、再現性を確保'
+    ],
+    flow: [
+      'Day1：ルールと安全／良いプロンプトの型づくり',
+      'Day2：資料・メール・要約の時短体験',
+      'Day3：画像生成でスライド素材を作る',
+      'Day4：成功した指示をテンプレ化/共有'
+    ]
+  },
+  middle: {
+    badge: '初級〜中級向け',
+    title: 'MIDDLE｜AI×業務改善の入口（4–6週間）',
+    lead: 'うまくいく型を「半自動」にして、数字で回す段階。テンプレとチェックリストを業務の入口に差し込み、GASで受付→返信→記録→レポートまで繋ぎます。A/Bで差戻し原因TOP3から潰して、可視化まで運用。',
+    skills: [
+      '業務テンプレ整備：議事録/FAQ/メールの型化と運用',
+      'GAS入門〜半自動：フォーム→シート→自動返信→レポート',
+      '評価と改善：A/B運用／品質・再現性・時間の指標で回す',
+      '可視化：簡易KPIダッシュボード（Sheets＋自動更新）'
+    ],
+    modules: [
+      'テンプレ設計：入力→処理→出力の分解とチェックリスト化',
+      'GASで受付〜返信〜記録の一連化（Webhook/トリガー）',
+      'A/B検証の設計（プロンプト/テンプレ比較・指標の定義）',
+      'KPIダッシュボード（差戻し率・再現性・1件時間）'
+    ],
+    hands: [
+      'フォーム受付→一次返信→シート記録→週次レポートの半自動化',
+      '議事録・FAQ・メールのテンプレ3本を整備',
+      '評価指標（品質/再現性/時間）の週次レポート提出'
+    ],
+    outcomes: [
+      '“勝手に回る”半自動フロー',
+      'テンプレ/チェックリスト一式',
+      'KPIダッシュボード'
+    ],
+    after: [
+      '小さな業務を安定運用し、指標で継続改善できる',
+      '属人化を削減し、再現性を確保'
+    ],
+    flow: [
+      'Week1：テンプレとチェックリストの整備、入口に差し込み',
+      'Week2：GASで受付→返信→記録を一連化',
+      'Week3：A/B運用で差戻しTOP3を潰す',
+      'Week4：ダッシュボードで可視化・定例化'
+    ]
+  },
+  practical: {
+    badge: '実践〜先進向け',
+    title: 'PRACTICAL
