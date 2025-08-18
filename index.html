@@ -94,20 +94,27 @@
     </section>
 
     <!-- STEP 3: 結果 -->
-    <section class="card" id="result-card">
-      <h2>STEP 3｜診断結果</h2>
-      <p class="result">
-        <span>AI偏差値：</span>
-        <span class="score"><span id="score-out">--</span></span>
-        <span>/ 100</span>
-        <span class="pill">レベル：<span id="lv-label">--</span></span>
-      </p>
-      <p id="result-lead" class="lead muted" style="margin-top:4px;">診断後にサマリを表示します。</p>
-      <ul id="result-bullets" class="bullets"></ul>
+<section class="card" id="result-card">
+  <h2>STEP 3｜診断結果</h2>
+  <p class="result">
+    <span>AI偏差値：</span>
+    <span class="score"><span id="score-out">--</span></span>
+    <span class="pill">レベル：<span id="lv-label">--</span></span>
+  </p>
+  <p id="result-lead" class="lead muted" style="margin-top:4px;">診断後にサマリを表示します。</p>
+  <ul id="result-bullets" class="bullets"></ul>
 
-      <div id="detail-lock-msg" class="warn" style="display:none; margin-top:10px;">
-        ※ <b>メール登録が必要です。</b>登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
-      </div>
+  <div id="detail-lock-msg" class="warn" style="display:none; margin-top:10px;">
+    ※ <b>メール登録が必要です。</b>登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
+  </div>
+
+  <div class="row" style="margin-top:14px;">
+    <a id="lp-link" class="btn primary" href="./exo_lp.html#courses" aria-disabled="true" title="メール登録すると詳細を表示できます">診断結果の詳細を見る</a>
+    <a class="btn ghost" href="#" id="btn-consult">個別相談を予約</a>
+  </div>
+
+  <div class="hint" style="margin-top:10px;">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</div>
+</section>
 
       <div class="row" style="margin-top:14px;">
         <!-- ここが詳細表示ボタン（メール登録がないと無効） -->
