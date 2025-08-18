@@ -88,47 +88,146 @@
 
     <!-- STEP 2: 設問 -->
     <section class="card">
-      <h2>STEP 2｜10問の自己評価に回答</h2>
+  <h2>STEP 2｜10問の自己評価に回答</h2>
 
-      <!-- 1行の凡例 -->
-      <div class="qgrid muted" style="font-size:12px; margin-bottom:6px;">
+  <!-- 1行の凡例 -->
+  <div class="qgrid muted" style="font-size:12px; margin-bottom:6px;">
+    <div></div>
+    <div class="choice">全くない</div>
+    <div class="choice">少し</div>
+    <div class="choice">普通</div>
+    <div class="choice">かなり</div>
+    <div class="choice">とてもある</div>
+  </div>
+
+  <!-- 静的に10問を配置（name=q1..q10、デフォルト=普通(3)） -->
+  <div id="questions">
+    <fieldset>
+      <legend>1. ChatGPTなどのAIツールを業務で使ったことはありますか？</legend>
+      <div class="qgrid">
         <div></div>
-        <div class="choice">全くない</div>
-        <div class="choice">少し</div>
-        <div class="choice">普通</div>
-        <div class="choice">かなり</div>
-        <div class="choice">とてもある</div>
+        <label class="choice"><input type="radio" name="q1" value="1"></label>
+        <label class="choice"><input type="radio" name="q1" value="2"></label>
+        <label class="choice"><input type="radio" name="q1" value="3" checked></label>
+        <label class="choice"><input type="radio" name="q1" value="4"></label>
+        <label class="choice"><input type="radio" name="q1" value="5"></label>
       </div>
+    </fieldset>
 
-      <!-- 質問生成先 -->
-      <div id="questions"></div>
-
-      <div class="right" style="margin-top:14px;">
-        <button id="btn-diagnose" class="btn primary">診断する</button>
+    <fieldset>
+      <legend>2. プロンプト（AIへの指示文）を工夫して出力を改善した経験はありますか？</legend>
+      <div class="qgrid">
+        <div></div>
+        <label class="choice"><input type="radio" name="q2" value="1"></label>
+        <label class="choice"><input type="radio" name="q2" value="2"></label>
+        <label class="choice"><input type="radio" name="q2" value="3" checked></label>
+        <label class="choice"><input type="radio" name="q2" value="4"></label>
+        <label class="choice"><input type="radio" name="q2" value="5"></label>
       </div>
-    </section>
+    </fieldset>
 
-    <!-- STEP 3: 結果 -->
-    <section class="card" id="result-card">
-      <h2>STEP 3｜診断結果</h2>
-      <p class="result">
-        <span>AI偏差値：</span>
-        <span class="score"><span id="score-out">--</span></span>
-        <span class="pill">レベル：<span id="lv-label">--</span></span>
-      </p>
-      <p id="result-lead" class="lead muted" style="margin-top:4px;">診断後にサマリを表示します。</p>
-      <ul id="result-bullets" class="bullets"></ul>
-
-      <div id="detail-lock-msg" class="warn" style="display:none; margin-top:10px;">
-        ※ <b>メール登録が必要です。</b>登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
+    <fieldset>
+      <legend>3. AIで作った成果物の品質レビュー（基準）が社内にありますか？</legend>
+      <div class="qgrid">
+        <div></div>
+        <label class="choice"><input type="radio" name="q3" value="1"></label>
+        <label class="choice"><input type="radio" name="q3" value="2"></label>
+        <label class="choice"><input type="radio" name="q3" value="3" checked></label>
+        <label class="choice"><input type="radio" name="q3" value="4"></label>
+        <label class="choice"><input type="radio" name="q3" value="5"></label>
       </div>
+    </fieldset>
 
-      <div class="row" style="margin-top:14px;">
-        <a id="lp-link" class="btn primary" href="./exo_lp.html#courses" aria-disabled="true" title="メール登録すると詳細を表示できます">診断結果の詳細を見る</a>
+    <fieldset>
+      <legend>4. 得られた成果をテンプレ／型として蓄積し再利用していますか？</legend>
+      <div class="qgrid">
+        <div></div>
+        <label class="choice"><input type="radio" name="q4" value="1"></label>
+        <label class="choice"><input type="radio" name="q4" value="2"></label>
+        <label class="choice"><input type="radio" name="q4" value="3" checked></label>
+        <label class="choice"><input type="radio" name="q4" value="4"></label>
+        <label class="choice"><input type="radio" name="q4" value="5"></label>
       </div>
+    </fieldset>
 
-      <div id="hint-detail" class="hint" style="margin-top:10px;">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</div>
-    </section>
+    <fieldset>
+      <legend>5. 複数の業務ツールとAIを組み合わせて効率化できていますか？</legend>
+      <div class="qgrid">
+        <div></div>
+        <label class="choice"><input type="radio" name="q5" value="1"></label>
+        <label class="choice"><input type="radio" name="q5" value="2"></label>
+        <label class="choice"><input type="radio" name="q5" value="3" checked></label>
+        <label class="choice"><input type="radio" name="q5" value="4"></label>
+        <label class="choice"><input type="radio" name="q5" value="5"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>6. AIの出力に関するセキュリティ・ルールが整備されていますか？</legend>
+      <div class="qgrid">
+        <div></div>
+        <label class="choice"><input type="radio" name="q6" value="1"></label>
+        <label class="choice"><input type="radio" name="q6" value="2"></label>
+        <label class="choice"><input type="radio" name="q6" value="3" checked></label>
+        <label class="choice"><input type="radio" name="q6" value="4"></label>
+        <label class="choice"><input type="radio" name="q6" value="5"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>7. 部門横断でAI活用のガイドラインや成功事例を共有していますか？</legend>
+      <div class="qgrid">
+        <div></div>
+        <label class="choice"><input type="radio" name="q7" value="1"></label>
+        <label class="choice"><input type="radio" name="q7" value="2"></label>
+        <label class="choice"><input type="radio" name="q7" value="3" checked></label>
+        <label class="choice"><input type="radio" name="q7" value="4"></label>
+        <label class="choice"><input type="radio" name="q7" value="5"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>8. AIを用いた評価・検証（A/Bや指標化）を行えていますか？</legend>
+      <div class="qgrid">
+        <div></div>
+        <label class="choice"><input type="radio" name="q8" value="1"></label>
+        <label class="choice"><input type="radio" name="q8" value="2"></label>
+        <label class="choice"><input type="radio" name="q8" value="3" checked></label>
+        <label class="choice"><input type="radio" name="q8" value="4"></label>
+        <label class="choice"><input type="radio" name="q8" value="5"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>9. 自動化・RAG・エージェント等の本格運用に着手していますか？</legend>
+      <div class="qgrid">
+        <div></div>
+        <label class="choice"><input type="radio" name="q9" value="1"></label>
+        <label class="choice"><input type="radio" name="q9" value="2"></label>
+        <label class="choice"><input type="radio" name="q9" value="3" checked></label>
+        <label class="choice"><input type="radio" name="q9" value="4"></label>
+        <label class="choice"><input type="radio" name="q9" value="5"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>10. 新しいAI機能・ツールを定期的に試し、評価していますか？</legend>
+      <div class="qgrid">
+        <div></div>
+        <label class="choice"><input type="radio" name="q10" value="1"></label>
+        <label class="choice"><input type="radio" name="q10" value="2"></label>
+        <label class="choice"><input type="radio" name="q10" value="3" checked></label>
+        <label class="choice"><input type="radio" name="q10" value="4"></label>
+        <label class="choice"><input type="radio" name="q10" value="5"></label>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="right" style="margin-top:14px;">
+    <button id="btn-diagnose" class="btn primary">診断する</button>
+  </div>
+</section>
+
   </main>
 
   <!-- =============== JS =============== -->
