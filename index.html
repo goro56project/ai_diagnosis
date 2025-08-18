@@ -103,6 +103,22 @@ document.addEventListener('DOMContentLoaded', () => {
   links.forEach((el, i) => { if (i > 0) el.remove(); });
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // 「個別相談を予約」が複数ある場合、2個目以降を削除
+  const consultLinks = Array.from(document.querySelectorAll('a'))
+    .filter(a => a.textContent.trim() === '個別相談を予約');
+  consultLinks.slice(1).forEach(el => {
+    const card = el.closest('.card');
+    // 「詳細を見る」ボタンが無い“相談だけのカード”はカードごと削除
+    if (card && !card.querySelector('#lp-link')) {
+      card.remove();
+    } else {
+      el.remove();
+    }
+  });
+});
+</script>
 
 <body>
   <header>
