@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>AI偏差値診断｜メール登録→診断→結果メール</title>
 
-  <!-- GA4 (一箇所に集約) -->
+  <!-- GA4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -19,6 +19,10 @@
     *{ box-sizing:border-box; }
     body{ font-family:system-ui, -apple-system, Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin:0; color:var(--ink); background:var(--bg);}
     header{ background:#fff; border-bottom:1px solid #eee; padding:18px; text-align:center; }
+    header .wrap{max-width:980px;margin:0 auto;}
+    header .title-lg{ font-size:clamp(28px, 4vw, 40px); line-height:1.2; font-weight:800; letter-spacing:.02em; margin:4px 0 6px; }
+    .sublead{ color:#475569; font-size:clamp(14px, 1.6vw, 16px); margin:6px 0 0; }
+
     main{ max-width:980px; margin:24px auto; padding:0 16px 60px 16px; }
     .card{ background:var(--card); border-radius:14px; box-shadow:0 6px 20px rgba(0,0,0,.06); padding:22px; margin:16px 0; }
     h1{ font-size:22px; margin:0;}
@@ -27,9 +31,7 @@
     .muted{ color:var(--muted); }
     .lead{ line-height:1.7; }
     .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
-    input[type="email"], select, .btn, .btn-link{
-      font:inherit; padding:12px 14px; border-radius:10px; border:1px solid #ddd; background:#fff;
-    }
+    input[type="email"], select, .btn, .btn-link{ font:inherit; padding:12px 14px; border-radius:10px; border:1px solid #ddd; background:#fff; }
     .btn{ cursor:pointer; }
     .btn.primary{ background:var(--brand); border-color:var(--brand); color:#fff; }
     .btn.ghost{ background:#fff; border-color:#ddd; color:var(--ink); }
@@ -37,8 +39,19 @@
     .btn[aria-disabled="true"]{ opacity:.6; cursor:not-allowed; }
     .pill{ display:inline-block; background:#eee; padding:.25em .6em; border-radius:999px; font-size:.9em;}
     fieldset{ border:1px solid #eee; border-radius:12px; padding:14px; margin:10px 0;}
-    .qgrid{ display:grid; grid-template-columns: 1fr repeat(5, minmax(60px, 80px)); gap:8px 12px; align-items:center;}
-    .qgrid .choice{ text-align:center; }
+
+    /* 設問レイアウト（重なり防止） */
+    .qgrid{ display:grid; grid-template-columns: 1fr repeat(5, 64px); gap: 8px 12px; align-items:center; }
+    .qgrid .choice{ text-align:center; display:flex; align-items:center; justify-content:center; height:40px; }
+    .qgrid .choice input{ width:20px; height:20px; }
+    @media (max-width: 960px){ .qgrid{ grid-template-columns: 1fr repeat(5, 52px); gap:8px; } }
+    @media (max-width: 680px){
+      .qgrid{ grid-template-columns: repeat(5, 1fr); gap:10px; }
+      .qgrid > div:first-child{ grid-column:1 / -1; height:6px; }
+      fieldset legend{ margin-bottom:8px; }
+    }
+    @media (max-width: 380px){ .qgrid .choice input{ transform:scale(1.1); } }
+
     .result{ display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
     .score{ font-size:28px; color:var(--brand); font-weight:700; }
     ul.bullets{ margin:8px 0 0 20px; }
@@ -46,115 +59,16 @@
     .hint{ font-size:12px; color:#777; }
     .warn{ font-size:12px; color:var(--warn); background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; border-radius:10px; }
     .focus{ outline:2px solid var(--brand); outline-offset:2px; }
-    <style>
-  /* Header size & layout */
-  header .wrap{max-width:980px;margin:0 auto;}
-  header .title-lg{
-    font-size:clamp(28px, 4vw, 40px);
-    line-height:1.2;
-    font-weight:800;
-    letter-spacing:.02em;
-    margin:4px 0 6px;
-  }
-  .sublead{
-    color:#475569;
-    font-size:clamp(14px, 1.6vw, 16px);
-    margin:6px 0 0;
-  }
-</style>
-
   </style>
-  <style>
-  /* === 設問レイアウト修正（重なり防止＆モバイル最適化）=== */
-  /* デスクトップ：質問テキスト用 1fr + ラジオ 5列（64px） */
-  .qgrid{
-    display:grid;
-    grid-template-columns: 1fr repeat(5, 64px);
-    gap: 8px 12px;
-    align-items:center;
-  }
-  /* クリックしやすい丸ボタンに */
-  .qgrid .choice{
-    display:flex; align-items:center; justify-content:center;
-    height:40px; /* タップ領域を確保 */
-  }
-  .qgrid .choice input{ width:20px; height:20px; }
-
-  /* タブレット：列幅を圧縮 */
-  @media (max-width: 960px){
-    .qgrid{
-      grid-template-columns: 1fr repeat(5, 52px);
-      gap: 8px;
-    }
-  }
-
-  /* スマホ：質問文と選択肢を段落け（5個を均等割り） */
-  @media (max-width: 680px){
-    .qgrid{
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-    }
-    /* 先頭のダミーセルを改行用スペーサーに（重なり防止） */
-    .qgrid > div:first-child{
-      grid-column: 1 / -1;
-      height: 6px;
-    }
-    fieldset legend{ margin-bottom: 8px; } /* 質問文と丸の間に余白 */
-  }
-
-  /* さらに狭い端末での微調整 */
-  @media (max-width: 380px){
-    .qgrid .choice input{ transform: scale(1.1); } /* 視認性を確保 */
-  }
-</style>
-
 </head>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // 結果カードの重複を除去
-  const cards = document.querySelectorAll('section#result-card');
-  cards.forEach((el, i) => { if (i > 0) el.remove(); });
-
-  // 念のため、詳細ボタンの重複も除去
-  const links = document.querySelectorAll('#lp-link');
-  links.forEach((el, i) => { if (i > 0) el.remove(); });
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // 「個別相談を予約」が複数ある場合、2個目以降を削除
-  const consultLinks = Array.from(document.querySelectorAll('a'))
-    .filter(a => a.textContent.trim() === '個別相談を予約');
-  consultLinks.slice(1).forEach(el => {
-    const card = el.closest('.card');
-    // 「詳細を見る」ボタンが無い“相談だけのカード”はカードごと削除
-    if (card && !card.querySelector('#lp-link')) {
-      card.remove();
-    } else {
-      el.remove();
-    }
-  });
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // 同じ文言のヒントが複数ある場合、#hint-detail 以外を削除
-  const dup = Array.from(document.querySelectorAll('.hint'))
-    .filter(el => el.textContent.trim() === 'メール未登録の場合、結果メール送信と詳細表示はスキップされます。'
-               && el.id !== 'hint-detail');
-  dup.forEach(el => el.remove());
-});
-</script>
 
 <body>
   <header>
-  <div class="wrap">
-    <h1 class="title-lg">AI偏差値診断</h1>
-    <p class="sublead">
-      AIの基礎知識・活用経験と、ChatGPT／GASなどを使った業務改善スキルを、10問でかんたんに測定します。
-    </p>
-  </div>
-</header>
+    <div class="wrap">
+      <h1 class="title-lg">AI偏差値診断</h1>
+      <p class="sublead">AIの基礎知識・活用経験と、ChatGPT／GASなどを使った業務改善スキルを、10問でかんたんに測定します。</p>
+    </div>
+  </header>
 
   <main>
     <!-- STEP 1: メール登録（任意） -->
@@ -195,37 +109,25 @@ document.addEventListener('DOMContentLoaded', () => {
     </section>
 
     <!-- STEP 3: 結果 -->
-<section class="card" id="result-card">
-  <h2>STEP 3｜診断結果</h2>
-  <p class="result">
-    <span>AI偏差値：</span>
-    <span class="score"><span id="score-out">--</span></span>
-    <span class="pill">レベル：<span id="lv-label">--</span></span>
-  </p>
-  <p id="result-lead" class="lead muted" style="margin-top:4px;">診断後にサマリを表示します。</p>
-  <ul id="result-bullets" class="bullets"></ul>
+    <section class="card" id="result-card">
+      <h2>STEP 3｜診断結果</h2>
+      <p class="result">
+        <span>AI偏差値：</span>
+        <span class="score"><span id="score-out">--</span></span>
+        <span class="pill">レベル：<span id="lv-label">--</span></span>
+      </p>
+      <p id="result-lead" class="lead muted" style="margin-top:4px;">診断後にサマリを表示します。</p>
+      <ul id="result-bullets" class="bullets"></ul>
 
-  <div id="detail-lock-msg" class="warn" style="display:none; margin-top:10px;">
-    ※ <b>メール登録が必要です。</b>登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
-  </div>
-
-  <div class="row" style="margin-top:14px;">
-    <a id="lp-link" class="btn primary" href="./exo_lp.html#courses" aria-disabled="true" title="メール登録すると詳細を表示できます">診断結果の詳細を見る</a>
-  </div>
-
-  <div class="hint" style="margin-top:10px;">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</div>
-</section>
-
-      <div class="row" style="margin-top:14px;">
-        <!-- ここが詳細表示ボタン（メール登録がないと無効） -->
-        <a id="lp-link" class="btn primary" href="./exo_lp.html#courses" aria-disabled="true" title="メール登録すると詳細を表示できます">診断結果の詳細を見る</a>
-        <a class="btn ghost" href="#" id="btn-consult">個別相談を予約</a>
+      <div id="detail-lock-msg" class="warn" style="display:none; margin-top:10px;">
+        ※ <b>メール登録が必要です。</b>登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
       </div>
 
-      <div id="hint-detail" class="hint" style="margin-top:10px;">
-  メール未登録の場合、結果メール送信と詳細表示はスキップされます。
-</div>
+      <div class="row" style="margin-top:14px;">
+        <a id="lp-link" class="btn primary" href="./exo_lp.html#courses" aria-disabled="true" title="メール登録すると詳細を表示できます">診断結果の詳細を見る</a>
+      </div>
 
+      <div id="hint-detail" class="hint" style="margin-top:10px;">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</div>
     </section>
   </main>
 
@@ -236,13 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const LP_PATH = "./exo_lp.html"; // LPファイル（同一フォルダ）
 
   /*** 状態 ***/
-  const state = {
-    email: "",
-    score: null,
-    levelLabel: "",
-    lvKey: "",
-    answers: {} // {q1:1..5,...}
-  };
+  const state = { email: "", score: null, levelLabel: "", lvKey: "", answers: {} };
 
   /*** 質問の生成 ***/
   const QUESTIONS = [
@@ -257,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
     "自動化・RAG・エージェント等の本格運用に着手していますか？",
     "新しいAI機能・ツールを定期的に試し、評価していますか？"
   ];
-
   const $qsWrap = document.getElementById("questions");
   QUESTIONS.forEach((label, idx) => {
     const n = "q" + (idx + 1);
@@ -265,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const lg = document.createElement("legend");
     lg.textContent = `${idx+1}. ${label}`;
     fs.appendChild(lg);
-
     const grid = document.createElement("div");
     grid.className = "qgrid";
     grid.innerHTML = `
@@ -284,14 +178,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function gatherAnswers() {
     const a = {};
     for (let i=1;i<=10;i++){
-      const sel = document.querySelector(`input[name="q${i}"]:checked`);
-      a["q"+i] = sel ? Number(sel.value) : 3; // 未回答は普通=3
+      const sel = document.querySelector(\`input[name="q\${i}"]:checked\`);
+      a["q"+i] = sel ? Number(sel.value) : 3;
     }
     return a;
   }
   function calcScore(answers){
-    const sum = Object.values(answers).reduce((s,v)=>s+Number(v||0),0); // 10〜50
-    return Math.max(0, Math.min(100, Math.round(sum * 2))); // 0〜100にスケール
+    const sum = Object.values(answers).reduce((s,v)=>s+Number(v||0),0);
+    return Math.max(0, Math.min(100, Math.round(sum * 2)));
   }
   function levelFrom(score){
     if (score>=70) return {label:"先進層", key:"practical"};
@@ -316,21 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
     practical:"評価・検証〜運用設計までを含め、再現性のある仕組み化へ踏み込みましょう。"
   };
   const BULLETS = {
-    entry:[
-      "基本リテラシーと安全ルールを整備",
-      "業務テンプレ/良いプロンプトの型を準備",
-      "小さく試して成功体験を蓄積"
-    ],
-    middle:[
-      "業務テンプレの整備と自動化の入口",
-      "評価・検証フレームとA/B運用",
-      "短期集中プラン（成果レビュー）"
-    ],
-    practical:[
-      "要件整理・導入ロードマップの設計",
-      "運用SLA設計とガバナンス",
-      "RAG/エージェントの社内展開"
-    ]
+    entry:["基本リテラシーと安全ルールを整備","業務テンプレ/良いプロンプトの型を準備","小さく試して成功体験を蓄積"],
+    middle:["業務テンプレの整備と自動化の入口","評価・検証フレームとA/B運用","短期集中プラン（成果レビュー）"],
+    practical:["要件整理・導入ロードマップの設計","運用SLA設計とガバナンス","RAG/エージェントの社内展開"]
   };
 
   function renderResult(){
@@ -338,7 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
     $lvLabel.textContent  = state.levelLabel || "--";
     $lead.textContent     = LEADS[state.lvKey] || "";
     $bullets.innerHTML    = (BULLETS[state.lvKey]||[]).map(t=>`<li>${t}</li>`).join("");
-    // 詳細ボタンのロック表示
     const locked = !state.email;
     $lpLink.setAttribute('aria-disabled', locked ? 'true' : 'false');
     $lpLink.title = locked ? 'メール登録すると詳細を表示できます' : '診断結果の詳細を見る';
@@ -347,17 +228,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /*** GAS 連携（任意） ***/
   async function postGAS(payload){
-    try{
-      await fetch(GAS_URL, { method:"POST", body: JSON.stringify(payload) });
-    }catch(_){ /* 失敗してもUIは継続 */ }
+    try{ await fetch(GAS_URL, { method:"POST", body: JSON.stringify(payload) }); }catch(_){}
   }
 
-  /*** LP遷移：クエリ引き継ぎ＋計測（open_hub） ***/
+  /*** LP遷移：クエリ引き継ぎ＋計測 ***/
   (function initClickSend(){
     $lpLink.addEventListener("click", (e)=>{
       e.preventDefault();
-
-      // 直前の選択から再計算
       state.answers = gatherAnswers();
       state.score   = calcScore(state.answers);
       const lv      = levelFrom(state.score);
@@ -365,28 +242,23 @@ document.addEventListener('DOMContentLoaded', () => {
       state.lvKey      = lv.key;
       renderResult();
 
-      // ガード：メール未登録は遷移させない
       if (!state.email){
-        // フォームへ誘導
         $secReg.scrollIntoView({behavior:"smooth", block:"start"});
         $email.classList.add('focus');
         setTimeout(()=> $email.classList.remove('focus'), 1500);
         return;
       }
 
-      // GA4 計測
       if (typeof gtag === "function") {
         gtag('event', 'open_hub', { event_category: 'Navigation', event_label: 'to_exo_lp' });
       }
 
-      // URLにクエリで付与
       const url = new URL(LP_PATH, location.href);
       url.searchParams.set("score", String(state.score));
       url.searchParams.set("level", state.levelLabel);
       url.searchParams.set("lv",    state.lvKey);
       url.hash = "#courses";
 
-      // バックアップ
       localStorage.setItem("ai_diag_payload",
         JSON.stringify({ score:state.score, levelLabel:state.levelLabel, lvKey:state.lvKey, ts:Date.now() })
       );
@@ -417,19 +289,10 @@ document.addEventListener('DOMContentLoaded', () => {
     state.levelLabel = lv.label;
     state.lvKey      = lv.key;
     renderResult();
-
-    // GASへ結果送信（任意）
     if (state.email){
       await postGAS({ type:"result", email:state.email, score:state.score, answers:state.answers });
     }
-    // 結果へスクロール
     document.getElementById("result-card").scrollIntoView({behavior:"smooth"});
-  });
-
-  // 相談ボタン（必要ならリンク先を書き換え）
-  document.getElementById("btn-consult").addEventListener("click",(e)=>{
-    e.preventDefault();
-    alert("個別相談の導線を設定してください（Calendly/フォーム等のURL）");
   });
   </script>
 </body>
