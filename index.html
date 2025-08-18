@@ -92,6 +92,17 @@
 </style>
 
 </head>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // 結果カードの重複を除去
+  const cards = document.querySelectorAll('section#result-card');
+  cards.forEach((el, i) => { if (i > 0) el.remove(); });
+
+  // 念のため、詳細ボタンの重複も除去
+  const links = document.querySelectorAll('#lp-link');
+  links.forEach((el, i) => { if (i > 0) el.remove(); });
+});
+</script>
 
 <body>
   <header>
