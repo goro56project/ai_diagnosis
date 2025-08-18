@@ -18,7 +18,7 @@
     #diag-detail .bullets{margin:.4rem 0 0 1.2rem}
     /* ボタン */
     #diag-detail .go{display:inline-block;margin-top:8px;border:1px solid #111827;border-radius:999px;padding:10px 16px;text-decoration:none;background:#111827;color:#fff}
-    /* コース強調 */
+    /* コース強調（LP内で使う可能性があるため残置、遷移型でも害なし） */
     #courses .card.__hl{outline:3px solid #7356b6;box-shadow:0 10px 26px rgba(115,86,182,.25)}
   </style>
 
@@ -65,7 +65,7 @@
     </div>
 
     <div style="text-align:center;margin-top:8px;">
-      <a href="#courses" class="go" id="dd-reco">おすすめコースを見る</a>
+      <a href="exo_courses.html" class="go" id="dd-reco">おすすめコースを見る</a>
     </div>
   </div>
 </section>
@@ -96,6 +96,7 @@
   const ddLevel = document.getElementById('dd-level');
   const ddLead  = document.getElementById('dd-lead');
   const advBody = document.getElementById('lv-adv-body');
+  const recoBtn = document.getElementById('dd-reco');
 
   // ---- ラベル定義 ----
   const LV_LABEL = { entry:'入門層', middle:'初級〜中級', practical:'実践層', advanced:'先進層' };
@@ -173,40 +174,16 @@
   ddLead.innerHTML = c.lead;
   advBody.innerHTML = c.adviceHTML || '';
 
+  // ---- 「おすすめコースを見る」の遷移先を専用ページに（診断のクエリを引き継ぐ） ----
+  if (recoBtn){
+    const qs = location.search || (Number.isFinite(score) ? `?score=${encodeURIComponent(score)}&level=${encodeURIComponent(ddLevel.textContent)}&lv=${encodeURIComponent(lvKey||'')}` : '');
+    recoBtn.href = 'exo_courses.html' + qs;
+  }
+
   // ---- 計測（任意） ----
   if (typeof gtag === 'function') {
     gtag('event', 'detail_shown', { event_category:'Navigation', event_label: lvKey || 'unknown' });
   }
-
-  // ---- 「おすすめコースを見る」クリックでスクロール＆ハイライト ----
-  document.getElementById('dd-reco').addEventListener('click', function(e){
-    e.preventDefault();
-    const mapIndex = { entry:0, middle:1, practical:2, advanced:2 }; // advancedはpracticalを強調
-    const cards = document.querySelectorAll('#courses .row .card, #courses [data-card]');
-    const idx = mapIndex[lvKey] ?? 0;
-    if (cards[idx]) {
-      document.getElementById('courses').scrollIntoView({ behavior:'smooth', block:'start' });
-      cards[idx].classList.add('__hl');
-      setTimeout(()=>cards[idx].classList.remove('__hl'), 5000);
-    } else {
-      location.hash = '#courses';
-    }
-  });
 })();
 </script>
 <!-- ▲▲ ここまで：診断結果の詳細 ▲▲ -->
-
-<!-- 以下、#courses セクションはそのままでOK（変更なし） -->
-<script>
-  // 「おすすめコースを見る」を exo_courses.html へ遷移させ、
-  // さらに score/level/lv のクエリもそのまま引き継ぐ。
-  // 既存のクリックハンドラを無効化するため、要素ごと置き換えます。
-  document.addEventListener('DOMContentLoaded', function(){
-    const link = document.getElementById('dd-reco');
-    if (!link) return;
-    const newLink = link.cloneNode(true);            // 既存のイベントを持たないクローンを作成
-    newLink.href = 'exo_courses.html' + location.search;  // クエリ付きで遷移
-    link.replaceWith(newLink);                       // 置き換え＝古いハンドラも消える
-  });
-</script>
-
