@@ -30,7 +30,8 @@
   footer{margin:28px 0 8px;text-align:center;color:#94a3b8}
 </style>
 </head>
-  <script>
+
+<script>
 document.addEventListener('DOMContentLoaded', () => {
   try {
     const sp = new URLSearchParams(location.search);
@@ -208,98 +209,18 @@ document.addEventListener('DOMContentLoaded', () => {
     <!-- 申込/問合せ -->
     <section class="card" id="contact">
       <h2>お申し込み / お問い合わせ</h2>
-      <p class="warn">※ 決済・フォームは未設定です。ここに Stripe の支払いリンクや Googleフォーム / Typeform を設置してください。</p>
+      <p class="warn">以下のボタンから<strong>本番環境のStripe決済</strong>に進めます。お支払い完了後、受講URLが自動送信されます。</p>
       <ul class="muted" style="margin:.6rem 0 1rem 1.2rem">
-        <li>推奨：Stripe 支払いリンク（<span class="price">¥980</span>、商品名：各コース名）</li>
-        <li>フォーム項目：氏名・メール・希望開始時期・請求書要否 など</li>
+        <li>決済金額：<span class="price">¥980</span>（税込）</li>
+        <li>商品名：各コース名（このページのコース）</li>
       </ul>
       <div class="row">
-        <a href="#" class="btn" id="pay-link">Stripe決済リンク（仮）</a>
-        <a href="#" class="btn ghost" id="contact-link">お問い合わせフォーム（仮）</a>
+        <a href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener" class="btn" id="pay-link">Stripe決済リンク</a>
+        <a href="#" class="btn ghost" id="contact-link">お問い合わせフォーム（準備中）</a>
       </div>
     </section>
 
     <footer>© ExoVisionary Hub</footer>
   </main>
-
-<script>
-/* ========= コース定義 ========= */
-const COURSES = {
-  entry: {
-    badge: '入門〜初級向け',
-    title: 'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）',
-    lead: 'AI初心者や40–50代のビジネス層に向けた短期ブート。安全に使い、良い指示を出し、まずは「資料/メール/デザイン補助」で成果を出すことがゴールです。うまくいった指示はテンプレ化して、誰でも再現できる状態へ。',
-    skills: [
-      'AIリテラシー：情報の扱い、社外秘/公開、NGケース、ガバナンスの基本',
-      'ChatGPT基礎：モデル・モード、要約/言い換え/トーン調整、校正・添削',
-      'プロンプト設計：目的→制約→入出力→評価観点、Few-shot、ステップ分解',
-      'スライド/デザイン補助：図解プロンプトの作り方、画像生成の基礎（バナー/挿絵）',
-      '成果の“型化”：成功指示をテンプレ化し、チームで再現'
-    ],
-    modules: [
-      '安全・ルール・型（60分）／プロンプト雛形を3本作る',
-      '資料×メール×要約（90分）／骨子→章立て→本文→要約',
-      '画像生成の基礎（60分）／バナー2案→比較→リライト',
-      'ミニ改善の回し方（60分）／Before/Afterと評価観点の言語化'
-    ],
-    hands: [
-      '10枚スライドの叩き台＋議事メモ→要約→アクション抽出＋社内案内メール',
-      '画像2点（タイトルバナー・図解アイコン）',
-      'プロンプトライブラリ（成功/失敗/評価観点つき）'
-    ],
-    outcomes: [
-      'プロンプト集（再現手順つき）',
-      'テンプレ化した資料一式',
-      '簡易SOP'
-    ],
-    after: [
-      '社内向け資料・メール・要約を短時間で安定品質へ',
-      '「良い指示の型」をチーム共有し、再現性を確保'
-    ],
-    flow: [
-      'Day1：ルールと安全／良いプロンプトの型づくり',
-      'Day2：資料・メール・要約の時短体験',
-      'Day3：画像生成でスライド素材を作る',
-      'Day4：成功した指示をテンプレ化/共有'
-    ]
-  },
-  middle: {
-    badge: '初級〜中級向け',
-    title: 'MIDDLE｜AI×業務改善の入口（4–6週間）',
-    lead: 'うまくいく型を「半自動」にして、数字で回す段階。テンプレとチェックリストを業務の入口に差し込み、GASで受付→返信→記録→レポートまで繋ぎます。A/Bで差戻し原因TOP3から潰して、可視化まで運用。',
-    skills: [
-      '業務テンプレ整備：議事録/FAQ/メールの型化と運用',
-      'GAS入門〜半自動：フォーム→シート→自動返信→レポート',
-      '評価と改善：A/B運用／品質・再現性・時間の指標で回す',
-      '可視化：簡易KPIダッシュボード（Sheets＋自動更新）'
-    ],
-    modules: [
-      'テンプレ設計：入力→処理→出力の分解とチェックリスト化',
-      'GASで受付〜返信〜記録の一連化（Webhook/トリガー）',
-      'A/B検証の設計（プロンプト/テンプレ比較・指標の定義）',
-      'KPIダッシュボード（差戻し率・再現性・1件時間）'
-    ],
-    hands: [
-      'フォーム受付→一次返信→シート記録→週次レポートの半自動化',
-      '議事録・FAQ・メールのテンプレ3本を整備',
-      '評価指標（品質/再現性/時間）の週次レポート提出'
-    ],
-    outcomes: [
-      '“勝手に回る”半自動フロー',
-      'テンプレ/チェックリスト一式',
-      'KPIダッシュボード'
-    ],
-    after: [
-      '小さな業務を安定運用し、指標で継続改善できる',
-      '属人化を削減し、再現性を確保'
-    ],
-    flow: [
-      'Week1：テンプレとチェックリストの整備、入口に差し込み',
-      'Week2：GASで受付→返信→記録を一連化',
-      'Week3：A/B運用で差戻しTOP3を潰す',
-      'Week4：ダッシュボードで可視化・定例化'
-    ]
-  },
-  practical: {
-    badge: '実践〜先進向け',
-    title: 'PRACTICAL
+</body>
+</html>
