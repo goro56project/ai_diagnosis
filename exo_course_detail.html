@@ -119,6 +119,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
+    // コースごとの Stripe 決済URL（★ここを更新★）
+    const PAY_LINKS = {
+      entry:     'https://buy.stripe.com/bJecN42RHdU03IPb796Zy01',
+      middle:    'https://buy.stripe.com/fZu7sK3VLbLS5QXb796Zy02',
+      practical: 'https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03'
+    };
+
     const course = COURSES[courseKey] || COURSES.entry;
 
     // DOM 反映
@@ -143,12 +150,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (score !== '—') keep.set('score', score);
     if (level !== '—') keep.set('level', level);
     if (lv) keep.set('lv', lv);
-    const back = document.getElementById('btn-back');
+    const back = $('btn-back');
     if (back) back.href = 'exo_courses.html' + (keep.toString()?('?'+keep.toString()):'');
 
     // 申込ボタンは #contact へ
-    const apply = document.getElementById('btn-apply');
+    const apply = $('btn-apply');
     if (apply) apply.addEventListener('click',(e)=>{ e.preventDefault(); document.getElementById('contact').scrollIntoView({behavior:'smooth'}); });
+
+    // 支払いリンクをコース別に差し替え
+    const pay = $('pay-link');
+    if (pay) {
+      const href = PAY_LINKS[courseKey] || PAY_LINKS.entry;
+      pay.href = href;
+    }
 
   } catch(err){
     console.error('course detail init error:', err);
@@ -215,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <li>商品名：各コース名（このページのコース）</li>
       </ul>
       <div class="row">
+        <!-- ↓ JS でコース別に href を差し替えます -->
         <a href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener" class="btn" id="pay-link">Stripe決済リンク</a>
         <a href="#" class="btn ghost" id="contact-link">お問い合わせフォーム（準備中）</a>
       </div>
