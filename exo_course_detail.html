@@ -35,10 +35,18 @@
 document.addEventListener('DOMContentLoaded', () => {
   try {
     const sp = new URLSearchParams(location.search);
-    const courseKey = (sp.get('course')||'entry').toLowerCase();
+    // ページURLの ?course= に合わせてコースを判定
+    const courseKey = ((sp.get('course') || 'entry') + '').toLowerCase();
     const score = sp.get('score') || '—';
     const level = sp.get('level') || '—';
     const lv    = (sp.get('lv')||'').toLowerCase();
+
+    // コースごとのStripe決済URL
+    const STRIPE_LINKS = {
+      entry:      'https://buy.stripe.com/bJecN42RHdU03IPb796Zy01',
+      middle:     'https://buy.stripe.com/fZu7sK3VLbLS5QXb796Zy02',
+      practical:  'https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03'
+    };
 
     const COURSES = {
       entry: {
@@ -119,13 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    // コースごとの Stripe 決済URL（★ここを更新★）
-    const PAY_LINKS = {
-      entry:     'https://buy.stripe.com/bJecN42RHdU03IPb796Zy01',
-      middle:    'https://buy.stripe.com/fZu7sK3VLbLS5QXb796Zy02',
-      practical: 'https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03'
-    };
-
     const course = COURSES[courseKey] || COURSES.entry;
 
     // DOM 反映
@@ -153,17 +154,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const back = $('btn-back');
     if (back) back.href = 'exo_courses.html' + (keep.toString()?('?'+keep.toString()):'');
 
-    // 申込ボタンは #contact へ
+    // 申込ボタンは #contact へスクロール
     const apply = $('btn-apply');
-    if (apply) apply.addEventListener('click',(e)=>{ e.preventDefault(); document.getElementById('contact').scrollIntoView({behavior:'smooth'}); });
+    if (apply) apply.addEventListener('click',(e)=>{ e.preventDefault(); $('contact').scrollIntoView({behavior:'smooth'}); });
 
-    // 支払いリンクをコース別に差し替え
-    const pay = $('pay-link');
-    if (pay) {
-      const href = PAY_LINKS[courseKey] || PAY_LINKS.entry;
-      pay.href = href;
+    // ★ ここで決済リンクをコース別に差し替え
+    const payLink = $('pay-link');
+    if (payLink) {
+      payLink.href = STRIPE_LINKS[courseKey] || STRIPE_LINKS.entry;
+      // 念のため rel の安全設定
+      payLink.setAttribute('rel','noopener');
+      // デバッグ用にコース表示（消してOK）
+      // console.log('courseKey=', courseKey, '→ payLink=', payLink.href);
     }
-
   } catch(err){
     console.error('course detail init error:', err);
   }
@@ -229,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <li>商品名：各コース名（このページのコース）</li>
       </ul>
       <div class="row">
-        <!-- ↓ JS でコース別に href を差し替えます -->
         <a href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener" class="btn" id="pay-link">Stripe決済リンク</a>
         <a href="#" class="btn ghost" id="contact-link">お問い合わせフォーム（準備中）</a>
       </div>
