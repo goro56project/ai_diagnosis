@@ -255,8 +255,8 @@
       </div>
 
       <div class="row" style="margin-top:14px;">
-        <!-- ★ここを修正：詳細ページは exo_courses.html -->
-        <a id="lp-link" class="btn primary" href="./exo_courses.html" aria-disabled="true" title="メール登録すると詳細を表示できます">診断結果の詳細を見る</a>
+        <!-- 診断後にスコア付きURLを代入する。初期は無効化 -->
+        <a id="lp-link" class="btn primary" href="#" aria-disabled="true" title="メール登録すると詳細を表示できます">診断結果の詳細を見る</a>
       </div>
 
       <div class="hint" style="margin-top:10px;">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</div>
@@ -337,10 +337,14 @@
     }
     function renderResult(){
       $scoreOut.textContent = (state.score ?? "--");
-      $lvLabel.textContent  = state.levelLabel || "--";
-      const leadText = {entry:LEADS.entry, middle:LEADS.middle, practical:LEADS.practical}[state.lvKey] || " ";
-      $lead.textContent = leadText;
+      const lv = levelFrom(state.score);
+      state.levelLabel = lv.label;
+      state.lvKey = lv.key;
+      $lvLabel.textContent = state.levelLabel;
+      $lead.textContent = {entry:LEADS.entry, middle:LEADS.middle, practical:LEADS.practical}[state.lvKey] || "";
       $bullets.innerHTML = (BULLETS[state.lvKey]||[]).map(t=>`<li>${t}</li>`).join("");
+      // 診断済みのスコアを詳細ページへ渡す
+      $lpLink.href = `./exo_courses.html?score=${state.score}`;
       updateLockUI();
       document.getElementById("result-card").scrollIntoView({behavior:"smooth", block:"start"});
     }
@@ -349,9 +353,6 @@
     $btnDiag.addEventListener("click", () => {
       state.answers = gatherAnswers();
       state.score   = calcScore(state.answers);
-      const lv      = levelFrom(state.score);
-      state.levelLabel = lv.label;
-      state.lvKey      = lv.key;
       logNoCors({mode:"result", email: state.email || "(noemail)", score: state.score, answers: state.answers, timestamp: Date.now()});
       renderResult();
     });
@@ -378,9 +379,6 @@
       state.email = v;
       state.answers = answers;
       state.score = score;
-      const lv = levelFrom(score);
-      state.levelLabel = lv.label;
-      state.lvKey = lv.key;
 
       renderResult();
       alert("登録が完了しました。詳細表示が有効になりました。");
