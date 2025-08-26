@@ -18,6 +18,10 @@
     :root { --brand:#7356b6; --ink:#222; --card:#fff; --bg:#f5f3ff; --muted:#666; --warn:#b45309; }
     *{ box-sizing:border-box; }
     body{ font-family:system-ui, -apple-system, Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin:0; color:var(--ink); background:var(--bg);}
+    .toplinks{ text-align:center; font-size:14px; padding:10px 8px 0; }
+    .toplinks a{ color:#0a58ca; text-decoration:none; }
+    .toplinks a + a{ margin-left:12px; }
+
     header{ background:#fff; border-bottom:1px solid #eee; padding:18px; text-align:center; }
     header .wrap{max-width:980px;margin:0 auto;}
     header .title-lg{ font-size:clamp(28px, 4vw, 40px); line-height:1.2; font-weight:800; letter-spacing:.02em; margin:4px 0 6px; }
@@ -56,19 +60,22 @@
 
     /* 結果表示 */
     .result{ display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
-    .score{ font-size:28px; color:var(--brand); font-weight:700; }
+    .score{ font-size:28px; color:#41b; font-weight:700; }
     ul.bullets{ margin:8px 0 0 20px; }
+
+    footer{ text-align:center; font-size:14px; margin-top:40px; padding:20px; border-top:1px solid #ddd; }
+    footer a{ color:#0a58ca; text-decoration:none; }
+    footer a + a{ margin-left:12px; }
   </style>
 </head>
-<footer style="text-align:center; font-size:14px; margin-top:40px; padding:20px; border-top:1px solid #ddd;">
-  <p>
-    <a href="/terms.html" target="_blank">利用規約</a> ｜ 
-    <a href="/privacy.html" target="_blank">プライバシーポリシー</a> ｜ 
-    <a href="/law.html" target="_blank">特定商取引法に基づく表記</a>
-  </p>
-</footer>
-
 <body>
+  <!-- 画面上部の3リンク（絶対URL） -->
+  <div class="toplinks">
+    <a href="https://goro56project.github.io/ai_diagnosis/terms.html" target="_blank">利用規約</a>
+    <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank">プライバシーポリシー</a>
+    <a href="https://goro56project.github.io/ai_diagnosis/law.html" target="_blank">特定商取引法に基づく表記</a>
+  </div>
+
   <header>
     <div class="wrap">
       <h1 class="title-lg">AI偏差値診断</h1>
@@ -257,6 +264,15 @@
     </section>
   </main>
 
+  <!-- フッター（絶対URL） -->
+  <footer>
+    <p>
+      <a href="https://goro56project.github.io/ai_diagnosis/terms.html" target="_blank">利用規約</a>
+      <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank">プライバシーポリシー</a>
+      <a href="https://goro56project.github.io/ai_diagnosis/law.html" target="_blank">特定商取引法に基づく表記</a>
+    </p>
+  </footer>
+
   <!-- ===== JS ===== -->
   <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -286,10 +302,7 @@
       const a = {};
       for (let i=1;i<=QUESTIONS_COUNT;i++){
         let sel = document.querySelector(`input[name="q${i}"]:checked`);
-        if (!sel) { // 念のためフォールバック
-          const fallback = document.querySelector(`input[name="q${i}"][value="3"]`);
-          if (fallback) { fallback.checked = true; sel = fallback; }
-        }
+        if (!sel) { const fallback = document.querySelector(`input[name="q${i}"][value="3"]`); if (fallback) { fallback.checked = true; sel = fallback; } }
         a["q"+i] = sel ? Number(sel.value) : 3;
       }
       return a;
@@ -324,80 +337,4 @@
 
       const locked = !state.email;
       $lpLink.setAttribute('aria-disabled', locked ? 'true' : 'false');
-      $lpLink.title = locked ? 'メール登録すると詳細を表示できます' : '診断結果の詳細を見る';
-      $lockMsg.style.display = locked ? 'block' : 'none';
-    }
-
-    async function postGAS(payload){
-      try{ await fetch(GAS_URL, { method:"POST", body: JSON.stringify(payload) }); }catch(_){}
-    }
-
-    /*** イベント ***/
-    if ($btnReg) {
-      $btnReg.addEventListener("click", async ()=>{
-        const v = ($email.value||"").trim();
-        if(!v || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){ alert("メールアドレスを入力してください"); return; }
-        state.email = v;
-        await postGAS({ type:"register", email:v });
-        document.getElementById("register-note").innerHTML = "登録しました。診断後に<b>詳細（解説・おすすめコース）</b>を表示できます。";
-        renderResult();
-        alert("登録しました。診断後に詳細を見ることができます。");
-      });
-      // Enter で登録
-      $email?.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); $btnReg.click(); }});
-    }
-
-    $btnSkip?.addEventListener("click", ()=>{
-      const q = document.getElementById("questions");
-      if (q) window.scrollTo({top: q.offsetTop - 60, behavior:"smooth"});
-    });
-
-    $btnDiag?.addEventListener("click", async ()=>{
-      state.answers = gatherAnswers();
-      state.score   = calcScore(state.answers);
-      const lv      = levelFrom(state.score);
-      state.levelLabel = lv.label;
-      state.lvKey      = lv.key;
-      renderResult();
-      if (state.email){
-        await postGAS({ type:"result", email:state.email, score:state.score, answers:state.answers });
-      }
-      document.getElementById("result-card")?.scrollIntoView({behavior:"smooth"});
-    });
-
-    $lpLink?.addEventListener("click", (e)=>{
-      e.preventDefault();
-      // 最新を再計算
-      state.answers = gatherAnswers();
-      state.score   = calcScore(state.answers);
-      const lv      = levelFrom(state.score);
-      state.levelLabel = lv.label;
-      state.lvKey      = lv.key;
-      renderResult();
-
-      // 未登録は登録欄へ誘導
-      if (!state.email){
-        $secReg?.scrollIntoView({behavior:"smooth", block:"start"});
-        $email?.classList.add('focus'); setTimeout(()=> $email?.classList.remove('focus'), 1500);
-        return;
-      }
-
-      // GA計測
-      if (typeof gtag === "function") gtag('event', 'open_hub', { event_category: 'Navigation', event_label: 'to_exo_lp' });
-
-      // LPへクエリを付けて遷移
-      const url = new URL(LP_PATH, location.href);
-      url.searchParams.set("score", String(state.score));
-      url.searchParams.set("level", state.levelLabel);
-      url.searchParams.set("lv",    state.lvKey);
-      url.hash = "#courses";
-      localStorage.setItem("ai_diag_payload", JSON.stringify({ score:state.score, levelLabel:state.levelLabel, lvKey:state.lvKey, ts:Date.now() }));
-      location.href = url.toString();
-    });
-
-    // 初期表示
-    renderResult();
-  });
-  </script>
-</body>
-</html>
+      $lpLink.title = locked ? 'メール登録すると詳細を表示できます' : '診断結果の詳細を見る
