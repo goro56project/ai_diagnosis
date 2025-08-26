@@ -3,151 +3,362 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>おすすめコース | ExoVisionary Hub</title>
+  <title>AI偏差値診断｜メール登録→診断→結果メール</title>
 
-  <!-- （任意）GA4 -->
+  <!-- GA4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
-    gtag('config', 'G-QFQZF4F1QW', { transport_type: 'beacon' });
+    gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type: 'beacon', debug_mode: true });
   </script>
 
   <style>
-    :root{ --brand:#111827; --ink:#0f172a; --muted:#475569; --card:#fff; --line:#e5e7eb; --accent:#7356b6; }
+    :root { --brand:#7356b6; --ink:#222; --card:#fff; --bg:#f5f3ff; --muted:#666; --warn:#b45309; }
     *{ box-sizing:border-box; }
-    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; color:var(--ink); background:#f7f7fb; }
-    header{ background:#fff; border-bottom:1px solid var(--line); }
-    header .wrap{ max-width:1100px; margin:0 auto; padding:16px; }
-    h1{ font-size:clamp(22px,3.4vw,28px); margin:4px 0; }
-    p.lead{ color:var(--muted); margin:6px 0 0; }
-    main{ max-width:1100px; margin:0 auto; padding:16px; }
-    .grid{ display:flex; flex-wrap:wrap; gap:24px; }
-    .card{ flex:1 1 320px; background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:20px; }
-    .tag{ display:inline-block; background:#eef6ff; color:#2563eb; border-radius:999px; padding:4px 10px; font-size:.85rem; margin:0 0 8px; }
-    .title{ font-size:1.2rem; line-height:1.4; margin:6px 0 12px; }
-    ul.list{ list-style:none; margin:0; padding:0; }
-    ul.list li{ margin:8px 0; line-height:1.6; }
-    ul.list li span.m{ margin-right:8px; }
-    .note{ background:#f8fafc; border:1px dashed #e2e8f0; border-radius:12px; padding:10px 12px; margin:12px 0 0; color:var(--ink); }
-    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; align-items:center; }
-    .btn{ display:inline-block; border-radius:999px; padding:10px 16px; text-decoration:none; font-weight:600; }
-    .btn.primary{ background:var(--brand); color:#fff; border:1px solid var(--brand); }
-    .btn.ghost{ border:1px solid #cbd5e1; color:var(--ink); background:#fff; }
-    .price{ font-weight:800; color:#16a34a; margin-left:6px; }
-    footer{ color:#64748b; font-size:12px; text-align:center; padding:24px 16px; }
+    body{ font-family:system-ui,-apple-system,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; margin:0; color:var(--ink); background:var(--bg);}
+    .toplinks{ text-align:center; font-size:14px; padding:10px 8px 0; }
+    .toplinks a{ color:#0a58ca; text-decoration:none; }
+    .toplinks a + a{ margin-left:12px; }
+    header{ background:#fff; border-bottom:1px solid #eee; padding:18px; text-align:center; }
+    header .wrap{max-width:980px;margin:0 auto;}
+    header .title-lg{ font-size:clamp(28px, 4vw, 40px); line-height:1.2; font-weight:800; letter-spacing:.02em; margin:4px 0 6px; }
+    .sublead{ color:#475569; font-size:clamp(14px, 1.6vw, 16px); margin:6px 0 0; }
+    main{ max-width:980px; margin:24px auto; padding:0 16px 60px; }
+    .card{ background:var(--card); border-radius:14px; box-shadow:0 6px 20px rgba(0,0,0,.06); padding:22px; margin:16px 0; }
+    h1{ font-size:22px; margin:0;}
+    h2{ font-size:18px; margin:8px 0 12px;}
+    .muted{ color:var(--muted); }
+    .lead{ line-height:1.7; }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+    input[type="email"], .btn{ font:inherit; padding:12px 14px; border-radius:10px; border:1px solid #ddd; }
+    .btn{ cursor:pointer; background:#fff; color:var(--ink); }
+    .btn.primary{ background:var(--brand); border-color:var(--brand); color:#fff; }
+    .btn.block{ width:100%; text-align:center; }
+    .btn[aria-disabled="true"]{ opacity:.6; cursor:not-allowed; pointer-events:none; }
+    .pill{ display:inline-block; background:#eee; padding:.25em .6em; border-radius:999px; font-size:.9em;}
+    .right{ text-align:right; }
+    .hint{ font-size:12px; color:#777; }
+    .warn{ font-size:12px; color:var(--warn); background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; border-radius:10px; }
+    fieldset{ border:1px solid #eee; border-radius:12px; padding:14px; margin:10px 0; }
+    .qgrid{ display:grid; grid-template-columns: 1fr repeat(5, 64px); gap: 8px 12px; align-items:center; }
+    .qgrid .choice{ display:flex; align-items:center; justify-content:center; height:40px; }
+    .qgrid .choice input{ width:20px; height:20px; }
+    @media (max-width: 960px){ .qgrid{ grid-template-columns: 1fr repeat(5, 52px); gap:8px; } }
+    @media (max-width: 680px){
+      .qgrid{ grid-template-columns: repeat(5, 1fr); gap:10px; }
+      .qgrid > div:first-child{ grid-column:1 / -1; height:6px; }
+      fieldset legend{ margin-bottom:8px; }
+    }
+    .result{ display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
+    .score{ font-size:28px; color:#41b; font-weight:700; }
+    ul.bullets{ margin:8px 0 0 20px; }
+    footer{ text-align:center; font-size:14px; margin-top:40px; padding:20px; border-top:1px solid #ddd; }
+    footer a{ color:#0a58ca; text-decoration:none; }
+    footer a + a{ margin-left:12px; }
   </style>
 </head>
-  <footer style="text-align:center; font-size:14px; margin-top:40px; padding:20px; border-top:1px solid #ddd;">
-  <p>
-    <a href="/terms.html" target="_blank">利用規約</a> ｜ 
-    <a href="/privacy.html" target="_blank">プライバシーポリシー</a> ｜ 
-    <a href="/law.html" target="_blank">特定商取引法に基づく表記</a>
-  </p>
-</footer>
-
 <body>
+  <!-- 3リンク -->
+  <div class="toplinks">
+    <a href="https://goro56project.github.io/ai_diagnosis/terms.html" target="_blank">利用規約</a>
+    <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank">プライバシーポリシー</a>
+    <a href="https://goro56project.github.io/ai_diagnosis/law.html" target="_blank">特定商取引法に基づく表記</a>
+  </div>
+
   <header>
     <div class="wrap">
-      <h1>おすすめコース</h1>
-      <p class="lead">診断結果や現在地に合わせて、最短で成果につながるコースを選べます。申込ボタンで各コースの詳細ページへ移動します。</p>
+      <h1 class="title-lg">AI偏差値診断</h1>
+      <p class="sublead">AIの基礎知識・活用経験と、ChatGPT／GASなどを使った業務改善スキルを、10問でかんたんに測定します。</p>
     </div>
   </header>
 
   <main>
-    <div class="grid">
+    <!-- STEP 1 -->
+    <section class="card" id="sec-register">
+      <h2>STEP 1｜診断結果をメールで受け取る（任意）</h2>
+      <p class="lead muted">
+        登録すると、<b>診断の詳細（解説・おすすめコース）</b>が表示できるようになります。<br>
+        未登録でも簡易結果は見られますが、<b>詳細を見るには登録が必要</b>です。
+      </p>
+      <div class="row">
+        <input id="email" type="email" inputmode="email" placeholder="メールアドレスを入力" style="flex:1;min-width:240px;">
+        <button id="btn-register" class="btn primary">登録する</button>
+        <button id="btn-skip" class="btn">登録せずに診断へ</button>
+      </div>
+      <div class="hint">送信先の管理：Google スプレッドシート（自動作成）／ 用途は診断に関するご連絡のみ。不要時はいつでも停止できます。</div>
+    </section>
 
-      <!-- ENTRY -->
-      <section class="card" data-card>
-        <p class="tag">入門〜初級向け</p>
-        <h2 class="title">ENTRY：AI基礎＆日常業務の成功体験（2–3週間）</h2>
-        <ul class="list">
-          <li><span class="m">✓</span><b>AIリテラシー入門：</b>安全な使い方／情報の扱い／NGケース</li>
-          <li><span class="m">✓</span><b>ChatGPT基礎：</b>良いプロンプトの型（目的→制約→出力→評価）</li>
-          <li><span class="m">✓</span><b>日常業務で活用：</b>プレゼン叩き台・要約・メール文案</li>
-          <li><span class="m">✓</span><b>デザイン補助：</b>画像生成でバナー／図解素材を作成</li>
-          <li><span class="m">✓</span><b>成功の型化：</b>うまくいった指示をテンプレ化・共有</li>
-        </ul>
-        <p class="note">成果：<b>「AIで資料とデザインが作れた」</b>という成功体験／基礎の自信がつく</p>
-        <div class="cta-row">
-          <!-- JSでhrefを差し替えます。静的フォールバックも用意 -->
-          <a class="btn primary course-cta" data-course="entry" href="exo_course_detail.html?course=entry#contact">
-            このコースで申し込む <span class="price">¥980</span>
-          </a>
-          <a class="btn ghost" href="exo_course_detail.html?course=entry#flow">学習の流れ</a>
-        </div>
-      </section>
+    <!-- STEP 2 -->
+    <section class="card">
+      <h2>STEP 2｜10問の自己評価に回答</h2>
 
-      <!-- MIDDLE -->
-      <section class="card" data-card>
-        <p class="tag">初級〜中級向け</p>
-        <h2 class="title">MIDDLE：AI×業務改善の入口（4–6週間）</h2>
-        <ul class="list">
-          <li><span class="m">✓</span><b>テンプレ運用：</b>議事録・FAQ・メールの型化と差し込み</li>
-          <li><span class="m">✓</span><b>GAS入門〜半自動：</b>フォーム→シート→自動返信→レポート</li>
-          <li><span class="m">✓</span><b>A/B運用：</b>評価データで改善を回す</li>
-          <li><span class="m">✓</span><b>KPI可視化：</b>品質/再現性/時間の3軸をダッシュボード化</li>
-        </ul>
-        <p class="note">成果：小さな業務が <b>“勝手に回る” 半自動フロー</b> を構築</p>
-        <div class="cta-row">
-          <a class="btn primary course-cta" data-course="middle" href="exo_course_detail.html?course=middle#contact">
-            このコースで申し込む <span class="price">¥980</span>
-          </a>
-          <a class="btn ghost" href="exo_course_detail.html?course=middle#flow">学習の流れ</a>
-        </div>
-      </section>
+      <!-- 凡例 -->
+      <div class="qgrid muted" style="font-size:12px; margin-bottom:6px;">
+        <div></div><div class="choice">全くない</div><div class="choice">少し</div>
+        <div class="choice">普通</div><div class="choice">かなり</div><div class="choice">とてもある</div>
+      </div>
 
-      <!-- PRACTICAL -->
-      <section class="card" data-card>
-        <p class="tag">実践〜先進向け</p>
-        <h2 class="title">PRACTICAL：疑似案件で本格運用へ（6–8週間）</h2>
-        <ul class="list">
-          <li><span class="m">✓</span><b>要件定義ロールプレイ：</b>GPTがクライアント役でヒアリング演習</li>
-          <li><span class="m">✓</span><b>設計〜実装：</b>データ流／権限／失敗時ハンドリング／SLA</li>
-          <li><span class="m">✓</span><b>納品一式：</b>設計書／GASコード／SOP／成果レポート／デモ台本</li>
-          <li><span class="m">✓</span><b>RAGミニPoC：</b>FAQ50件で正答率ベンチ→改善</li>
-        </ul>
-        <p class="note">成果：<b>提案〜納品まで自走</b>できるミニ案件レベルの実力</p>
-        <div class="cta-row">
-          <a class="btn primary course-cta" data-course="practical" href="exo_course_detail.html?course=practical#contact">
-            このコースで申し込む <span class="price">¥980</span>
-          </a>
-          <a class="btn ghost" href="exo_course_detail.html?course=practical#flow">学習の流れ</a>
-        </div>
-      </section>
+      <div id="questions">
+        <!-- 1〜10（既定値は3） -->
+        <!-- 1 -->
+        <fieldset><legend>1. ChatGPTなどのAIツールを業務で使ったことはありますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q1" value="1"></label>
+            <label class="choice"><input type="radio" name="q1" value="2"></label>
+            <label class="choice"><input type="radio" name="q1" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q1" value="4"></label>
+            <label class="choice"><input type="radio" name="q1" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 2 -->
+        <fieldset><legend>2. プロンプト（AIへの指示文）を工夫して出力を改善した経験はありますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q2" value="1"></label>
+            <label class="choice"><input type="radio" name="q2" value="2"></label>
+            <label class="choice"><input type="radio" name="q2" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q2" value="4"></label>
+            <label class="choice"><input type="radio" name="q2" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 3 -->
+        <fieldset><legend>3. AIで作った成果物の品質レビュー（基準）が社内にありますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q3" value="1"></label>
+            <label class="choice"><input type="radio" name="q3" value="2"></label>
+            <label class="choice"><input type="radio" name="q3" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q3" value="4"></label>
+            <label class="choice"><input type="radio" name="q3" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 4 -->
+        <fieldset><legend>4. 得られた成果をテンプレ／型として蓄積し再利用していますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q4" value="1"></label>
+            <label class="choice"><input type="radio" name="q4" value="2"></label>
+            <label class="choice"><input type="radio" name="q4" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q4" value="4"></label>
+            <label class="choice"><input type="radio" name="q4" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 5 -->
+        <fieldset><legend>5. 複数の業務ツールとAIを組み合わせて効率化できていますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q5" value="1"></label>
+            <label class="choice"><input type="radio" name="q5" value="2"></label>
+            <label class="choice"><input type="radio" name="q5" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q5" value="4"></label>
+            <label class="choice"><input type="radio" name="q5" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 6 -->
+        <fieldset><legend>6. AIの出力に関するセキュリティ・ルールが整備されていますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q6" value="1"></label>
+            <label class="choice"><input type="radio" name="q6" value="2"></label>
+            <label class="choice"><input type="radio" name="q6" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q6" value="4"></label>
+            <label class="choice"><input type="radio" name="q6" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 7 -->
+        <fieldset><legend>7. 部門横断でAI活用のガイドラインや成功事例を共有していますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q7" value="1"></label>
+            <label class="choice"><input type="radio" name="q7" value="2"></label>
+            <label class="choice"><input type="radio" name="q7" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q7" value="4"></label>
+            <label class="choice"><input type="radio" name="q7" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 8 -->
+        <fieldset><legend>8. AIを用いた評価・検証（A/Bや指標化）を行えていますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q8" value="1"></label>
+            <label class="choice"><input type="radio" name="q8" value="2"></label>
+            <label class="choice"><input type="radio" name="q8" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q8" value="4"></label>
+            <label class="choice"><input type="radio" name="q8" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 9 -->
+        <fieldset><legend>9. 自動化・RAG・エージェント等の本格運用に着手していますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q9" value="1"></label>
+            <label class="choice"><input type="radio" name="q9" value="2"></label>
+            <label class="choice"><input type="radio" name="q9" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q9" value="4"></label>
+            <label class="choice"><input type="radio" name="q9" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 10 -->
+        <fieldset><legend>10. 新しいAI機能・ツールを定期的に試し、評価していますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q10" value="1"></label>
+            <label class="choice"><input type="radio" name="q10" value="2"></label>
+            <label class="choice"><input type="radio" name="q10" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q10" value="4"></label>
+            <label class="choice"><input type="radio" name="q10" value="5"></label>
+          </div>
+        </fieldset>
+      </div>
 
-    </div>
+      <div class="right" style="margin-top:14px;">
+        <button id="btn-diagnose" class="btn primary">診断する</button>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="card" id="result-card">
+      <h2>STEP 3｜診断結果</h2>
+      <p class="result">
+        <span>AI偏差値：</span>
+        <span class="score"><span id="score-out">--</span></span>
+        <span class="pill">レベル：<span id="lv-label">--</span></span>
+      </p>
+      <p id="result-lead" class="lead muted" style="margin-top:4px;">診断後にサマリを表示します。</p>
+      <ul id="result-bullets" class="bullets"></ul>
+
+      <div id="detail-lock-msg" class="warn" style="display:none; margin-top:10px;">
+        ※ <b>メール登録が必要です。</b>登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
+      </div>
+
+      <div class="row" style="margin-top:14px;">
+        <a id="lp-link" class="btn primary" href="./exo_lp.html#courses" aria-disabled="true" title="メール登録すると詳細を表示できます">診断結果の詳細を見る</a>
+      </div>
+
+      <div class="hint" style="margin-top:10px;">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</div>
+    </section>
   </main>
 
-  <footer>© ExoVisionary Hub</footer>
+  <footer>
+    <p>
+      <a href="https://goro56project.github.io/ai_diagnosis/terms.html" target="_blank">利用規約</a>
+      <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank">プライバシーポリシー</a>
+      <a href="https://goro56project.github.io/ai_diagnosis/law.html" target="_blank">特定商取引法に基づく表記</a>
+    </p>
+  </footer>
 
   <script>
-    // クリック時に診断クエリ（score/level/lv）を引き継いで
-    // exo_course_detail.html?course=XXX&score=..&level=..&lv=..#contact へ遷移
-    document.addEventListener('DOMContentLoaded', () => {
-      const qs = new URLSearchParams(location.search);
-      const score = qs.get('score');
-      const level = qs.get('level');
-      const lv    = qs.get('lv');
+  document.addEventListener('DOMContentLoaded', () => {
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwg9IuBV3PKyfkepUdoRYI0J5wbQtX8NLU11BJl-UScoQSr9LRTNqnnofnX_6KDlvH0_w/exec";
+    const QUESTIONS_COUNT = 10;
 
-      document.querySelectorAll('.course-cta').forEach(a => {
-        const course = a.getAttribute('data-course') || 'entry';
-        const url = new URL('exo_course_detail.html', location.href);
-        url.hash = 'contact';
-        url.searchParams.set('course', course);
-        if (score) url.searchParams.set('score', score);
-        if (level) url.searchParams.set('level', level);
-        if (lv)    url.searchParams.set('lv', lv);
-        a.href = url.toString();
+    const $email    = document.getElementById("email");
+    const $btnReg   = document.getElementById("btn-register");
+    const $btnSkip  = document.getElementById("btn-skip");
+    const $btnDiag  = document.getElementById("btn-diagnose");
+    const $lpLink   = document.getElementById("lp-link");
+    const $scoreOut = document.getElementById("score-out");
+    const $lvLabel  = document.getElementById("lv-label");
+    const $lead     = document.getElementById("result-lead");
+    const $bullets  = document.getElementById("result-bullets");
+    const $lockMsg  = document.getElementById("detail-lock-msg");
 
-        a.addEventListener('click', () => {
-          if (typeof gtag === 'function') {
-            gtag('event', 'course_cta_click', { event_category:'CTA', event_label: course });
-          }
-        });
-      });
+    const state = { email:"", score:null, levelLabel:"--", lvKey:"", answers:{} };
+
+    const isEmail = (v)=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
+
+    function gatherAnswers(){
+      const a = {};
+      for (let i=1;i<=QUESTIONS_COUNT;i++){
+        let sel = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!sel){ sel = document.querySelector(`input[name="q${i}"][value="3"]`); if(sel) sel.checked = true; }
+        a["q"+i] = sel ? Number(sel.value) : 3;
+      }
+      return a;
+    }
+
+    function calcScore(answers){
+      const sum = Object.values(answers).reduce((s,v)=>s + Number(v||0), 0);
+      return Math.max(0, Math.min(100, Math.round(sum * 2)));
+    }
+    function levelFrom(score){
+      if (score >= 70) return {label:"先進層",   key:"practical"};
+      if (score >= 55) return {label:"実践層",   key:"practical"};
+      if (score >= 40) return {label:"初級〜中級", key:"middle"};
+      return {label:"入門層", key:"entry"};
+    }
+
+    const LEADS = {
+      entry:"まずは安全な使い方と型を整えて、短期で成果を出す土台を作ります。",
+      middle:"品質と効率を同時に上げる短期集中プランをおすすめします。",
+      practical:"評価・検証〜運用設計までを含め、再現性のある仕組み化へ踏み込みましょう。"
+    };
+    const BULLETS = {
+      entry:["基本リテラシーと安全ルールを整備","業務テンプレ/良いプロンプトの型を準備","小さく試して成功体験を蓄積"],
+      middle:["業務テンプレの整備と自動化の入口","評価・検証フレームとA/B運用","短期集中プラン（成果レビュー）"],
+      practical:["要件整理・導入ロードマップの設計","運用SLA設計とガバナンス","RAG/エージェントの社内展開"]
+    };
+
+    function updateLockUI(){
+      const locked = !state.email;
+      $lpLink.setAttribute("aria-disabled", locked ? "true" : "false");
+      $lockMsg.style.display = locked ? "block" : "none";
+      $lpLink.title = locked ? "メール登録すると詳細を表示できます" : "診断結果の詳細を見る";
+    }
+
+    function updateDetailLink(){
+      if (state.score==null) return;
+      const href = `./exo_lp.html?score=${encodeURIComponent(state.score)}&lv=${encodeURIComponent(state.lvKey)}#courses`;
+      $lpLink.setAttribute("href", href);
+      // 共有データも保存（詳細側はこれをフォールバックとして読む）
+      localStorage.setItem("ai_dx_result", JSON.stringify({
+        score: state.score,
+        lvKey: state.lvKey,
+        levelLabel: state.levelLabel,
+        answers: state.answers,
+        email: state.email,
+        ts: Date.now()
+      }));
+    }
+
+    function renderResult(){
+      $scoreOut.textContent = (state.score ?? "--");
+      $lvLabel.textContent  = state.levelLabel || "--";
+      $lead.textContent     = {entry:LEADS.entry, middle:LEADS.middle, practical:LEADS.practical}[state.lvKey] || " ";
+      $bullets.innerHTML    = (BULLETS[state.lvKey]||[]).map(t=>`<li>${t}</li>`).join("");
+      updateLockUI();
+      updateDetailLink();
+      document.getElementById("result-card").scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    // 診断
+    const logNoCors = (payload)=>{ try{ fetch(GAS_URL,{method:"POST",mode:"no-cors",headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); }catch(e){} };
+
+    document.getElementById("btn-diagnose").addEventListener("click", () => {
+      state.answers = gatherAnswers();
+      state.score   = calcScore(state.answers);
+      const lv      = levelFrom(state.score);
+      state.levelLabel = lv.label;
+      state.lvKey      = lv.key;
+      logNoCors({mode:"result", email: state.email || "(noemail)", score: state.score, answers: state.answers, timestamp: Date.now()});
+      renderResult();
     });
+
+    // スキップ
+    document.getElementById("btn-skip").addEventListener("click", () => {
+      state.email = "";
+      updateLockUI();
+      document.querySelector('section.card:nth-of-type(2)').scrollIntoView({behavior:"smooth"});
+    });
+
+    // 登録
+    document.getElementById("btn-register").addEventListener("click", () => {
+      const v = ($email.value||"").trim();
+      if (!isEmail(v)){ alert("メールアドレスを正しく入力してください。"); $email.focus(); return; }
+      document.getElementById("btn-register").setAttribute("aria-disabled","true");
+      const answers = Object.keys(state.answers).length ? state.answers : gatherAnswers();
+      const score   = (state.score==null) ? calcScore(answers) : state.score;
+      logNoCors({ mode:"register", email:v, score, timestamp: Date.now() });
+      state.email=v; state.answers=answers; state.score=score;
+      const lv = levelFrom(score); state.levelLabel=lv.label; state.lvKey=lv.key;
+      renderResult();
+      alert("登録が完了しました。詳細表示が有効になりました。");
+      document.getElementById("btn-register").setAttribute("aria-disabled","false");
+    });
+  });
   </script>
 </body>
 </html>
