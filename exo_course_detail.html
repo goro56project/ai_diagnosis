@@ -7,7 +7,7 @@
 <style>
   :root{--ink:#0f172a;--muted:#475569;--brand:#111827;--pill:#eef2ff;--pill-ink:#3730a3;--card:#fff;--line:#e9ecef;--bg:#f6f7fb}
   *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Meiryo,sans-serif;color:var(--ink);background:var(--bg)}
+  body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Meiryo,sans-serif;color:var(--ink);background:var(--bg)}
   .wrap{max-width:1100px;margin:0 auto;padding:18px 16px 48px}
   .toplinks{max-width:1100px;margin:0 auto;padding:12px 16px 0;text-align:center;font-size:14px}
   .toplinks a{color:#0a58ca;text-decoration:none}
@@ -36,9 +36,9 @@
 <body>
   <!-- 上部 規約リンク（絶対URL） -->
   <div class="toplinks">
-    <a href="https://goro56project.github.io/ai_diagnosis/terms.html" target="_blank">利用規約</a>
-    <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank">プライバシーポリシー</a>
-    <a href="https://goro56project.github.io/ai_diagnosis/law.html" target="_blank">特定商取引法に基づく表記</a>
+    <a href="https://goro56project.github.io/ai_diagnosis/terms.html" target="_blank" rel="noopener">利用規約</a>
+    <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>
+    <a href="https://goro56project.github.io/ai_diagnosis/law.html" target="_blank" rel="noopener">特定商取引法に基づく表記</a>
   </div>
 
   <main class="wrap">
@@ -249,17 +249,22 @@
       }
 
       /* ====== ▼ FAQ埋め込み（フル版：チャットあり） ====== */
-      const EXO_FAQ_EXEC = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbzAcLfdqCTUEJGutevcwc04quJpBlOjygxMXvj23lPTf1s3jue-r5gmL0y0XsttGbA3/exec/exec"; // ←差し替え
+      // ★正しい /exec URL をそのまま設定（重複や /exec/exec はNG）
+      const EXO_FAQ_EXEC = "https://script.google.com/macros/s/AKfycbzAcLfdqCTUEJGutevcwc04quJpBlOjygxMXvj23lPTf1s3jue-r5gmL0y0XsttGbA3/exec";
+
       const faqMount = $('faq-embed');
       if (faqMount) {
         const iframe = document.createElement('iframe');
         iframe.id = 'exo-faq-course';
-        iframe.src = `${EXO_FAQ_EXEC}?course=${encodeURIComponent(courseKey)}`;
+        iframe.title = 'Exo-AI FAQ';
+        // キャッシュ回避用にダミークエリを付与
+        const cacheBust = 'v=' + Date.now();
+        iframe.src = `${EXO_FAQ_EXEC}?course=${encodeURIComponent(courseKey)}&${cacheBust}`;
         iframe.style.cssText = "width:100%;border:0;display:block;min-height:600px";
         iframe.loading = "lazy";
         faqMount.appendChild(iframe);
 
-        // 高さの自動調整（FAQ側のpostMessageを受け取る）
+        // 高さの自動調整（FAQ側の postMessage を受け取る）
         window.addEventListener('message', (e) => {
           if (e.data && e.data.type === 'exo-faq-resize') {
             iframe.style.height = (e.data.height || 600) + 'px';
