@@ -90,6 +90,13 @@
       <ul id="flow-list"></ul>
     </section>
 
+    <!-- FAQ（CTA直前に設置） -->
+    <section class="card" id="faq-section">
+      <h2>よくある質問（FAQ）</h2>
+      <div id="faq-embed"></div>
+      <noscript>※FAQを表示するにはJavaScriptを有効にしてください。</noscript>
+    </section>
+
     <!-- 申込/問合せ -->
     <section class="card" id="contact">
       <h2>お申し込み / お問い合わせ</h2>
@@ -240,6 +247,27 @@
         payLink.href = STRIPE_LINKS[courseKey] || STRIPE_LINKS.entry;
         payLink.setAttribute('rel','noopener');
       }
+
+      /* ====== ▼ FAQ埋め込み（フル版：チャットあり） ====== */
+      const EXO_FAQ_EXEC = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbzAcLfdqCTUEJGutevcwc04quJpBlOjygxMXvj23lPTf1s3jue-r5gmL0y0XsttGbA3/exec/exec"; // ←差し替え
+      const faqMount = $('faq-embed');
+      if (faqMount) {
+        const iframe = document.createElement('iframe');
+        iframe.id = 'exo-faq-course';
+        iframe.src = `${EXO_FAQ_EXEC}?course=${encodeURIComponent(courseKey)}`;
+        iframe.style.cssText = "width:100%;border:0;display:block;min-height:600px";
+        iframe.loading = "lazy";
+        faqMount.appendChild(iframe);
+
+        // 高さの自動調整（FAQ側のpostMessageを受け取る）
+        window.addEventListener('message', (e) => {
+          if (e.data && e.data.type === 'exo-faq-resize') {
+            iframe.style.height = (e.data.height || 600) + 'px';
+          }
+        });
+      }
+      /* ====== ▲ FAQ埋め込みここまで ====== */
+
     } catch(err){
       console.error('course detail init error:', err);
     }
