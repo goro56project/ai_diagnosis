@@ -14,7 +14,8 @@
   body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Meiryo,sans-serif;color:var(--ink);background:var(--bg)}
   .wrap{max-width:1100px;margin:0 auto;padding:18px 16px 48px}
   .toplinks{max-width:1100px;margin:0 auto;padding:12px 16px 0;text-align:center;font-size:14px}
-  .toplinks a{color:#0a58ca;text-decoration:none}.toplinks a + a{margin-left:12px}
+  .toplinks a{color:#0a58ca;text-decoration:none}
+  .toplinks a + a{margin-left:12px}
   .pill{display:inline-block;background:var(--pill);color:var(--pill-ink);padding:.35em .8em;border-radius:999px;font-size:.9rem}
   h1{font-size:clamp(24px,4vw,36px);margin:.4rem 0 0}
   .muted{color:var(--muted)}
@@ -33,7 +34,7 @@
   .warn{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:10px 12px}
   footer{margin:28px 0 8px;text-align:center;color:#94a3b8}
 
-  /* === アコーディオン FAQ === */
+  /* === アコーディオン FAQ ＋ チャット === */
   .faq-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
   .faq-item summary{list-style:none;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:.4rem}
   .faq-item summary::-webkit-details-marker{display:none}
@@ -98,7 +99,7 @@
       <ul id="flow-list"></ul>
     </section>
 
-    <!-- FAQ（iframeなし・JS描画） -->
+    <!-- FAQ（iframeなし・自前JS） -->
     <section class="card" id="faq-section">
       <h2>よくある質問（FAQ）</h2>
       <div class="faq-ui" id="faq-ui">
@@ -115,9 +116,7 @@
                    style="flex:1;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff" />
             <button class="btn small" type="submit">送信</button>
           </form>
-          <div id="faqAns" class="qa" style="display:none;">
-            <!-- Q/A バブルがここに並ぶ -->
-          </div>
+          <div id="faqAns" class="qa" style="display:none;"></div>
         </div>
       </div>
       <noscript>※FAQを表示するにはJavaScriptを有効にしてください。</noscript>
@@ -156,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
       practical:'https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03'
     };
 
-    // コース定義（省略なし）
+    // コース定義
     const COURSES = {
       entry:{ badge:'入門〜初級向け',
         title:'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）',
@@ -262,15 +261,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const payLink = $('pay-link');
     if (payLink) { payLink.href = STRIPE_LINKS[courseKey] || STRIPE_LINKS.entry; payLink.setAttribute('rel','noopener'); }
 
-    /* ====== FAQ（iframeなし / fetch 版） ====== */
-    // ★ あなたの /exec URL を入れてください（重複文字に注意）
-    const EXO_FAQ_EXEC = "https://script.google.com/macros/s/AKfycbzAcLfdqCTUEJGutevcwc04quJpBlOjygxMXvj23lPTf1s3jue-r5gmL0y0XsttGbA3/exec";
+    /* ====== FAQ（fetch → 失敗時 JSONP フォールバック） ====== */
+    // ← あなたの最新 /exec URL（動作確認済み）
+    const EXO_FAQ_EXEC = "https://script.google.com/macros/s/AKfycbxhyZ2GMOQ9TcdhFvoScakOm9e8ZatzaItSpPt00ISD4f8y5lxdgjay7y7EMOE13MF6/exec";
+
+    async function viaFetch(url){
+      const r = await fetch(url, {cache:'no-store', mode:'cors'});
+      if (!r.ok) throw new Error('fetch failed');
+      return await r.json();
+    }
+    function viaJsonp(url){
+      return new Promise((resolve,reject)=>{
+        const cb = 'cb_' + Math.random().toString(36).slice(2);
+        const s = document.createElement('script');
+        const cleanup = ()=>{ delete window[cb]; s.remove(); };
+        window[cb] = (data)=>{ cleanup(); resolve(data); };
+        s.onerror = ()=>{ cleanup(); reject(new Error('jsonp error')); };
+        s.src = url + (url.includes('?')?'&':'?') + 'callback=' + cb;
+        document.body.appendChild(s);
+        setTimeout(()=>{ try{cleanup();}catch{} reject(new Error('jsonp timeout'));},15000);
+      });
+    }
+    async function apiGet(pathWithQuery){
+      const url = `${EXO_FAQ_EXEC}${pathWithQuery}`;
+      try{ return await viaFetch(url); }catch(_){ return await viaJsonp(url); }
+    }
 
     async function renderFaq() {
       const acc = document.getElementById('faq-accordion');
       try{
-        const res = await fetch(`${EXO_FAQ_EXEC}?api=faq&fn=list`, {cache:'no-store'});
-        const data = await res.json();
+        const data = await apiGet(`?api=faq&fn=list`);
         const items = (data && data.items) || [];
         if (!items.length) { acc.innerHTML = '<div class="muted">FAQは準備中です。</div>'; return; }
         acc.innerHTML = items.map(it => `
@@ -284,13 +304,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // チャット（想定外質問→GAS経由でFAQ/AI回答）
+    // チャット（FAQ→なければAI補完）
     const form = document.getElementById('faqAsk');
     const input = document.getElementById('faqQ');
     const ansBox = document.getElementById('faqAns');
+
     document.querySelectorAll('.chip').forEach(ch => {
       ch.addEventListener('click', () => { input.value = ch.dataset.q; form.dispatchEvent(new Event('submit')); });
     });
+
     form.addEventListener('submit', async (e)=>{
       e.preventDefault();
       const q = input.value.trim(); if(!q) return;
@@ -299,8 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const ai   = document.createElement('div'); ai.className='bub ai'; ai.textContent = '回答を生成しています…';
       ansBox.appendChild(user); ansBox.appendChild(ai);
       try{
-        const r = await fetch(`${EXO_FAQ_EXEC}?api=faq&fn=answer&q=${encodeURIComponent(q)}`,{cache:'no-store'});
-        const j = await r.json();
+        const j = await apiGet(`?api=faq&fn=answer&q=${encodeURIComponent(q)}`);
         ai.textContent = (j && j.ok) ? `${j.answer}　（${j.source==='gpt'?'AI補完':'FAQ'}）` : 'エラーが発生しました。';
       }catch(err){
         ai.textContent = '通信に失敗しました。時間をおいてお試しください。';
