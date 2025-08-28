@@ -67,7 +67,7 @@
       <a href="exo_courses.html" class="btn ghost" id="btn-back">コース一覧に戻る</a>
     </div>
 
-    <!-- 有料プラン必須の注意書き（申込ボタン直下に常時表示） -->
+    <!-- 有料プラン必須の注意書き（申込ボタン直下） -->
     <div class="alert" role="note" aria-live="polite">
       重要：本スクールはカスタムGPTで運用しているため、<u>受講にはChatGPTの有料プラン（ChatGPT Plus 等）への加入が必須</u>です。
       <small>※有料プラン未加入の場合、教材・課題の一部が利用できません。</small>
@@ -136,6 +136,13 @@
     <!-- 申込 -->
     <section class="card" id="apply">
       <h2>お申し込み</h2>
+
+      <!-- ★ ここにも同じ注意書きを追加 -->
+      <div class="alert" role="note" aria-live="polite">
+        重要：本スクールはカスタムGPTで運用しているため、<u>受講にはChatGPTの有料プラン（ChatGPT Plus 等）への加入が必須</u>です。
+        <small>※有料プラン未加入の場合、教材・課題の一部が利用できません。</small>
+      </div>
+
       <p>以下のボタンから <strong>本番環境のStripe決済</strong> に進めます。お支払い完了後、受講URLが自動送信されます。</p>
       <ul class="muted" style="margin:.6rem 0 1rem 1.2rem">
         <li>決済金額：<span class="price">¥980</span>（税込）</li>
@@ -161,41 +168,31 @@ document.addEventListener('DOMContentLoaded', () => {
     practical:'https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03'
   };
 
-  // コース定義（短縮サンプル）
   const COURSES = {
-    entry:{
-      badge:'入門〜初級向け',
-      title:'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）',
+    entry:{badge:'入門〜初級向け',title:'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）',
       lead:'AI初心者や40–50代向けの短期ブート。安全に使い、良い指示で資料/メール/デザイン補助の成果を出す段階へ。',
       skills:['AIリテラシー','ChatGPT基礎','プロンプト設計','スライド/画像の基礎'],
       modules:['安全ルール','資料×メール×要約','画像生成基礎','成功指示のテンプレ化'],
       hands:['資料叩き台＋要約','画像バナー2点','プロンプトライブラリ'],
       outcomes:['プロンプト集','テンプレ資料','簡易SOP'],
       after:['安定品質で時短','再現可能な型を共有'],
-      flow:['Day1：ルールと型','Day2：資料・メール','Day3：画像生成','Day4：テンプレ化']
-    },
-    middle:{
-      badge:'初級〜中級向け',
-      title:'MIDDLE｜AI×業務改善の入口（4–6週間）',
+      flow:['Day1：ルールと型','Day2：資料・メール','Day3：画像生成','Day4：テンプレ化']},
+    middle:{badge:'初級〜中級向け',title:'MIDDLE｜AI×業務改善の入口（4–6週間）',
       lead:'半自動化とKPIで運用。フォーム→自動返信→記録→可視化まで繋ぐ。',
       skills:['業務テンプレ','GAS入門～半自動','評価と改善','KPI可視化'],
       modules:['テンプレ設計','GASで一連化','A/B検証','ダッシュボード'],
       hands:['受付→返信→記録→週次レポート','テンプレ3本','週次KPI'],
       outcomes:['半自動フロー','テンプレ一式','KPIダッシュボード'],
       after:['小さな業務を安定運用','属人化削減'],
-      flow:['Week1：テンプレ','Week2：自動化','Week3：検証','Week4：可視化']
-    },
-    practical:{
-      badge:'実践〜先進向け',
-      title:'PRACTICAL｜疑似案件で本格運用へ（6–8週間）',
+      flow:['Week1：テンプレ','Week2：自動化','Week3：検証','Week4：可視化']},
+    practical:{badge:'実践〜先進向け',title:'PRACTICAL｜疑似案件で本格運用へ（6–8週間）',
       lead:'要件定義→設計→実装→納品一式まで通す本格コース。RAGのPoCも包含。',
       skills:['要件定義','設計～実装','RAG/エージェント','運用と監査'],
       modules:['要件定義書','実装と失敗時ハンドリング','RAG PoC','納品一式'],
       hands:['設計書ドラフト','コード＋SOP＋レポート','3分デモ台本'],
       outcomes:['案件運用レベル','評価セット','運用ドキュメント'],
       after:['実務運用が可能','成功パターンを横展開'],
-      flow:['Week1：要件定義','Week2：実装','Week3：PoC','Week4：納品']
-    }
+      flow:['Week1：要件定義','Week2：実装','Week3：PoC','Week4：納品']}
   };
 
   const course = COURSES[courseKey] || COURSES.entry;
@@ -207,28 +204,20 @@ document.addEventListener('DOMContentLoaded', () => {
   $('score-out').textContent = score;
   $('level-out').textContent = level;
   $('lead').textContent = course.lead;
-  fill('skills',course.skills);
-  fill('modules',course.modules);
-  fill('hands',course.hands);
-  fill('outcomes',course.outcomes);
-  fill('after',course.after);
-  fill('flow-list',course.flow);
+  fill('skills',course.skills); fill('modules',course.modules);
+  fill('hands',course.hands);   fill('outcomes',course.outcomes);
+  fill('after',course.after);   fill('flow-list',course.flow);
   $('pay-link').href = STRIPE_LINKS[courseKey] || STRIPE_LINKS.entry;
 
   /* ====== FAQ（fetch → 失敗時 JSONP） ====== */
   const EXO_FAQ_EXEC = "https://script.google.com/macros/s/AKfycbxhyZ2GMOQ9TcdhFvoScakOm9e8ZatzaItSpPt00ISD4f8y5lxdgjay7y7EMOE13MF6/exec";
 
-  // ここで「有料プラン必須」のローカルFAQを定義（API未反映でも必ず表示）
   const LOCAL_FAQ_MUST_PLUS = {
     q: '受講にChatGPT有料プランは必要ですか？',
     a: 'はい。本スクールはカスタムGPTを利用しているため、受講にはChatGPTの有料プラン（ChatGPT Plus等）への加入が必須です。未加入の場合、教材・課題の一部が利用できません。'
   };
 
-  async function viaFetch(url){
-    const r = await fetch(url,{cache:'no-store',mode:'cors'});
-    if(!r.ok) throw new Error('fetch failed');
-    return await r.json();
-  }
+  async function viaFetch(url){ const r = await fetch(url,{cache:'no-store',mode:'cors'}); if(!r.ok) throw new Error('fetch failed'); return await r.json(); }
   function viaJsonp(url){
     return new Promise((resolve,reject)=>{
       const cb='cb_'+Math.random().toString(36).slice(2);
@@ -242,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   async function apiGet(path){ const url=`${EXO_FAQ_EXEC}${path}`; try{ return await viaFetch(url);}catch(_){ return await viaJsonp(url);} }
-
   function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
   async function renderFaq(){
@@ -250,15 +238,9 @@ document.addEventListener('DOMContentLoaded', () => {
     try{
       const data=await apiGet(`?api=faq&fn=list`);
       let items=(data&&data.items)||[];
-
-      // 既存に同趣旨のQが無ければ先頭にローカルFAQを追加（重複防止）
       const hasMustPlus = items.some(it => String(it.q||'').includes('有料プラン'));
       if(!hasMustPlus){ items = [LOCAL_FAQ_MUST_PLUS, ...items]; }
-
-      if(!items.length){
-        acc.innerHTML='<div class="muted">FAQは準備中です。</div>'; 
-        return;
-      }
+      if(!items.length){ acc.innerHTML='<div class="muted">FAQは準備中です。</div>'; return; }
       acc.innerHTML=items.map(it=>`
         <details class="faq-item">
           <summary>Q. ${esc(it.q)}</summary>
@@ -266,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </details>
       `).join('');
     }catch(e){
-      // API取得に失敗してもローカルFAQだけは表示
       acc.innerHTML = `
         <details class="faq-item" open>
           <summary>Q. ${esc(LOCAL_FAQ_MUST_PLUS.q)}</summary>
@@ -295,7 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const j=await apiGet(`?api=faq&fn=answer&q=${encodeURIComponent(q)}`);
       ai.textContent=(j&&j.ok)?`${j.answer}　（${j.source==='gpt'?'AI補完':'FAQ'}）`:'エラーが発生しました。';
     }catch(_){ 
-      // APIが落ちている時に「有料プラン必要？」だけは即答
       if(q.includes('有料') || q.includes('ChatGPT') || q.includes('プラン')){
         ai.textContent = LOCAL_FAQ_MUST_PLUS.a + '（ローカル表示）';
       }else{
