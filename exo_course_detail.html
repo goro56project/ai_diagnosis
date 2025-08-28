@@ -49,6 +49,12 @@
   .qa{display:flex;flex-direction:column;gap:10px;margin-top:8px}
   .bub{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
   .bub.ai{background:#f8fafc}
+  /* 問い合わせフォーム */
+  .field{display:block;margin-top:12px}
+  .input, .textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;background:#fff}
+  .textarea{min-height:140px}
+  .hp{position:absolute;left:-9999px;top:-9999px}
+  .status{font-size:14px;color:#555;margin-left:8px}
 </style>
 </head>
 <body>
@@ -130,9 +136,49 @@
         <li>決済金額：<span class="price">¥980</span>（税込）</li>
         <li>商品名：各コース名（このページのコース）</li>
       </ul>
-      <div class="row">
+      <div class="row" style="margin-bottom:10px">
         <a href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener" class="btn" id="pay-link">Stripe決済リンク</a>
-        <a href="#" class="btn ghost" id="contact-link">お問い合わせフォーム（準備中）</a>
+        <a href="#contact-form" class="btn ghost" id="contact-link">お問い合わせフォームへ</a>
+      </div>
+
+      <!-- お問い合わせフォーム（実装済み） -->
+      <div id="contact-form" class="card" style="margin:12px 0 0;background:#fafafa">
+        <h3 style="margin-top:0">お問い合わせフォーム</h3>
+        <form id="contactForm" novalidate>
+          <div class="row" style="gap:12px;flex-wrap:wrap">
+            <label class="field" style="flex:1 1 220px">
+              お名前<span style="color:#d00">*</span><br>
+              <input class="input" type="text" name="name" required>
+            </label>
+            <label class="field" style="flex:1 1 220px">
+              メールアドレス<span style="color:#d00">*</span><br>
+              <input class="input" type="email" name="email" required>
+            </label>
+          </div>
+          <label class="field">
+            お問い合わせ内容<span style="color:#d00">*</span><br>
+            <textarea class="textarea" name="message" required></textarea>
+          </label>
+
+          <!-- honeypot（ボット対策・非表示） -->
+          <div class="hp">
+            <label>ウェブサイト<input type="text" name="website"></label>
+          </div>
+
+          <!-- メタ情報 -->
+          <input type="hidden" name="page_path">
+          <input type="hidden" name="referrer">
+          <input type="hidden" name="user_agent">
+
+          <div class="row" style="align-items:center;margin-top:14px">
+            <button type="submit" class="btn">送信する</button>
+            <span id="contactStatus" class="status"></span>
+          </div>
+        </form>
+        <p class="muted" style="font-size:12px;margin-top:10px">
+          送信いただいた情報はお問い合わせ対応の目的のみに使用します。詳細は
+          <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank">プライバシーポリシー</a>をご覧ください。
+        </p>
       </div>
     </section>
 
@@ -155,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
       practical:'https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03'
     };
 
-    // コース定義
+    // コース定義（省略なく掲載）
     const COURSES = {
       entry:{ badge:'入門〜初級向け',
         title:'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）',
@@ -247,95 +293,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 戻るボタンに診断クエリを保持
     const keep = new URLSearchParams();
-    if (score !== '—') keep.set('score', score);
-    if (level !== '—') keep.set('level', level);
-    if (lv) keep.set('lv', lv);
-    const back = $('btn-back');
-    if (back) back.href = 'exo_courses.html' + (keep.toString()?('?'+keep.toString()):'');
-
-    // 申込ボタンは #contact へスクロール
-    const apply = $('btn-apply');
-    if (apply) apply.addEventListener('click',(e)=>{ e.preventDefault(); $('contact').scrollIntoView({behavior:'smooth'}); });
-
-    // コース別 決済リンク
-    const payLink = $('pay-link');
-    if (payLink) { payLink.href = STRIPE_LINKS[courseKey] || STRIPE_LINKS.entry; payLink.setAttribute('rel','noopener'); }
-
-    /* ====== FAQ（fetch → 失敗時 JSONP フォールバック） ====== */
-    // ← あなたの最新 /exec URL（動作確認済み）
-    const EXO_FAQ_EXEC = "https://script.google.com/macros/s/AKfycbxhyZ2GMOQ9TcdhFvoScakOm9e8ZatzaItSpPt00ISD4f8y5lxdgjay7y7EMOE13MF6/exec";
-
-    async function viaFetch(url){
-      const r = await fetch(url, {cache:'no-store', mode:'cors'});
-      if (!r.ok) throw new Error('fetch failed');
-      return await r.json();
-    }
-    function viaJsonp(url){
-      return new Promise((resolve,reject)=>{
-        const cb = 'cb_' + Math.random().toString(36).slice(2);
-        const s = document.createElement('script');
-        const cleanup = ()=>{ delete window[cb]; s.remove(); };
-        window[cb] = (data)=>{ cleanup(); resolve(data); };
-        s.onerror = ()=>{ cleanup(); reject(new Error('jsonp error')); };
-        s.src = url + (url.includes('?')?'&':'?') + 'callback=' + cb;
-        document.body.appendChild(s);
-        setTimeout(()=>{ try{cleanup();}catch{} reject(new Error('jsonp timeout'));},15000);
-      });
-    }
-    async function apiGet(pathWithQuery){
-      const url = `${EXO_FAQ_EXEC}${pathWithQuery}`;
-      try{ return await viaFetch(url); }catch(_){ return await viaJsonp(url); }
-    }
-
-    async function renderFaq() {
-      const acc = document.getElementById('faq-accordion');
-      try{
-        const data = await apiGet(`?api=faq&fn=list`);
-        const items = (data && data.items) || [];
-        if (!items.length) { acc.innerHTML = '<div class="muted">FAQは準備中です。</div>'; return; }
-        acc.innerHTML = items.map(it => `
-          <details class="faq-item">
-            <summary>Q. ${escapeHtml(it.q)}</summary>
-            <div class="a">${escapeHtml(it.a || '（準備中）')}</div>
-          </details>
-        `).join('');
-      }catch(e){
-        acc.innerHTML = '<div class="muted">FAQの取得に失敗しました。時間をおいて再度お試しください。</div>';
-      }
-    }
-
-    // チャット（FAQ→なければAI補完）
-    const form = document.getElementById('faqAsk');
-    const input = document.getElementById('faqQ');
-    const ansBox = document.getElementById('faqAns');
-
-    document.querySelectorAll('.chip').forEach(ch => {
-      ch.addEventListener('click', () => { input.value = ch.dataset.q; form.dispatchEvent(new Event('submit')); });
-    });
-
-    form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const q = input.value.trim(); if(!q) return;
-      ansBox.style.display = 'flex';
-      const user = document.createElement('div'); user.className='bub'; user.textContent = q;
-      const ai   = document.createElement('div'); ai.className='bub ai'; ai.textContent = '回答を生成しています…';
-      ansBox.appendChild(user); ansBox.appendChild(ai);
-      try{
-        const j = await apiGet(`?api=faq&fn=answer&q=${encodeURIComponent(q)}`);
-        ai.textContent = (j && j.ok) ? `${j.answer}　（${j.source==='gpt'?'AI補完':'FAQ'}）` : 'エラーが発生しました。';
-      }catch(err){
-        ai.textContent = '通信に失敗しました。時間をおいてお試しください。';
-      }
-      input.value = '';
-    });
-
-    function escapeHtml(s){return String(s)
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-
-    renderFaq();
-  } catch(err){ console.error('course detail init error:', err); }
-});
-</script>
-</body>
-</html>
+    if (score !== '—'
