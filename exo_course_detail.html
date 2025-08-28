@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
       practical:'https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03'
     };
 
-    // コース定義（省略なし版）
+    // コース定義
     const COURSES = {
       entry:{ badge:'入門〜初級向け',
         title:'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）',
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         contactForm.style.display = open ? 'none' : 'block';
         contactToggle.textContent = open ? 'お問い合わせフォーム' : 'フォームを閉じる';
         if(!open){
-          setMeta(); // ← 表示したタイミングで毎回再セット
+          setMeta(); // 表示時に毎回メタ更新
           contactForm.scrollIntoView({behavior:'smooth', block:'start'});
         }
       });
@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const ENDPOINT = "https://script.google.com/macros/s/AKfycbzFCNDBi2PS0mWDParp8CBDjmVjrzQoJHM_t-0Chr2ccXoqDnEO6HVjmtrCPp370o58/exec";
 
       contactForm.addEventListener('submit', async (e)=>{
-        e.preventDefault(); // ブラウザの通常送信（GET）を抑止
+        e.preventDefault(); // GET の通常送信を抑止
         statusEl.textContent='';
         const payload = Object.fromEntries(new FormData(contactForm).entries());
 
@@ -396,7 +396,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try{
-          const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+          const res=await fetch(ENDPOINT,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(payload)
+          });
           const data=await res.json();
           if(data.status==='ok'){
             contactForm.reset();
@@ -407,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }catch(_){
           statusEl.textContent='送信に失敗しました。通信環境をご確認ください。';
         }
-      }, {passive:true});
+      });
     }
   } catch(err){ console.error('course detail init error:', err); }
 });
