@@ -138,7 +138,11 @@
       </div>
 
       <!-- お問い合わせフォーム（最初は非表示） -->
-      <form id="contactForm" style="display:none; margin-top:1rem;" novalidate>
+      <form id="contactForm"
+            style="display:none; margin-top:1rem;"
+            novalidate
+            method="post"
+            onsubmit="return false;">
         <div class="row" style="gap:12px;flex-wrap:wrap">
           <label class="field" style="flex:1 1 220px">
             お名前<span style="color:#d00">*</span><br>
@@ -192,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
       practical:'https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03'
     };
 
-    // コース定義
+    // コース定義（省略なし版）
     const COURSES = {
       entry:{ badge:'入門〜初級向け',
         title:'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）',
@@ -361,22 +365,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusEl=document.getElementById('contactStatus');
 
     if(contactToggle && contactForm){
+      const setMeta = () => {
+        contactForm.elements['page_path'].value  = location.pathname + location.search + location.hash;
+        contactForm.elements['referrer'].value   = document.referrer || '';
+        contactForm.elements['user_agent'].value = navigator.userAgent || '';
+      };
+
       contactToggle.addEventListener('click',()=>{
         const open = contactForm.style.display === 'block';
         contactForm.style.display = open ? 'none' : 'block';
         contactToggle.textContent = open ? 'お問い合わせフォーム' : 'フォームを閉じる';
-        if(!open){ contactForm.scrollIntoView({behavior:'smooth', block:'start'}); }
+        if(!open){
+          setMeta(); // ← 表示したタイミングで毎回再セット
+          contactForm.scrollIntoView({behavior:'smooth', block:'start'});
+        }
       });
 
-      // メタ付与
-      contactForm.elements['page_path'].value  = location.pathname + location.search + location.hash;
-      contactForm.elements['referrer'].value   = document.referrer || '';
-      contactForm.elements['user_agent'].value = navigator.userAgent || '';
+      setMeta(); // 初期セット
 
       const ENDPOINT = "https://script.google.com/macros/s/AKfycbzFCNDBi2PS0mWDParp8CBDjmVjrzQoJHM_t-0Chr2ccXoqDnEO6HVjmtrCPp370o58/exec";
 
       contactForm.addEventListener('submit', async (e)=>{
-        e.preventDefault();
+        e.preventDefault(); // ブラウザの通常送信（GET）を抑止
         statusEl.textContent='';
         const payload = Object.fromEntries(new FormData(contactForm).entries());
 
