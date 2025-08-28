@@ -25,6 +25,9 @@
   .lead{line-height:1.8}
   .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
   @media (max-width:860px){.grid-2{grid-template-columns:1fr}}
+  /* Alert */
+  .alert{border:1px solid #fecaca;background:#fff1f2;color:#991b1b;padding:10px 12px;border-radius:12px;margin-top:8px;font-weight:600}
+  .alert small{display:block;color:#b91c1c;font-weight:500}
   /* FAQ */
   .faq-ui{display:grid;grid-template-columns:1fr 380px;gap:18px}
   @media (max-width:980px){.faq-ui{grid-template-columns:1fr}}
@@ -58,10 +61,16 @@
     <p class="muted" style="margin:.35rem 0 1rem">
       診断スコア：<span id="score-out">—</span> ／ レベル：<span id="level-out">—</span>
     </p>
-    <div class="row" style="margin:.2rem 0 1rem">
+    <div class="row" style="margin:.2rem 0 .6rem">
       <a href="#apply" class="btn" id="btn-apply">この内容で申し込む <span class="price">¥980</span></a>
       <a href="#flow" class="btn ghost">学習の流れ</a>
       <a href="exo_courses.html" class="btn ghost" id="btn-back">コース一覧に戻る</a>
+    </div>
+
+    <!-- 有料プラン必須の注意書き（申込ボタン直下に常時表示） -->
+    <div class="alert" role="note" aria-live="polite">
+      重要：本スクールはカスタムGPTで運用しているため、<u>受講にはChatGPTの有料プラン（ChatGPT Plus 等）への加入が必須</u>です。
+      <small>※有料プラン未加入の場合、教材・課題の一部が利用できません。</small>
     </div>
 
     <!-- 概要 -->
@@ -100,20 +109,21 @@
       <ul id="flow-list"></ul>
     </section>
 
-    <!-- FAQ（復活） -->
+    <!-- FAQ -->
     <section class="card" id="faq-section">
       <h2>よくある質問（FAQ）</h2>
       <div class="faq-ui">
         <div id="faq-accordion"><div class="muted">読み込み中…</div></div>
         <div class="chat-card">
           <div class="chipbar">
+            <button type="button" class="chip" data-q="受講にChatGPT有料プランは必要ですか？">受講にChatGPT有料プランは必要？</button>
             <button type="button" class="chip" data-q="海外からも受講できますか？">海外からも受講できますか？</button>
             <button type="button" class="chip" data-q="各コースの違いは？">各コースの違いは？</button>
             <button type="button" class="chip" data-q="受講URLが届かない時は？">受講URLが届かない時は？</button>
             <button type="button" class="chip" data-q="法人向けは可能？">法人向けは可能？</button>
           </div>
           <form id="faqAsk" class="row" style="gap:8px;">
-            <input id="faqQ" type="text" placeholder="例：海外からも受講できますか？"
+            <input id="faqQ" type="text" placeholder="例：受講にChatGPT有料プランは必要ですか？"
                    style="flex:1;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff" />
             <button class="btn" type="submit">送信</button>
           </form>
@@ -208,6 +218,12 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ====== FAQ（fetch → 失敗時 JSONP） ====== */
   const EXO_FAQ_EXEC = "https://script.google.com/macros/s/AKfycbxhyZ2GMOQ9TcdhFvoScakOm9e8ZatzaItSpPt00ISD4f8y5lxdgjay7y7EMOE13MF6/exec";
 
+  // ここで「有料プラン必須」のローカルFAQを定義（API未反映でも必ず表示）
+  const LOCAL_FAQ_MUST_PLUS = {
+    q: '受講にChatGPT有料プランは必要ですか？',
+    a: 'はい。本スクールはカスタムGPTを利用しているため、受講にはChatGPTの有料プラン（ChatGPT Plus等）への加入が必須です。未加入の場合、教材・課題の一部が利用できません。'
+  };
+
   async function viaFetch(url){
     const r = await fetch(url,{cache:'no-store',mode:'cors'});
     if(!r.ok) throw new Error('fetch failed');
@@ -227,12 +243,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   async function apiGet(path){ const url=`${EXO_FAQ_EXEC}${path}`; try{ return await viaFetch(url);}catch(_){ return await viaJsonp(url);} }
 
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
   async function renderFaq(){
     const acc=document.getElementById('faq-accordion');
     try{
       const data=await apiGet(`?api=faq&fn=list`);
-      const items=(data&&data.items)||[];
-      if(!items.length){ acc.innerHTML='<div class="muted">FAQは準備中です。</div>'; return; }
+      let items=(data&&data.items)||[];
+
+      // 既存に同趣旨のQが無ければ先頭にローカルFAQを追加（重複防止）
+      const hasMustPlus = items.some(it => String(it.q||'').includes('有料プラン'));
+      if(!hasMustPlus){ items = [LOCAL_FAQ_MUST_PLUS, ...items]; }
+
+      if(!items.length){
+        acc.innerHTML='<div class="muted">FAQは準備中です。</div>'; 
+        return;
+      }
       acc.innerHTML=items.map(it=>`
         <details class="faq-item">
           <summary>Q. ${esc(it.q)}</summary>
@@ -240,7 +266,14 @@ document.addEventListener('DOMContentLoaded', () => {
         </details>
       `).join('');
     }catch(e){
-      acc.innerHTML='<div class="muted">FAQの取得に失敗しました。時間をおいて再度お試しください。</div>';
+      // API取得に失敗してもローカルFAQだけは表示
+      acc.innerHTML = `
+        <details class="faq-item" open>
+          <summary>Q. ${esc(LOCAL_FAQ_MUST_PLUS.q)}</summary>
+          <div class="a">${esc(LOCAL_FAQ_MUST_PLUS.a)}</div>
+        </details>
+        <div class="muted">※ その他のFAQの取得に失敗しました。時間をおいて再度お試しください。</div>
+      `;
     }
   }
 
@@ -261,11 +294,16 @@ document.addEventListener('DOMContentLoaded', () => {
     try{
       const j=await apiGet(`?api=faq&fn=answer&q=${encodeURIComponent(q)}`);
       ai.textContent=(j&&j.ok)?`${j.answer}　（${j.source==='gpt'?'AI補完':'FAQ'}）`:'エラーが発生しました。';
-    }catch(_){ ai.textContent='通信に失敗しました。時間をおいてお試しください。'; }
+    }catch(_){ 
+      // APIが落ちている時に「有料プラン必要？」だけは即答
+      if(q.includes('有料') || q.includes('ChatGPT') || q.includes('プラン')){
+        ai.textContent = LOCAL_FAQ_MUST_PLUS.a + '（ローカル表示）';
+      }else{
+        ai.textContent='通信に失敗しました。時間をおいてお試しください。';
+      }
+    }
     input.value='';
   });
-
-  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
   renderFaq();
 });
