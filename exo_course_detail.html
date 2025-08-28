@@ -1,20 +1,52 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ExoVisionary Hub - コース詳細</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>コース詳細 | ExoVisionary Hub</title>
   <style>
-    body { font-family: system-ui, sans-serif; line-height: 1.6; margin:0; padding:0; }
-    .wrap { max-width: 800px; margin: 0 auto; padding: 2rem; }
-    h1 { font-size: 1.6rem; margin-bottom: 1rem; }
-    .btn { 
-      display:inline-block; padding:10px 16px; margin:6px 4px;
-      background:#111827; color:#fff; border-radius:6px;
-      text-decoration:none; font-size:0.95rem;
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Meiryo, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #111;
+      background: #fff;
+      line-height: 1.6;
     }
-    .btn:hover { opacity:0.85; }
-    .note { font-size:0.85rem; color:#555; margin-top:8px; }
+    .wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      margin-top: 2rem;
+      font-size: 1.3rem;
+    }
+    ul {
+      margin: 0.5rem 0 1rem 1.2rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 18px;
+      margin: 8px 4px;
+      background: #111827;
+      color: #fff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .btn:hover {
+      opacity: 0.85;
+    }
+    .note {
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -23,14 +55,19 @@
     <p>このページではコースの詳細と申込方法をご案内します。</p>
 
     <h2>お申し込み</h2>
-    <p>以下のボタンから <b>本番環境のStripe決済</b> に進めます。お支払い完了後、受講URLが自動送信されます。</p>
+    <p>
+      以下のボタンから <b>本番環境のStripe決済</b> に進めます。<br>
+      お支払い完了後、受講URLが自動送信されます。
+    </p>
     <ul>
       <li>決済金額：¥980（税込）</li>
       <li>商品名：各コース名（このページのコース）</li>
     </ul>
 
-    <!-- Stripe決済ボタン -->
-    <a href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener" class="btn">Stripe決済リンク</a>
+    <!-- Stripe決済リンク -->
+    <a href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener" class="btn">
+      Stripe決済リンク
+    </a>
 
     <p class="note">※決済完了後、自動的に受講URLがメールで送信されます。</p>
   </div>
