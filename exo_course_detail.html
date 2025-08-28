@@ -44,13 +44,6 @@
   .qa{display:flex;flex-direction:column;gap:10px;margin-top:8px}
   .bub{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
   .bub.ai{background:#f8fafc}
-
-  /* 問い合わせフォーム */
-  .field{display:block;margin-top:12px}
-  .input,.textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;background:#fff}
-  .textarea{min-height:140px}
-  .hp{position:absolute;left:-9999px;top:-9999px}
-  .status{font-size:14px;color:#555;margin-left:8px}
 </style>
 </head>
 <body>
@@ -124,7 +117,7 @@
       <noscript>※FAQを表示するにはJavaScriptを有効にしてください。</noscript>
     </section>
 
-    <!-- 申込/問合せ -->
+    <!-- 申込/問合せ（フォーム撤去版） -->
     <section class="card" id="contact">
       <h2>お申し込み / お問い合わせ</h2>
       <p class="warn">以下のボタンから<strong>本番環境のStripe決済</strong>に進めます。お支払い完了後、受講URLが自動送信されます。</p>
@@ -134,46 +127,10 @@
       </ul>
       <div class="row" style="margin-bottom:10px">
         <a href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener" class="btn" id="pay-link">Stripe決済リンク</a>
-        <button class="btn ghost" id="contact-toggle" type="button">お問い合わせフォーム</button>
+        <button class="btn ghost" id="contact-mail" type="button">メールで問い合わせる</button>
       </div>
-
-      <!-- お問い合わせフォーム（最初は非表示） -->
-      <form id="contactForm"
-            style="display:none; margin-top:1rem;"
-            novalidate
-            method="post"
-            onsubmit="return false;">
-        <div class="row" style="gap:12px;flex-wrap:wrap">
-          <label class="field" style="flex:1 1 220px">
-            お名前<span style="color:#d00">*</span><br>
-            <input class="input" type="text" name="name" required>
-          </label>
-          <label class="field" style="flex:1 1 220px">
-            メールアドレス<span style="color:#d00">*</span><br>
-            <input class="input" type="email" name="email" required>
-          </label>
-        </div>
-        <label class="field">
-          お問い合わせ内容<span style="color:#d00">*</span><br>
-          <textarea class="textarea" name="message" required></textarea>
-        </label>
-
-        <!-- honeypot（非表示） -->
-        <div class="hp"><label>ウェブサイト<input type="text" name="website"></label></div>
-
-        <!-- メタ -->
-        <input type="hidden" name="page_path">
-        <input type="hidden" name="referrer">
-        <input type="hidden" name="user_agent">
-
-        <div class="row" style="align-items:center;margin-top:14px">
-          <button type="submit" class="btn">送信する</button>
-          <span id="contactStatus" class="status"></span>
-        </div>
-      </form>
       <p class="muted" style="font-size:12px;margin-top:10px">
-        送信いただいた情報はお問い合わせ対応の目的のみに使用します。詳細は
-        <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank">プライバシーポリシー</a>をご覧ください。
+        ※ボタンを押すとメール作成画面が開きます。お名前・内容をご記入の上、そのまま送信してください。
       </p>
     </section>
 
@@ -196,29 +153,14 @@ document.addEventListener('DOMContentLoaded', () => {
       practical:'https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03'
     };
 
-    // コース定義
+    // コース定義（省略なくそのまま）
     const COURSES = {
       entry:{ badge:'入門〜初級向け',
         title:'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）',
         lead:'AI初心者や40–50代のビジネス層に向けた短期ブート。安全に使い、良い指示を出し、まずは「資料/メール/デザイン補助」で成果を出すことがゴールです。うまくいった指示はテンプレ化して、誰でも再現できる状態へ。',
-        skills:[
-          'AIリテラシー：情報の扱い、社外秘/公開、NGケース、ガバナンスの基本',
-          'ChatGPT基礎：モデル・モード、要約/言い換え/トーン調整、校正・添削',
-          'プロンプト設計：目的→制約→入出力→評価観点、Few-shot、ステップ分解',
-          'スライド/デザイン補助：図解プロンプトの作り方、画像生成の基礎（バナー/挿絵）',
-          '成果の“型化”：成功指示をテンプレ化し、チームで再現'
-        ],
-        modules:[
-          '安全・ルール・型（60分）／プロンプト雛形を3本作る',
-          '資料×メール×要約（90分）／骨子→章立て→本文→要約',
-          '画像生成の基礎（60分）／バナー2案→比較→リライト',
-          'ミニ改善の回し方（60分）／Before/Afterと評価観点の言語化'
-        ],
-        hands:[
-          '10枚スライドの叩き台＋議事メモ→要約→アクション抽出＋社内案内メール',
-          '画像2点（タイトルバナー・図解アイコン）',
-          'プロンプトライブラリ（成功/失敗/評価観点つき）'
-        ],
+        skills:['AIリテラシー：情報の扱い、社外秘/公開、NGケース、ガバナンスの基本','ChatGPT基礎：モデル・モード、要約/言い換え/トーン調整、校正・添削','プロンプト設計：目的→制約→入出力→評価観点、Few-shot、ステップ分解','スライド/デザイン補助：図解プロンプトの作り方、画像生成の基礎（バナー/挿絵）','成果の“型化”：成功指示をテンプレ化し、チームで再現'],
+        modules:['安全・ルール・型（60分）／プロンプト雛形を3本作る','資料×メール×要約（90分）／骨子→章立て→本文→要約','画像生成の基礎（60分）／バナー2案→比較→リライト','ミニ改善の回し方（60分）／Before/Afterと評価観点の言語化'],
+        hands:['10枚スライドの叩き台＋議事メモ→要約→アクション抽出＋社内案内メール','画像2点（タイトルバナー・図解アイコン）','プロンプトライブラリ（成功/失敗/評価観点つき）'],
         outcomes:['プロンプト集（再現手順つき）','テンプレ化した資料一式','簡易SOP'],
         after:['社内向け資料・メール・要約を短時間で安定品質へ','「良い指示の型」をチーム共有し、再現性を確保'],
         flow:['Day1：ルールと安全／良いプロンプトの型づくり','Day2：資料・メール・要約の時短体験','Day3：画像生成でスライド素材を作る','Day4：成功した指示をテンプレ化/共有']
@@ -226,23 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
       middle:{ badge:'初級〜中級向け',
         title:'MIDDLE｜AI×業務改善の入口（4–6週間）',
         lead:'うまくいく型を「半自動」にして、数字で回す段階。テンプレとチェックリストを業務の入口に差し込み、GASで受付→返信→記録→レポートまで繋ぎます。A/Bで差戻し原因TOP3から潰して、可視化まで運用。',
-        skills:[
-          '業務テンプレ整備：議事録/FAQ/メールの型化と運用',
-          'GAS入門〜半自動：フォーム→シート→自動返信→レポート',
-          '評価と改善：A/B運用／品質・再現性・時間の指標で回す',
-          '可視化：簡易KPIダッシュボード（Sheets＋自動更新）'
-        ],
-        modules:[
-          'テンプレ設計：入力→処理→出力の分解とチェックリスト化',
-          'GASで受付〜返信〜記録の一連化（Webhook/トリガー）',
-          'A/B検証の設計（プロンプト/テンプレ比較・指標の定義）',
-          'KPIダッシュボード（差戻し率・再現性・1件時間）'
-        ],
-        hands:[
-          'フォーム受付→一次返信→シート記録→週次レポートの半自動化',
-          '議事録・FAQ・メールのテンプレ3本を整備',
-          '評価指標（品質/再現性/時間）の週次レポート提出'
-        ],
+        skills:['業務テンプレ整備：議事録/FAQ/メールの型化と運用','GAS入門〜半自動：フォーム→シート→自動返信→レポート','評価と改善：A/B運用／品質・再現性・時間の指標で回す','可視化：簡易KPIダッシュボード（Sheets＋自動更新）'],
+        modules:['テンプレ設計：入力→処理→出力の分解とチェックリスト化','GASで受付〜返信〜記録の一連化（Webhook/トリガー）','A/B検証の設計（プロンプト/テンプレ比較・指標の定義）','KPIダッシュボード（差戻し率・再現性・1件時間）'],
+        hands:['フォーム受付→一次返信→シート記録→週次レポートの半自動化','議事録・FAQ・メールのテンプレ3本を整備','評価指標（品質/再現性/時間）の週次レポート提出'],
         outcomes:['“勝手に回る”半自動フロー','テンプレ/チェックリスト一式','KPIダッシュボード'],
         after:['小さな業務を安定運用し、指標で継続改善できる','属人化を削減し、再現性を確保'],
         flow:['Week1：テンプレとチェックリスト整備','Week2：GASで受付→返信→記録を一連化','Week3：A/B運用で差戻しTOP3を潰す','Week4：ダッシュボードで可視化・定例化']
@@ -250,23 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
       practical:{ badge:'実践〜先進向け',
         title:'PRACTICAL｜疑似案件で本格運用へ（6–8週間）',
         lead:'評価・検証〜運用設計まで踏み込み、“誰がやっても同じ品質”へ。要件定義→設計→実装→納品一式まで通し、RAGのPoCも含めて運用の仕組み化を実践します。',
-        skills:[
-          '要件定義ロールプレイ：クライアント役のGPTにヒアリング',
-          '設計〜実装：データ流・権限・失敗時ハンドリング・SLA/SLO',
-          'RAG/エージェント：FAQで正答率ベンチ→改善→人へエスカレーション',
-          '運用：ログ・エラー通知・変更管理・監査可能な記録'
-        ],
-        modules:[
-          '要件定義（1ページ設計書）：目的/入力/出力/判断基準/例外/権限',
-          '実装（GAS/外部API連携）と失敗時ハンドリング',
-          'RAG PoC：1テーマで評価セット作成→正答率ベンチ',
-          '納品一式：設計書／コード／SOP／成果レポート／デモ台本'
-        ],
-        hands:[
-          '設計書ドラフト作成（データフロー/例外処理/権限）',
-          'GASコード＋SOP＋成果レポートの納品一式',
-          '3分デモ用の説明台本（または動画リンク）'
-        ],
+        skills:['要件定義ロールプレイ：クライアント役のGPTにヒアリング','設計〜実装：データ流・権限・失敗時ハンドリング・SLA/SLO','RAG/エージェント：FAQで正答率ベンチ→改善→人へエスカレーション','運用：ログ・エラー通知・変更管理・監査可能な記録'],
+        modules:['要件定義（1ページ設計書）：目的/入力/出力/判断基準/例外/権限','実装（GAS/外部API連携）と失敗時ハンドリング','RAG PoC：1テーマで評価セット作成→正答率ベンチ','納品一式：設計書／コード／SOP／成果レポート／デモ台本'],
+        hands:['設計書ドラフト作成（データフロー/例外処理/権限）','GASコード＋SOP＋成果レポートの納品一式','3分デモ用の説明台本（または動画リンク）'],
         outcomes:['提案〜納品まで自走できるミニ案件レベルの実力','RAG評価セットとベースラインの構築','監査可能な運用ドキュメント'],
         after:['SLA合意・インシデント運用・変更管理を含む実務運用が可能','成功パターンをガイド化し、多部署へ横展開'],
         flow:['Week1：要件定義＆1ページ設計書','Week2：実装と失敗時ハンドリング','Week3：RAG PoC・正答率ベンチ','Week4：納品一式・デモ・ふりかえり']
@@ -277,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const course = COURSES[courseKey] || COURSES.entry;
     const $ = id => document.getElementById(id);
     const fill = (id, arr) => { const el=$(id); if(el) el.innerHTML = (arr||[]).map(t=>`<li>${t}</li>`).join(''); };
-
     $('badge').textContent = course.badge;
     $('course-title').textContent = course.title;
     $('score-out').textContent = score;
@@ -305,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ====== FAQ（fetch → 失敗時 JSONP フォールバック） ====== */
     const EXO_FAQ_EXEC = "https://script.google.com/macros/s/AKfycbxhyZ2GMOQ9TcdhFvoScakOm9e8ZatzaItSpPt00ISD4f8y5lxdgjay7y7EMOE13MF6/exec";
-
     async function viaFetch(url){ const r = await fetch(url,{cache:'no-store',mode:'cors'}); if(!r.ok) throw new Error('fetch failed'); return await r.json(); }
     function viaJsonp(url){
       return new Promise((resolve,reject)=>{
@@ -320,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
     async function apiGet(pathWithQuery){ const url=`${EXO_FAQ_EXEC}${pathWithQuery}`; try{ return await viaFetch(url);}catch(_){ return await viaJsonp(url);} }
-
     async function renderFaq(){
       const acc=document.getElementById('faq-accordion');
       try{
@@ -335,8 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
       }catch(e){ acc.innerHTML='<div class="muted">FAQの取得に失敗しました。時間をおいて再度お試しください。</div>'; }
     }
-
-    // FAQクイック質問
     const formFaq=document.getElementById('faqAsk');
     const input=document.getElementById('faqQ');
     const ansBox=document.getElementById('faqAns');
@@ -354,63 +263,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }catch(_){ ai.textContent='通信に失敗しました。時間をおいてお試しください。'; }
       input.value='';
     });
-
     function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-
     renderFaq();
 
-    /* ====== お問い合わせフォーム：開閉と送信 ====== */
-    const contactToggle=document.getElementById('contact-toggle');
-    const contactForm=document.getElementById('contactForm');
-    const statusEl=document.getElementById('contactStatus');
-
-    if(contactToggle && contactForm){
-      const setMeta = () => {
-        contactForm.elements['page_path'].value  = location.pathname + location.search + location.hash;
-        contactForm.elements['referrer'].value   = document.referrer || '';
-        contactForm.elements['user_agent'].value = navigator.userAgent || '';
-      };
-
-      contactToggle.addEventListener('click',()=>{
-        const open = contactForm.style.display === 'block';
-        contactForm.style.display = open ? 'none' : 'block';
-        contactToggle.textContent = open ? 'お問い合わせフォーム' : 'フォームを閉じる';
-        if(!open){
-          setMeta(); // 表示時に毎回メタ更新
-          contactForm.scrollIntoView({behavior:'smooth', block:'start'});
-        }
-      });
-
-      setMeta(); // 初期セット
-
-      const ENDPOINT = "https://script.google.com/macros/s/AKfycbzPOZPiYR1okFktRJx12nJGgulZSJAckN_ic60kjWnLxI0qeyAF6ZNRfB_BnODJD9QpeQ/exec";
-
-      contactForm.addEventListener('submit', async (e)=>{
-        e.preventDefault(); // GET の通常送信を抑止
-        statusEl.textContent='';
-        const payload = Object.fromEntries(new FormData(contactForm).entries());
-
-        if(payload.website){ statusEl.textContent='送信に失敗しました。'; return; }
-        if(!payload.name || !payload.email || !payload.message){
-          statusEl.textContent='必須項目を入力してください。'; return;
-        }
-
-        try{
-          const res=await fetch(ENDPOINT,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(payload)
-          });
-          const data=await res.json();
-          if(data.status==='ok'){
-            contactForm.reset();
-            statusEl.textContent='送信が完了しました。通常24時間以内にご連絡します。';
-          }else{
-            statusEl.textContent='送信に失敗しました。しばらくしてから再度お試しください。';
-          }
-        }catch(_){
-          statusEl.textContent='送信に失敗しました。通信環境をご確認ください。';
-        }
+    /* ====== メール起動（mailto） ====== */
+    const mailBtn = document.getElementById('contact-mail');
+    if (mailBtn){
+      mailBtn.addEventListener('click', ()=>{
+        const subject = `【ExoVisionary Hub】お問い合わせ（${course.title}）`;
+        const body = [
+          '以下を書き換えてそのまま送信してください。%0D%0A',
+          '--- お問い合わせ内容 ---%0D%0A',
+          'お名前：%0D%0A',
+          '内容：%0D%0A%0D%0A',
+          '--- 送信メモ（自動付加）---%0D%0A',
+          `ページ：${encodeURIComponent(location.pathname + location.search + location.hash)}%0D%0A`,
+          `診断スコア：${encodeURIComponent(score)} / レベル：${encodeURIComponent(level)}%0D%0A`
+        ].join('');
+        location.href = `mailto:56projectai@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
       });
     }
   } catch(err){ console.error('course detail init error:', err); }
