@@ -13,9 +13,6 @@
       background:#111827; color:#fff; border-radius:6px;
       text-decoration:none; font-size:0.95rem;
     }
-    .btn.ghost {
-      background:#fff; color:#111827; border:1px solid #111827;
-    }
     .btn:hover { opacity:0.85; }
     .note { font-size:0.85rem; color:#555; margin-top:8px; }
   </style>
@@ -25,69 +22,17 @@
     <h1 id="course-title">コース詳細</h1>
     <p>このページではコースの詳細と申込方法をご案内します。</p>
 
-    <h2>お申し込み / お問い合わせ</h2>
+    <h2>お申し込み</h2>
     <p>以下のボタンから <b>本番環境のStripe決済</b> に進めます。お支払い完了後、受講URLが自動送信されます。</p>
     <ul>
       <li>決済金額：¥980（税込）</li>
       <li>商品名：各コース名（このページのコース）</li>
     </ul>
 
-    <!-- 決済ボタン -->
-    <a href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener" class="btn" id="pay-link">Stripe決済リンク</a>
+    <!-- Stripe決済ボタン -->
+    <a href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener" class="btn">Stripe決済リンク</a>
 
-    <!-- 問い合わせボタン -->
-    <a class="btn ghost" id="btn-mailto" href="#">メールアプリで問い合わせる</a>
-    <a class="btn ghost" id="btn-gmail"  href="#" style="border-style:dashed">Gmailで問い合わせる</a>
-
-    <p class="note">※ボタンを押すとメール作成画面が開きます。お名前・内容をご記入の上、そのまま送信してください。</p>
+    <p class="note">※決済完了後、自動的に受講URLがメールで送信されます。</p>
   </div>
-
-  <script>
-    // ===== 問い合わせメールの自動生成 =====
-    const NOTIFY = '56projectai@gmail.com';
-
-    function buildSubjectBody(courseTitle, score, level){
-      const subject = `【ExoVisionary Hub】お問い合わせ（${courseTitle}）`;
-      const bodyLines = [
-        '以下を書き換えてそのまま送信してください。%0D%0A',
-        '--- お問い合わせ内容 ---%0D%0A',
-        'お名前：%0D%0A',
-        '内容：%0D%0A%0D%0A',
-        '--- 自動付加情報 ---%0D%0A',
-        `ページ：${encodeURIComponent(location.pathname + location.search + location.hash)}%0D%0A`,
-        `診断スコア：${encodeURIComponent(score)} / レベル：${encodeURIComponent(level)}%0D%0A`
-      ];
-      return { subject, body: bodyLines.join('') };
-    }
-
-    function setContactLinks(){
-      const mailtoBtn = document.getElementById('btn-mailto');
-      const gmailBtn  = document.getElementById('btn-gmail');
-      if(!mailtoBtn || !gmailBtn) return;
-
-      const sp = new URLSearchParams(location.search);
-      const courseKey = (sp.get('course') || 'entry').toLowerCase();
-      const score = sp.get('score') || '—';
-      const level = sp.get('level') || '—';
-
-      const courseTitle = document.getElementById('course-title')?.textContent || 'コース';
-
-      const {subject, body} = buildSubjectBody(courseTitle, score, level);
-
-      // mailto（ローカルメールアプリ）
-      const mailtoUrl = `mailto:${NOTIFY}?subject=${encodeURIComponent(subject)}&body=${body}`;
-      mailtoBtn.setAttribute('href', mailtoUrl);
-
-      // Gmail（ブラウザで新規メール作成）
-      const gmailUrl =
-        `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(NOTIFY)}` +
-        `&su=${encodeURIComponent(subject)}&body=${body}`;
-      gmailBtn.setAttribute('href', gmailUrl);
-      gmailBtn.setAttribute('target', '_blank');
-      gmailBtn.setAttribute('rel', 'noopener');
-    }
-
-    setContactLinks();
-  </script>
 </body>
 </html>
