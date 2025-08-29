@@ -14,6 +14,11 @@
     gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type: 'beacon', debug_mode: true });
   </script>
 
+  <!-- ★ GASのURLをグローバルに（テキスト露出を防ぐため必ず<script>内に） -->
+  <script>
+    window.GAS_URL = "https://script.google.com/macros/s/AKfycbxPxJtFeGovClk2IBaoecqUEH8MiuFPbCgYkmtNVoWtZlWwNpXojCZWn6lnWkfeiPar/exec";
+  </script>
+
   <style>
     :root { --brand:#7356b6; --ink:#222; --card:#fff; --bg:#f5f3ff; --muted:#666; --warn:#b45309; }
     *{ box-sizing:border-box; }
@@ -281,7 +286,6 @@
   <script>
   document.addEventListener('DOMContentLoaded', () => {
     /*** 設定 ***/
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxPxJtFeGovClk2IBaoecqUEH8MiuFPbCgYkmtNVoWtZlWwNpXojCZWn6lnWkfeiPar/exec";
     const QUESTIONS_COUNT = 10;
 
     /*** 要素取得 ***/
@@ -302,24 +306,19 @@
     /*** ユーティリティ ***/
     const isEmail = (v)=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
-    // できるだけ確実に到達させる：sendBeacon優先、なければ no-cors fetch
+    // ★ GASに確実到達させる：GET + no-cors（CORS/プリフライト回避）
     function sendToGAS(paramsObj){
-      const body = new URLSearchParams(paramsObj);
-      if(!body.has('origin')) body.set('origin', location.origin);
       try{
-        if (navigator.sendBeacon) {
-          const blob = new Blob([body.toString()], {type:'application/x-www-form-urlencoded;charset=UTF-8'});
-          navigator.sendBeacon(GAS_URL, blob);
-          return;
-        }
-      }catch(_){}
-      try{
-        fetch(GAS_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body
-        });
+        const qs = new URLSearchParams(paramsObj);
+        if(!qs.has('origin')) qs.set('origin', location.origin);
+        const url = `${window.GAS_URL}?${qs.toString()}`;
+
+        // fetch（no-cors）で発火
+        fetch(url, { method: "GET", mode: "no-cors", cache: "no-store" }).catch(()=>{});
+
+        // 念のためimgビーコンでも発火（重複しても問題なし）
+        const img = new Image();
+        img.src = `${url}&t=${Date.now()}`;
       }catch(_){}
     }
 
