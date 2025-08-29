@@ -17,7 +17,7 @@
   <style>
     :root { --brand:#7356b6; --ink:#222; --card:#fff; --bg:#f5f3ff; --muted:#666; --warn:#b45309; }
     *{ box-sizing:border-box; }
-    body{ font-family:system-ui,-apple-system,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; margin:0; color:var(--ink); background:var(--bg);}
+    body{ font-family:system-ui,-apple-system,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; margin:0; color:var(--ink); background:var(--bg); }
     .toplinks{ text-align:center; font-size:14px; padding:10px 8px 0; }
     .toplinks a{ color:#0a58ca; text-decoration:none; }
     .toplinks a + a{ margin-left:12px; }
@@ -45,15 +45,21 @@
     .warn{ font-size:12px; color:var(--warn); background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; border-radius:10px; }
     fieldset{ border:1px solid #eee; border-radius:12px; padding:14px; margin:10px 0; }
 
-    /* 設問UI */
-    .qgrid{ display:grid; grid-template-columns: 1fr repeat(5, 64px); gap: 8px 12px; align-items:center; }
+    /* 設問UI（可変幅で崩れない） */
+    .qgrid{
+      display:grid;
+      grid-template-columns: minmax(140px,1fr) repeat(5, minmax(48px,72px));
+      gap: 8px 12px; align-items:center;
+    }
     .qgrid .choice{ display:flex; align-items:center; justify-content:center; height:40px; }
     .qgrid .choice input{ width:20px; height:20px; }
-    @media (max-width: 960px){ .qgrid{ grid-template-columns: 1fr repeat(5, 52px); gap:8px; } }
-    @media (max-width: 680px){
-      .qgrid{ grid-template-columns: repeat(5, 1fr); gap:10px; }
-      .qgrid > div:first-child{ grid-column:1 / -1; height:6px; }
-      fieldset legend{ margin-bottom:8px; }
+    /* 凡例行の左セルだけ空白 */
+    .qgrid-head > div:first-child{ visibility:hidden; }
+
+    @media (max-width: 760px){
+      /* スマホでは左ラベル列を消し、5等分にして崩れを防止 */
+      .qgrid{ grid-template-columns: repeat(5, 1fr); }
+      .qgrid > div:first-child{ display:none; }
     }
 
     /* 結果表示 */
@@ -97,12 +103,12 @@
       <div class="hint">送信先の管理：Google スプレッドシート（自動作成）／ 用途は診断に関するご連絡のみ。不要時はいつでも停止できます。</div>
     </section>
 
-    <!-- STEP 2: 設問（静的HTML） -->
-    <section class="card">
+    <!-- STEP 2: 設問 -->
+    <section class="card" id="sec-questions">
       <h2>STEP 2｜10問の自己評価に回答</h2>
 
       <!-- 凡例 -->
-      <div class="qgrid muted" style="font-size:12px; margin-bottom:6px;">
+      <div class="qgrid qgrid-head muted" style="font-size:12px; margin-bottom:6px;">
         <div></div>
         <div class="choice">全くない</div>
         <div class="choice">少し</div>
@@ -296,18 +302,25 @@
     /*** ユーティリティ ***/
     const isEmail = (v)=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
-    // ★ 重要：no-cors × x-www-form-urlencoded で送る（プリフライトなし＆確実にGASへ到達）
+    // できるだけ確実に到達させる：sendBeacon優先、なければ no-cors fetch
     function sendToGAS(paramsObj){
+      const body = new URLSearchParams(paramsObj);
+      if(!body.has('origin')) body.set('origin', location.origin);
       try{
-        const body = new URLSearchParams(paramsObj);
-        if(!body.has('origin')) body.set('origin', location.origin);
+        if (navigator.sendBeacon) {
+          const blob = new Blob([body.toString()], {type:'application/x-www-form-urlencoded;charset=UTF-8'});
+          navigator.sendBeacon(GAS_URL, blob);
+          return;
+        }
+      }catch(_){}
+      try{
         fetch(GAS_URL, {
           method: "POST",
           mode: "no-cors",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body
         });
-      }catch(e){ /* 念のため握りつぶし */ }
+      }catch(_){}
     }
 
     function gatherAnswers(){
@@ -355,13 +368,17 @@
       $lvLabel.textContent = state.levelLabel;
       $lead.textContent = {entry:LEADS.entry, middle:LEADS.middle, practical:LEADS.practical}[state.lvKey] || "";
       $bullets.innerHTML = (BULLETS[state.lvKey]||[]).map(t=>`<li>${t}</li>`).join("");
-      // 診断済みのスコアを詳細ページへ渡す
       $lpLink.href = `./exo_courses.html?score=${state.score}`;
       updateLockUI();
       document.getElementById("result-card").scrollIntoView({behavior:"smooth", block:"start"});
     }
 
-    // 診断する（結果ログも送る：以前の仕様想定で score と q1..q10 を併送）
+    // 「詳細を見る」無効時のクリック抑止
+    $lpLink.addEventListener('click', (e) => {
+      if ($lpLink.getAttribute('aria-disabled') === 'true') e.preventDefault();
+    });
+
+    // 診断する（結果ログ送信）
     $btnDiag.addEventListener("click", () => {
       state.answers = gatherAnswers();
       state.score   = calcScore(state.answers);
@@ -375,7 +392,7 @@
     $btnSkip.addEventListener("click", () => {
       state.email = "";
       updateLockUI();
-      document.querySelector('section.card:nth-of-type(2)').scrollIntoView({behavior:"smooth"});
+      document.getElementById('sec-questions').scrollIntoView({behavior:"smooth"});
     });
 
     // 登録（register 行を確実に残す）
@@ -384,7 +401,6 @@
       if (!isEmail(v)){ alert("メールアドレスを正しく入力してください。"); $email.focus(); return; }
       $btnReg.setAttribute("aria-disabled","true");
 
-      // 現在の回答・スコアも同梱（以前の仕様に近づけるため）
       const answers = Object.keys(state.answers).length ? state.answers : gatherAnswers();
       const score   = (state.score==null) ? calcScore(answers) : state.score;
 
@@ -400,6 +416,9 @@
       alert("登録が完了しました。詳細表示が有効になりました。");
       $btnReg.setAttribute("aria-disabled","false");
     });
+
+    // 初期UI
+    updateLockUI();
   });
   </script>
 </body>
