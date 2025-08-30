@@ -14,9 +14,9 @@
     gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type: 'beacon', debug_mode: true });
   </script>
 
-  <!-- ★ GASのURLをグローバルに（テキスト露出を防ぐため必ず<script>内に） -->
+  <!-- ★ 本番GAS URL（必ず<script>内で保持） -->
   <script>
-    window.GAS_URL = "https://script.google.com/macros/s/AKfycbxviGeNpG_HDn23XV1GCWCcLQ3QEZCfeW5I7w-JkIp2VlC0uY4sFQ3fYRXjLMWs71TJ/exec";
+    window.GAS_URL = "https://script.google.com/macros/s/AKfycbzU04Uf3JwAO9TVkwY2SvmtKWLfmm1tknETKXLGYENvSZnk7ghdoQP50410_J9P91H6/exec";
   </script>
 
   <style>
@@ -58,11 +58,9 @@
     }
     .qgrid .choice{ display:flex; align-items:center; justify-content:center; height:40px; }
     .qgrid .choice input{ width:20px; height:20px; }
-    /* 凡例行の左セルだけ空白 */
     .qgrid-head > div:first-child{ visibility:hidden; }
 
     @media (max-width: 760px){
-      /* スマホでは左ラベル列を消し、5等分にして崩れを防止 */
       .qgrid{ grid-template-columns: repeat(5, 1fr); }
       .qgrid > div:first-child{ display:none; }
     }
@@ -80,9 +78,9 @@
 <body>
   <!-- 画面上部の3リンク（絶対URL） -->
   <div class="toplinks">
-    <a href="https://goro56project.github.io/ai_diagnosis/terms.html" target="_blank">利用規約</a>
-    <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank">プライバシーポリシー</a>
-    <a href="https://goro56project.github.io/ai_diagnosis/law.html" target="_blank">特定商取引法に基づく表記</a>
+    <a href="https://goro56project.github.io/ai_diagnosis/terms.html" target="_blank" rel="noopener">利用規約</a>
+    <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>
+    <a href="https://goro56project.github.io/ai_diagnosis/law.html" target="_blank" rel="noopener">特定商取引法に基づく表記</a>
   </div>
 
   <header>
@@ -101,9 +99,9 @@
         未登録でも簡易結果は見られますが、<b>詳細を見るには登録が必要</b>です。
       </p>
       <div class="row">
-        <input id="email" type="email" inputmode="email" placeholder="メールアドレスを入力" style="flex:1;min-width:240px;">
-        <button id="btn-register" class="btn primary">登録する</button>
-        <button id="btn-skip" class="btn">登録せずに診断へ</button>
+        <input id="email" type="email" inputmode="email" placeholder="メールアドレスを入力" style="flex:1;min-width:240px;" autocomplete="email" />
+        <button id="btn-register" class="btn primary" type="button">登録する</button>
+        <button id="btn-skip" class="btn" type="button">登録せずに診断へ</button>
       </div>
       <div class="hint">送信先の管理：Google スプレッドシート（自動作成）／ 用途は診断に関するご連絡のみ。不要時はいつでも停止できます。</div>
     </section>
@@ -122,7 +120,7 @@
         <div class="choice">とてもある</div>
       </div>
 
-      <div id="questions">
+      <div id="questions" aria-live="polite">
         <!-- 1 -->
         <fieldset>
           <legend>1. ChatGPTなどのAIツールを業務で使ったことはありますか？</legend>
@@ -246,7 +244,7 @@
       </div>
 
       <div class="right" style="margin-top:14px;">
-        <button id="btn-diagnose" class="btn primary">診断する</button>
+        <button id="btn-diagnose" class="btn primary" type="button">診断する</button>
       </div>
     </section>
 
@@ -266,19 +264,18 @@
       </div>
 
       <div class="row" style="margin-top:14px;">
-        <a id="lp-link" class="btn primary" href="#" aria-disabled="true" title="メール登録すると詳細を表示できます">診断結果の詳細を見る</a>
+        <a id="lp-link" class="btn primary" href="#" aria-disabled="true" title="メール登録すると詳細を表示できます" rel="noopener">診断結果の詳細を見る</a>
       </div>
 
       <div class="hint" style="margin-top:10px;">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</div>
     </section>
   </main>
 
-  <!-- フッター（絶対URL） -->
   <footer>
     <p>
-      <a href="https://goro56project.github.io/ai_diagnosis/terms.html" target="_blank">利用規約</a>
-      <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank">プライバシーポリシー</a>
-      <a href="https://goro56project.github.io/ai_diagnosis/law.html" target="_blank">特定商取引法に基づく表記</a>
+      <a href="https://goro56project.github.io/ai_diagnosis/terms.html" target="_blank" rel="noopener">利用規約</a>
+      <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>
+      <a href="https://goro56project.github.io/ai_diagnosis/law.html" target="_blank" rel="noopener">特定商取引法に基づく表記</a>
     </p>
   </footer>
 
@@ -306,17 +303,17 @@
     /*** ユーティリティ ***/
     const isEmail = (v)=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
-    // ★ GASに確実到達させる：GET + no-cors（CORS/プリフライト回避）
+    // GASへ到達させる：GET + no-cors（CORS/プリフライト回避）
     function sendToGAS(paramsObj){
       try{
         const qs = new URLSearchParams(paramsObj);
         if(!qs.has('origin')) qs.set('origin', location.origin);
         const url = `${window.GAS_URL}?${qs.toString()}`;
 
-        // fetch（no-cors）で発火
+        // fetch（no-cors）
         fetch(url, { method: "GET", mode: "no-cors", cache: "no-store" }).catch(()=>{});
 
-        // 念のためimgビーコンでも発火（重複しても問題なし）
+        // imgビーコン（二重でも問題なし）
         const img = new Image();
         img.src = `${url}&t=${Date.now()}`;
       }catch(_){}
