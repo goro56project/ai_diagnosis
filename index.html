@@ -124,6 +124,7 @@
       </div>
 
       <div id="questions" aria-live="polite">
+        <!-- 設問（省略なし・元のまま） -->
         <!-- 1 -->
         <fieldset>
           <legend>1. ChatGPTなどのAIツールを業務で使ったことはありますか？</legend>
@@ -294,7 +295,7 @@
     /*** 要素取得 ***/
     const $email    = document.getElementById("email");
     const $btnReg   = document.getElementById("btn-register");
-    thebtnSkip  = document.getElementById("btn-skip");
+    const $btnSkip  = document.getElementById("btn-skip");  // ← 修正
     const $btnDiag  = document.getElementById("btn-diagnose");
     const $lpLink   = document.getElementById("lp-link");
     const $apply    = document.getElementById("apply-link");
@@ -338,12 +339,12 @@
     }
     function levelFrom(score){
       if (score >= 70) return {label:"先進層",   key:"practical"};
-      if (score >= 55) return {label:"実践層",   key:"middle"};     // ※スコア帯は運用に合わせて調整可
+      if (score >= 55) return {label:"実践層",   key:"middle"};
       if (score >= 40) return {label:"初級〜中級", key:"middle"};
       return {label:"入門層", key:"entry"};
     }
 
-    // ✨ AI×業務改善トーンのコピー
+    // ✨ コピー
     const COPY = {
       entry: {
         heading: "AIを“安全に業務へ導入する”第一歩。2週間で成果を実感して次の改善へ。",
@@ -381,7 +382,6 @@
       const locked = !state.email;
       $lpLink.setAttribute("aria-disabled", locked ? "true" : "false");
       $lockMsg.style.display = locked ? "block" : "none";
-      // タイトルも新文言に統一
       $lpLink.title = locked ? "メール登録すると詳細を表示できます" : "おすすめコースを見る";
     }
 
@@ -414,6 +414,7 @@
     });
 
     // 診断する（結果ログ送信 → 画面反映）
+    const $btnDiag = document.getElementById("btn-diagnose");
     $btnDiag.addEventListener("click", () => {
       state.answers = gatherAnswers();
       state.score   = calcScore(state.answers);
