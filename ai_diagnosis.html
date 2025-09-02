@@ -1,38 +1,88 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <!-- GA4 / EVH Site -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){ dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, debug_mode: true });
-</script>
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI偏差値診断</title>
+
+  <!-- GA4 / EVH Site -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, debug_mode: true });
+  </script>
+
+  <style>
+    :root{ --ink:#0f172a; --muted:#475569; --card:#fff; --line:#e5e7eb; --accent:#2563eb; --bg:#f8fafc; }
+    *{ box-sizing:border-box }
+    body{ margin:0; font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; color:var(--ink); background:var(--bg); }
+    header{ background:#fff; border-bottom:1px solid var(--line); }
+    .wrap{ max-width:1100px; margin:0 auto; padding:20px 16px; }
+    h1{ font-size:clamp(22px,3.5vw,28px); margin:6px 0 12px; }
+    p.lead{ color:var(--muted); margin:8px 0 18px; }
+    main{ max-width:1100px; margin:0 auto; padding:24px 16px; }
+    .card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px; }
+    .center{ text-align:center; }
+    iframe{ width:100%; max-width:860px; height:520px; border:0; display:block; margin:0 auto; background:#fff; border:1px solid var(--line); border-radius:12px; }
+    .cta{ margin:28px auto 0; display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
+    .btn{
+      display:inline-block; padding:12px 18px; border-radius:999px;
+      background:var(--accent); color:#fff; text-decoration:none; font-weight:600;
+      box-shadow:0 6px 18px rgba(37,99,235,.18); transition:transform .06s ease, filter .2s ease;
+    }
+    .btn:active{ transform:translateY(1px) }
+    .note{ font-size:13px; color:var(--muted); margin-top:8px; text-align:center; }
+    footer{ text-align:center; font-size:14px; margin-top:40px; padding:20px; border-top:1px solid var(--line); background:#fff; }
+    footer a{ color:var(--ink); text-decoration:none; border-bottom:1px dotted var(--line); }
+    .hidden{ display:none; }
+  </style>
 </head>
-  <footer style="text-align:center; font-size:14px; margin-top:40px; padding:20px; border-top:1px solid #ddd;">
-  <p>
-    <a href="/terms.html" target="_blank">利用規約</a> ｜ 
-    <a href="/privacy.html" target="_blank">プライバシーポリシー</a> ｜ 
-    <a href="/law.html" target="_blank">特定商取引法に基づく表記</a>
-  </p>
-</footer>
 
 <body>
-  <h2>以下のフォームにご回答ください。診断結果を通じて、あなたのAI活用レベルを可視化します。</h2>
+  <header>
+    <div class="wrap">
+      <h1>AI偏差値診断</h1>
+      <p class="lead">以下のフォームに回答すると、あなたのAI活用レベルを可視化します。回答後は結果に基づいた<strong>おすすめコース</strong>をご案内します。</p>
+    </div>
+  </header>
 
-  <iframe 
-    src="https://docs.google.com/forms/d/e/1FAIpQLScZN8k-L3FCCvHzpnknxv5duAKZSOzSF33KeooVGFD1F5Dwvg/viewform?embedded=true" 
-    width="700" 
-    height="520" 
-    frameborder="0" 
-    marginheight="0" 
-    marginwidth="0">
-    読み込んでいます…
-  </iframe>
+  <main>
+    <div class="center card">
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLScZN8k-L3FCCvHzpnknxv5duAKZSOzSF33KeooVGFD1F5Dwvg/viewform?embedded=true"
+        loading="lazy"
+        title="AI偏差値診断フォーム"></iframe>
+
+      <div id="result-cta" class="cta hidden">
+        <a id="coursesBtn" href="exo_courses.html" class="btn">おすすめコースを見る</a>
+      </div>
+      <p class="note">※ 診断後、このページのURLに付与されたスコア（例：<code>?score=30</code>）に応じて、おすすめコースを自動で案内します。</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="/terms.html" target="_blank" rel="noopener">利用規約</a> ｜ 
+      <a href="/privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a> ｜ 
+      <a href="/law.html" target="_blank" rel="noopener">特定商取引法に基づく表記</a>
+    </p>
+  </footer>
+
+  <script>
+    // URLパラメータから score を取得し、ある場合は CTA を表示して exo_courses.html に渡す
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const score = params.get('score');
+      const cta = document.getElementById('result-cta');
+      const btn = document.getElementById('coursesBtn');
+
+      if (cta && btn && score) {
+        btn.href = 'exo_courses.html?score=' + encodeURIComponent(score);
+        cta.classList.remove('hidden');
+      }
+    })();
+  </script>
 </body>
 </html>
