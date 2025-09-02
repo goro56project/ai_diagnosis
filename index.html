@@ -265,11 +265,11 @@
       <ul id="result-bullets" class="bullets"></ul>
 
       <div id="detail-lock-msg" class="warn" style="display:none; margin-top:10px;">
-        ※ <b>メール登録が必要です。</b>登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
+        ※ <b>メール登録が必要です。</b>登録後に「<u>おすすめコースを見る</u>」から、解説とおすすめコースをご確認ください。
       </div>
 
       <div class="cta-row">
-        <a id="lp-link" class="btn ghost" href="#" aria-disabled="true" title="メール登録すると詳細を表示できます" rel="noopener">診断結果の詳細を見る</a>
+        <a id="lp-link" class="btn ghost" href="#" aria-disabled="true" title="メール登録すると詳細を表示できます" rel="noopener">おすすめコースを見る</a>
         <a id="apply-link" class="btn primary" href="#" rel="noopener">この講座に申し込む</a>
       </div>
 
@@ -294,7 +294,7 @@
     /*** 要素取得 ***/
     const $email    = document.getElementById("email");
     const $btnReg   = document.getElementById("btn-register");
-    const $btnSkip  = document.getElementById("btn-skip");
+    thebtnSkip  = document.getElementById("btn-skip");
     const $btnDiag  = document.getElementById("btn-diagnose");
     const $lpLink   = document.getElementById("lp-link");
     const $apply    = document.getElementById("apply-link");
@@ -381,7 +381,8 @@
       const locked = !state.email;
       $lpLink.setAttribute("aria-disabled", locked ? "true" : "false");
       $lockMsg.style.display = locked ? "block" : "none";
-      $lpLink.title = locked ? "メール登録すると詳細を表示できます" : "診断結果の詳細を見る";
+      // タイトルも新文言に統一
+      $lpLink.title = locked ? "メール登録すると詳細を表示できます" : "おすすめコースを見る";
     }
 
     function renderResult(){
@@ -407,7 +408,7 @@
       document.getElementById("result-card").scrollIntoView({behavior:"smooth", block:"start"});
     }
 
-    // 「詳細を見る」無効時のクリック抑止
+    // 「おすすめコースを見る」無効時のクリック抑止
     $lpLink.addEventListener('click', (e) => {
       if ($lpLink.getAttribute('aria-disabled') === 'true') e.preventDefault();
     });
