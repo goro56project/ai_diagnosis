@@ -28,8 +28,10 @@
     .wrap{max-width:1100px;margin:0 auto;padding:28px 16px 80px}
     h1{font-size:clamp(24px,3.8vw,40px);margin:0 0 8px}
     .lead{color:var(--muted);margin:0 0 28px}
+
     .section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0;box-shadow:var(--shadow)}
     .section h2{font-size:18px;margin:0 0 12px}
+
     .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
     .input{flex:1;min-width:260px;height:46px;padding:12px 14px;border:1px solid var(--line);border-radius:999px;font-size:15px;background:#fff}
     .btn{appearance:none;border:none;border-radius:999px;height:46px;padding:0 18px;font-weight:700;cursor:pointer}
@@ -38,22 +40,27 @@
     .btn-ghost{background:#fff;color:var(--muted);border:1px solid var(--line)}
     .note{font-size:12px;color:var(--muted);margin-top:8px}
     .muted{color:var(--muted)}
+
     .q{border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0;background:#fff}
     .q h3{font-size:15px;margin:0 0 10px}
     .scale{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
     .scale small{color:var(--muted)}
     .scale label{display:flex;align-items:center;gap:8px}
+
     .result-badge{display:flex;gap:12px;align-items:center;margin:8px 0 14px}
     .score{display:inline-flex;align-items:center;justify-content:center;min-width:60px;height:48px;padding:0 12px;border-radius:12px;background:var(--brand-weak);color:#3b2fd9;font-size:24px;font-weight:800}
     .level{font-size:13px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff}
+
     .course{border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0;background:#fff}
     .course h4{margin:0 0 8px;font-size:16px}
     .bullets{margin:10px 0 0 0;padding:0 0 0 18px}
     .bullets li{margin:4px 0}
+
     .cta-row{display:flex;gap:10px;flex-wrap:wrap}
     .divider{height:1px;background:var(--line);margin:18px 0}
     .tag{display:inline-block;font-size:12px;background:#f2f0ff;color:#3b2fd9;border-radius:999px;padding:4px 10px;margin-left:6px}
     .hidden{display:none !important;}
+
     table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
     th,td{border-bottom:1px solid var(--line);padding:12px 10px;text-align:left;vertical-align:top}
     th{background:#faf9ff}
@@ -91,6 +98,7 @@
         <div class="row" style="margin-top:10px">
           <button class="btn btn-brand" id="btnCalc">回答を送信して結果を見る</button>
           <span class="muted" id="calcMsg"></span>
+          <span class="muted" id="ansProgress" style="margin-left:auto"></span>
         </div>
       </div>
     </section>
@@ -146,7 +154,7 @@
             <li>AIと人のバトンで半自動フロー（S3）</li>
             <li>A/B改善とKPI可視化（S4〜S5）</li>
           </ul>
-          <div class="cta-row" style="margin-top:8px)">
+          <div class="cta-row" style="margin-top:8px">
             <a class="btn btn-outline" href="./exo_courses.html#middle" target="_blank" rel="noopener">MIDDLEの詳細</a>
           </div>
         </div>
@@ -201,6 +209,22 @@
     // ===== Backend設定（既存GASに接続する場合のみURLを入れる） =====
     const GAS_ENDPOINT = ""; // 例: "https://script.google.com/macros/s/AKfycb.../exec"
 
+    // 偏差値用の統計（GASから取得）
+    let STATS = { mean: null, std: null, n: 0 };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!GAS_ENDPOINT) return;
+      try {
+        const res = await fetch(`${GAS_ENDPOINT}?type=stats`, { method: 'GET' });
+        if (res.ok) {
+          const js = await res.json();
+          if (typeof js.mean === 'number' && typeof js.std === 'number') {
+            STATS = { mean: js.mean, std: js.std, n: js.n || 0 };
+          }
+        }
+      } catch (_) { /* 取得失敗はフォールバックで継続 */ }
+    });
+
     // ===== 設問文 =====
     const QUESTIONS = [
       "ChatGPTなどのAIツールを業務で使ったことはありますか？",
@@ -231,7 +255,7 @@
         detail:"./exo_courses.html#practical", apply:"./exo_course_detail.html#practical" }
     };
 
-    // ===== 設問の展開 =====
+    // ===== 設問UI生成 =====
     const qWrap = document.getElementById("questions");
     function renderQuestions(){
       qWrap.innerHTML = "";
@@ -251,6 +275,11 @@
         `;
         qWrap.appendChild(el);
       });
+
+      // 進捗更新
+      Array.from(document.querySelectorAll('#questions input[type="radio"]'))
+        .forEach(r => r.addEventListener('change', updateProgress));
+      updateProgress();
     }
 
     // 折りたたみ
@@ -270,6 +299,23 @@
         btnToggle.className = "btn btn-brand";
       }
     });
+
+    // ===== 進捗カウント =====
+    function countAnswered(){
+      let count = 0;
+      const missing = [];
+      QUESTIONS.forEach((_, i) => {
+        const chosen = document.querySelector(`input[name="q${i}"]:checked`);
+        if(chosen) count++; else missing.push(i);
+      });
+      return { count, missing };
+    }
+    function updateProgress(){
+      const p = document.getElementById('ansProgress');
+      if(!p) return;
+      const {count} = countAnswered();
+      p.textContent = `回答済み：${count}/${QUESTIONS.length}`;
+    }
 
     // ===== メール登録 =====
     const regMsg = document.getElementById("regMsg");
@@ -301,26 +347,27 @@
       window.scrollTo({ top: document.getElementById("step2").offsetTop - 10, behavior:"smooth" });
     });
 
-    // ===== スコア計算・おすすめ判定 =====
-    function calcScore(){
-      let answered = 0, sum = 0;
+    // ===== 生点（0〜40）→ 偏差値 =====
+    function calcRawScore(){ // 全問必須想定、未回答チェックは別
+      let sum = 0;
       QUESTIONS.forEach((_, i) => {
         const chosen = document.querySelector(`input[name="q${i}"]:checked`);
-        if(chosen){ answered++; sum += Number(chosen.value); }
+        sum += Number(chosen.value);
       });
-      if(answered === 0) return { score: 0, level:"--", raw:-1 };
-      const avg = sum / answered;                 // 0〜4
-      const score = Math.round((avg / 4) * 100);  // 0〜100
-      let level;
-      if(score < 35) level = "入門層";
-      else if(score < 65) level = "実践層";
-      else level = "実務応用層";
-      return { score, level, raw:avg };
+      return sum; // 0〜40
     }
-    function pickCourse(score){
-      if(score < 35) return COURSES.entry;
-      if(score < 65) return COURSES.middle;
-      return COURSES.practical;
+    function toHensachi(raw){
+      if (typeof STATS.mean === 'number' && typeof STATS.std === 'number' && STATS.std > 0) {
+        return Math.round(50 + 10 * ((raw - STATS.mean) / STATS.std));
+      }
+      // フォールバック（平均20, 標準偏差6相当とみなす）
+      const pseudoMean = 20, pseudoStd = 6;
+      return Math.round(50 + 10 * ((raw - pseudoMean) / pseudoStd));
+    }
+    function levelFromHensachi(h){
+      if (h < 40) return "入門層";
+      if (h < 60) return "実践層";
+      return "実務応用層";
     }
 
     // ===== 結果反映 =====
@@ -332,33 +379,55 @@
     const boxCompare = document.getElementById("compareWrap");
 
     document.getElementById("btnCalc").addEventListener("click", () => {
-      const { score, level, raw } = calcScore();
-      if(raw < 0){
-        document.getElementById("calcMsg").textContent = "未回答の設問があります。";
+      const { count, missing } = countAnswered();
+      const msg = document.getElementById("calcMsg");
+
+      if(count < QUESTIONS.length){
+        msg.textContent = "未回答の設問があります。全ての設問に回答してください。";
+        // 未回答の最初へスクロール＆強調
+        const first = missing[0];
+        const target = document.querySelector(`#questions .q:nth-child(${first+1})`);
+        if(target){
+          target.scrollIntoView({ behavior: "smooth", block: "center" });
+          target.style.boxShadow = "0 0 0 3px rgba(91,75,255,.35)";
+          setTimeout(()=>{ target.style.boxShadow = ""; }, 1400);
+        }
         return;
       }
-      document.getElementById("calcMsg").textContent = "";
-      elScore.textContent = String(score);
+
+      msg.textContent = "";
+      const raw = calcRawScore();       // 0〜40
+      const hensachi = toHensachi(raw); // 偏差値
+      const level = levelFromHensachi(hensachi);
+
+      // 表示
+      elScore.textContent = String(hensachi);
       elLevel.textContent = `レベル：${level}`;
 
-      const c = pickCourse(score);
-      document.getElementById("recTitle").textContent = `あなたへのおすすめ｜${c.name}`;
-      document.getElementById("recBullets").textContent = c.summary;
+      // おすすめ講座（偏差値で分岐）
+      let course;
+      if (hensachi < 40) course = COURSES.entry;
+      else if (hensachi < 60) course = COURSES.middle;
+      else course = COURSES.practical;
+
+      document.getElementById("recTitle").textContent = `あなたへのおすすめ｜${course.name}`;
+      document.getElementById("recBullets").textContent = course.summary;
 
       const ul = document.getElementById("recList");
       ul.innerHTML = "";
-      c.bullets.forEach(b => { const li = document.createElement("li"); li.textContent = b; ul.appendChild(li); });
+      course.bullets.forEach(b => { const li = document.createElement("li"); li.textContent = b; ul.appendChild(li); });
 
-      document.getElementById("recDetail").href = c.detail;
-      document.getElementById("recApply").href  = c.apply;
+      document.getElementById("recDetail").href = course.detail;
+      document.getElementById("recApply").href  = course.apply;
 
-      elSummary.innerHTML = `<strong>📌 診断結果：</strong> AI偏差値 <strong>${score}</strong>（${level}）。あなたには<strong>${c.name}</strong> が最適です。短期間で成果を実感し、次のステップにつなげましょう。`;
+      elSummary.innerHTML =
+        `<strong>📌 診断結果：</strong> AI偏差値 <strong>${hensachi}</strong>（${level}）。あなたには<strong>${course.name}</strong> が最適です。短期間で成果を実感し、次のステップにつなげましょう。`;
 
       boxRec.classList.remove("hidden");
       boxOthers.classList.remove("hidden");
       boxCompare.classList.remove("hidden");
 
-      try{ gtag('event','diagnosis_result',{ score, level, course:c.id }); }catch(_){}
+      try{ gtag('event','diagnosis_result',{ hensachi, level, course:course.id }); }catch(_){}
       window.scrollTo({ top: document.getElementById("step3").offsetTop - 10, behavior:"smooth" });
     });
   </script>
