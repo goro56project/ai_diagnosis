@@ -1,293 +1,174 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>コース詳細 | ExoVisionary Hub</title>
-<style>
-  :root{--ink:#0f172a;--muted:#475569;--brand:#111827;--pill:#eef2ff;--pill-ink:#3730a3;--card:#fff;--line:#e9ecef;--bg:#f8fafc}
-  *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Meiryo,sans-serif;color:var(--ink);background:var(--bg)}
-  .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 60px}
-  .toplinks{max-width:1100px;margin:0 auto;padding:10px 16px 0;text-align:center;font-size:14px}
-  .toplinks a{color:#0a58ca;text-decoration:none}.toplinks a+a{margin-left:12px}
-  .pill{display:inline-block;background:var(--pill);color:var(--pill-ink);padding:.35em .8em;border-radius:999px;font-size:.9rem}
-  h1{font-size:clamp(24px,4vw,36px);margin:.5rem 0 0}
-  .muted{color:var(--muted)}
-  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  .btn{display:inline-block;border:1px solid var(--brand);background:var(--brand);color:#fff;padding:12px 16px;border-radius:999px;text-decoration:none;cursor:pointer}
-  .btn.ghost{background:#fff;color:var(--ink);border-color:#cbd5e1}
-  .price{font-weight:700}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:18px;margin:14px 0}
-  h2{font-size:1.4rem;margin:.2rem 0 .6rem}
-  h3{font-size:1.1rem;margin:.6rem 0 .3rem}
-  ul{margin:.1rem 0 .8rem 1.2rem}
-  .lead{line-height:1.8}
-  .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-  @media (max-width:860px){.grid-2{grid-template-columns:1fr}}
-  /* Alert */
-  .alert{border:1px solid #fecaca;background:#fff1f2;color:#991b1b;padding:10px 12px;border-radius:12px;margin-top:8px;font-weight:600}
-  .alert small{display:block;color:#b91c1c;font-weight:500}
-  /* FAQ */
-  .faq-ui{display:grid;grid-template-columns:1fr 380px;gap:18px}
-  @media (max-width:980px){.faq-ui{grid-template-columns:1fr}}
-  .faq-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
-  .faq-item summary{list-style:none;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:.4rem}
-  .faq-item summary::-webkit-details-marker{display:none}
-  .faq-item summary::before{content:"▸";transition:.2s}
-  .faq-item[open] summary::before{transform:rotate(90deg)}
-  .faq-item .a{margin-top:8px;line-height:1.7}
-  .chat-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
-  .chipbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px}
-  .chip{background:#eef2ff;color:#3730a3;border-radius:999px;padding:6px 10px;font-size:.85rem;border:1px solid #e5e7eb;cursor:pointer}
-  .qa{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-  .bub{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
-  .bub.ai{background:#f8fafc}
-  footer{margin:28px 0 8px;text-align:center;color:#94a3b8}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>講座詳細｜AI偏差値診断</title>
+
+  <!-- GA4（必要に応じて差し替え） -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type: 'beacon', debug_mode: true });
+  </script>
+
+  <style>
+    :root{ --brand:#7356b6; --ink:#222; --muted:#64748b; --bg:#fafafa; }
+    *{ box-sizing:border-box }
+    body{ margin:0; font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; color:var(--ink); background:#fff; }
+    header{ padding:20px 16px; border-bottom:1px solid #eee; }
+    main{ max-width:980px; margin:0 auto; padding:24px 16px 80px; }
+    .badge{ display:inline-block; font-size:12px; color:#334155; background:#eef2ff; border:1px solid #c7d2fe; padding:.25em .6em; border-radius:999px; margin-right:8px;}
+    h1{ font-size:clamp(24px, 4vw, 36px); margin:8px 0 12px; }
+    .meta{ color:var(--muted); margin:6px 0 18px; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .btn{ display:inline-block; padding:12px 16px; border-radius:10px; border:1px solid #ddd; text-decoration:none; color:#111; background:#fff; }
+    .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand); }
+    section{ margin:24px 0; }
+    .card{ background:#fff; border:1px solid #eee; border-radius:14px; padding:18px; }
+    ul{ margin:8px 0 0 22px; }
+    .warn{ background:#fff7ed; border:1px solid #fed7aa; padding:10px 12px; border-radius:10px; color:#9a3412; }
+    footer{ text-align:center; font-size:14px; color:#6b7280; padding:24px 16px; border-top:1px solid #eee; margin-top:40px; }
+    footer a{ color:#0a58ca; text-decoration:none; margin:0 8px; }
+  </style>
 </head>
 <body>
-  <!-- 上部 規約リンク -->
-  <div class="toplinks">
-    <a href="terms.html" target="_blank">利用規約</a>
-    <a href="privacy.html" target="_blank">プライバシーポリシー</a>
-    <a href="law.html" target="_blank">特定商取引法に基づく表記</a>
-  </div>
+  <header>
+    <div class="row" style="justify-content:space-between;">
+      <div><a class="btn" href="./index.html">← 診断に戻る</a></div>
+      <div class="row">
+        <a class="btn" href="./exo_courses.html">コース一覧に戻る</a>
+      </div>
+    </div>
+  </header>
 
-  <main class="wrap">
-    <!-- ヘッダー -->
-    <div class="row"><span class="pill" id="badge">コース</span></div>
-    <h1 id="course-title">コース名（自動）</h1>
-    <p class="muted" style="margin:.35rem 0 1rem">
-      診断スコア：<span id="score-out">—</span> ／ レベル：<span id="level-out">—</span>
-    </p>
-    <div class="row" style="margin:.2rem 0 .6rem">
-      <a href="#apply" class="btn" id="btn-apply">この内容で申し込む <span class="price">¥980</span></a>
-      <a href="#flow" class="btn ghost">学習の流れ</a>
-      <a href="exo_courses.html" class="btn ghost" id="btn-back">コース一覧に戻る</a>
+  <main>
+    <div id="badges" class="row"></div>
+    <h1 id="title">講座タイトル</h1>
+    <div id="meta" class="meta">診断スコア：— ／ レベル：—</div>
+
+    <div class="row">
+      <a id="applyBtn" class="btn primary" target="_blank" rel="noopener">この内容で申し込む</a>
+      <a class="btn" href="#outline">学習の流れ</a>
+      <a class="btn" href="./exo_courses.html">コース一覧に戻る</a>
     </div>
 
-    <!-- 有料プラン必須の注意書き（申込ボタン直下） -->
-    <div class="alert" role="note" aria-live="polite">
-      重要：本スクールはカスタムGPTで運用しているため、<u>受講にはChatGPTの有料プラン（ChatGPT Plus 等）への加入が必須</u>です。
-      <small>※有料プラン未加入の場合、教材・課題の一部が利用できません。</small>
-    </div>
+    <section class="card warn" style="margin-top:16px">
+      重要：本スクールはカスタムGPTで運用しているため、受講にはChatGPTの有料プラン（ChatGPT Plus 等）への加入が必須です。
+    </section>
 
-    <!-- 概要 -->
-    <section class="card" id="summary">
+    <section id="goal" class="card">
       <h2>このコースで狙うこと</h2>
-      <p class="lead" id="lead"></p>
+      <p id="goalBody"></p>
+    </section>
 
-      <div class="grid-2">
-        <div>
-          <h3>学べること（コアスキル）</h3>
-          <ul id="skills"></ul>
+    <section id="learn" class="card">
+      <h2>学べること（コアスキル）</h2>
+      <div id="learnCols" class="row" style="align-items:flex-start">
+        <div style="flex:1; min-width:240px">
+          <ul id="learnLeft"></ul>
         </div>
-        <div>
-          <h3>モジュール（例）</h3>
+        <div style="flex:1; min-width:240px">
+          <h4 style="margin:0 0 8px">モジュール（例）</h4>
           <ul id="modules"></ul>
         </div>
       </div>
-
-      <div class="grid-2">
-        <div>
-          <h3>ハンズオン / 課題</h3>
-          <ul id="hands"></ul>
-        </div>
-        <div>
-          <h3>成果物</h3>
-          <ul id="outcomes"></ul>
-          <h3 style="margin-top:.8rem">受講後にできること</h3>
-          <ul id="after"></ul>
-        </div>
-      </div>
     </section>
 
-    <!-- 学習の流れ -->
-    <section class="card" id="flow">
+    <section id="outline" class="card">
       <h2>学習の流れ</h2>
-      <ul id="flow-list"></ul>
+      <ul id="flow"></ul>
     </section>
-
-    <!-- FAQ -->
-    <section class="card" id="faq-section">
-      <h2>よくある質問（FAQ）</h2>
-      <div class="faq-ui">
-        <div id="faq-accordion"><div class="muted">読み込み中…</div></div>
-        <div class="chat-card">
-          <div class="chipbar">
-            <button type="button" class="chip" data-q="受講にChatGPT有料プランは必要ですか？">受講にChatGPT有料プランは必要？</button>
-            <button type="button" class="chip" data-q="海外からも受講できますか？">海外からも受講できますか？</button>
-            <button type="button" class="chip" data-q="各コースの違いは？">各コースの違いは？</button>
-            <button type="button" class="chip" data-q="受講URLが届かない時は？">受講URLが届かない時は？</button>
-            <button type="button" class="chip" data-q="法人向けは可能？">法人向けは可能？</button>
-          </div>
-          <form id="faqAsk" class="row" style="gap:8px;">
-            <input id="faqQ" type="text" placeholder="例：受講にChatGPT有料プランは必要ですか？"
-                   style="flex:1;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff" />
-            <button class="btn" type="submit">送信</button>
-          </form>
-          <div id="faqAns" class="qa" style="display:none;"></div>
-        </div>
-      </div>
-      <noscript>※FAQを表示するにはJavaScriptを有効にしてください。</noscript>
-    </section>
-
-    <!-- 申込 -->
-    <section class="card" id="apply">
-      <h2>お申し込み</h2>
-
-      <!-- ★ ここにも同じ注意書きを追加 -->
-      <div class="alert" role="note" aria-live="polite">
-        重要：本スクールはカスタムGPTで運用しているため、<u>受講にはChatGPTの有料プラン（ChatGPT Plus 等）への加入が必須</u>です。
-        <small>※有料プラン未加入の場合、教材・課題の一部が利用できません。</small>
-      </div>
-
-      <p>以下のボタンから <strong>本番環境のStripe決済</strong> に進めます。お支払い完了後、受講URLが自動送信されます。</p>
-      <ul class="muted" style="margin:.6rem 0 1rem 1.2rem">
-        <li>決済金額：<span class="price">¥980</span>（税込）</li>
-        <li>商品名：各コース名（このページのコース）</li>
-      </ul>
-      <a id="pay-link" href="#" class="btn" target="_blank" rel="noopener">Stripe決済リンク</a>
-      <p class="muted" style="font-size:12px;margin-top:10px">※決済完了後、自動的に受講URLがメールで送信されます。</p>
-    </section>
-
-    <footer>© ExoVisionary Hub</footer>
   </main>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const sp = new URLSearchParams(location.search);
-  const courseKey = ((sp.get('course') || 'entry') + '').toLowerCase();
-  const score = sp.get('score') || '—';
-  const level = sp.get('level') || '—';
+  <footer>
+    <p>
+      <a href="./terms.html" target="_blank" rel="noopener">利用規約</a>
+      <a href="./privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>
+      <a href="./law.html" target="_blank" rel="noopener">特定商取引法に基づく表記</a>
+    </p>
+  </footer>
 
-  const STRIPE_LINKS = {
-    entry:'https://buy.stripe.com/bJecN42RHdU03IPb796Zy01',
-    middle:'https://buy.stripe.com/fZu7sK3VLbLS5QXb796Zy02',
-    practical:'https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03'
-  };
+  <script>
+    // Stripe 決済リンク（運用URLに差し替えてください）
+    const STRIPE = {
+      entry:     "https://buy.stripe.com/REPLACE_WITH_YOUR_ENTRY_LINK",
+      middle:    "https://buy.stripe.com/REPLACE_WITH_YOUR_MIDDLE_LINK",
+      practical: "https://buy.stripe.com/REPLACE_WITH_YOUR_PRACTICAL_LINK"
+    };
 
-  const COURSES = {
-    entry:{badge:'入門〜初級向け',title:'ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）',
-      lead:'AI初心者や40–50代向けの短期ブート。安全に使い、良い指示で資料/メール/デザイン補助の成果を出す段階へ。',
-      skills:['AIリテラシー','ChatGPT基礎','プロンプト設計','スライド/画像の基礎'],
-      modules:['安全ルール','資料×メール×要約','画像生成基礎','成功指示のテンプレ化'],
-      hands:['資料叩き台＋要約','画像バナー2点','プロンプトライブラリ'],
-      outcomes:['プロンプト集','テンプレ資料','簡易SOP'],
-      after:['安定品質で時短','再現可能な型を共有'],
-      flow:['Day1：ルールと型','Day2：資料・メール','Day3：画像生成','Day4：テンプレ化']},
-    middle:{badge:'初級〜中級向け',title:'MIDDLE｜AI×業務改善の入口（4–6週間）',
-      lead:'半自動化とKPIで運用。フォーム→自動返信→記録→可視化まで繋ぐ。',
-      skills:['業務テンプレ','GAS入門～半自動','評価と改善','KPI可視化'],
-      modules:['テンプレ設計','GASで一連化','A/B検証','ダッシュボード'],
-      hands:['受付→返信→記録→週次レポート','テンプレ3本','週次KPI'],
-      outcomes:['半自動フロー','テンプレ一式','KPIダッシュボード'],
-      after:['小さな業務を安定運用','属人化削減'],
-      flow:['Week1：テンプレ','Week2：自動化','Week3：検証','Week4：可視化']},
-    practical:{badge:'実践〜先進向け',title:'PRACTICAL｜疑似案件で本格運用へ（6–8週間）',
-      lead:'要件定義→設計→実装→納品一式まで通す本格コース。RAGのPoCも包含。',
-      skills:['要件定義','設計～実装','RAG/エージェント','運用と監査'],
-      modules:['要件定義書','実装と失敗時ハンドリング','RAG PoC','納品一式'],
-      hands:['設計書ドラフト','コード＋SOP＋レポート','3分デモ台本'],
-      outcomes:['案件運用レベル','評価セット','運用ドキュメント'],
-      after:['実務運用が可能','成功パターンを横展開'],
-      flow:['Week1：要件定義','Week2：実装','Week3：PoC','Week4：納品']}
-  };
-
-  const course = COURSES[courseKey] || COURSES.entry;
-  const $ = id => document.getElementById(id);
-  const fill = (id, arr) => { const el=$(id); if(el) el.innerHTML = (arr||[]).map(t=>`<li>${t}</li>`).join(''); };
-
-  $('badge').textContent = course.badge;
-  $('course-title').textContent = course.title;
-  $('score-out').textContent = score;
-  $('level-out').textContent = level;
-  $('lead').textContent = course.lead;
-  fill('skills',course.skills); fill('modules',course.modules);
-  fill('hands',course.hands);   fill('outcomes',course.outcomes);
-  fill('after',course.after);   fill('flow-list',course.flow);
-  $('pay-link').href = STRIPE_LINKS[courseKey] || STRIPE_LINKS.entry;
-
-  /* ====== FAQ（fetch → 失敗時 JSONP） ====== */
-  const EXO_FAQ_EXEC = "https://script.google.com/macros/s/AKfycbxhyZ2GMOQ9TcdhFvoScakOm9e8ZatzaItSpPt00ISD4f8y5lxdgjay7y7EMOE13MF6/exec";
-
-  const LOCAL_FAQ_MUST_PLUS = {
-    q: '受講にChatGPT有料プランは必要ですか？',
-    a: 'はい。本スクールはカスタムGPTを利用しているため、受講にはChatGPTの有料プラン（ChatGPT Plus等）への加入が必須です。未加入の場合、教材・課題の一部が利用できません。'
-  };
-
-  async function viaFetch(url){ const r = await fetch(url,{cache:'no-store',mode:'cors'}); if(!r.ok) throw new Error('fetch failed'); return await r.json(); }
-  function viaJsonp(url){
-    return new Promise((resolve,reject)=>{
-      const cb='cb_'+Math.random().toString(36).slice(2);
-      const s=document.createElement('script');
-      const cleanup=()=>{ try{delete window[cb]}catch{}; try{s.remove()}catch{} };
-      window[cb]=(data)=>{ cleanup(); resolve(data); };
-      s.onerror=()=>{ cleanup(); reject(new Error('jsonp error')); };
-      s.src=url+(url.includes('?')?'&':'?')+'callback='+cb;
-      document.body.appendChild(s);
-      setTimeout(()=>{ cleanup(); reject(new Error('jsonp timeout')); },15000);
-    });
-  }
-  async function apiGet(path){ const url=`${EXO_FAQ_EXEC}${path}`; try{ return await viaFetch(url);}catch(_){ return await viaJsonp(url);} }
-  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-
-  async function renderFaq(){
-    const acc=document.getElementById('faq-accordion');
-    try{
-      const data=await apiGet(`?api=faq&fn=list`);
-      let items=(data&&data.items)||[];
-      const hasMustPlus = items.some(it => String(it.q||'').includes('有料プラン'));
-      if(!hasMustPlus){ items = [LOCAL_FAQ_MUST_PLUS, ...items]; }
-      if(!items.length){ acc.innerHTML='<div class="muted">FAQは準備中です。</div>'; return; }
-      acc.innerHTML=items.map(it=>`
-        <details class="faq-item">
-          <summary>Q. ${esc(it.q)}</summary>
-          <div class="a">${esc(it.a||'（準備中）')}</div>
-        </details>
-      `).join('');
-    }catch(e){
-      acc.innerHTML = `
-        <details class="faq-item" open>
-          <summary>Q. ${esc(LOCAL_FAQ_MUST_PLUS.q)}</summary>
-          <div class="a">${esc(LOCAL_FAQ_MUST_PLUS.a)}</div>
-        </details>
-        <div class="muted">※ その他のFAQの取得に失敗しました。時間をおいて再度お試しください。</div>
-      `;
-    }
-  }
-
-  // クイック質問
-  const formFaq=document.getElementById('faqAsk');
-  const input=document.getElementById('faqQ');
-  const ansBox=document.getElementById('faqAns');
-  document.querySelectorAll('.chip').forEach(ch=>{
-    ch.addEventListener('click',()=>{ input.value=ch.dataset.q; formFaq.dispatchEvent(new Event('submit')); });
-  });
-  formFaq.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const q=input.value.trim(); if(!q) return;
-    ansBox.style.display='flex';
-    const user=document.createElement('div'); user.className='bub'; user.textContent=q;
-    const ai=document.createElement('div'); ai.className='bub ai'; ai.textContent='回答を生成しています…';
-    ansBox.appendChild(user); ansBox.appendChild(ai);
-    try{
-      const j=await apiGet(`?api=faq&fn=answer&q=${encodeURIComponent(q)}`);
-      ai.textContent=(j&&j.ok)?`${j.answer}　（${j.source==='gpt'?'AI補完':'FAQ'}）`:'エラーが発生しました。';
-    }catch(_){ 
-      if(q.includes('有料') || q.includes('ChatGPT') || q.includes('プラン')){
-        ai.textContent = LOCAL_FAQ_MUST_PLUS.a + '（ローカル表示）';
-      }else{
-        ai.textContent='通信に失敗しました。時間をおいてお試しください。';
+    // 3コース定義
+    const COURSES = {
+      entry: {
+        badge: "入門〜初級向け",
+        title: "ENTRY｜AI基礎＆日常業務の成功体験（2–3週間）",
+        goal:  "AI初心者や40–50代向けの短期ブート。安全に使い、良い指示で資料/メール/デザイン補助の成果を出す段階へ。",
+        learnLeft: ["AIリテラシー","ChatGPT基礎","プロンプト設計","スライド/画像の基礎"],
+        modules: ["安全ルール","資料×メール×要約","画像生成基礎","成功指示のテンプレ化"],
+        flow: ["S1：ルール＆良い指示の型","S2：資料×メール×要約の高速化","S3：画像生成＆図解の基礎","S4：成功プロンプトの型化","S5：手動自動化の入口（任意）","S6：成果共有とBefore/After"]
+      },
+      middle: {
+        badge: "初級〜中級向け",
+        title: "MIDDLE｜AI×業務改善の入口（4–6週間）",
+        goal:  "差し込み型テンプレとGASで“小さな自動化”を構築。AIと人のバトンで半自動フローに落とし込み、KPIで可視化します。",
+        learnLeft: ["テンプレ構造設計","GAS入門と自動化","A/Bテスト運用","KPI可視化とレポート"],
+        modules: ["差し込み型テンプレ設計","フォーム→シート→返信→集計（GAS）","AIと人の役割分担フロー","A/B評価と改善ログ"],
+        flow: ["S1：テンプレの構造化設計","S2：GASで作る小さな自動化","S3：AIと人のバトン設計","S4：A/Bテストでテンプレ改善","S5：KPI可視化と成果報告設計","S6：成果発表＆次の業務改善の種探し"]
+      },
+      practical: {
+        badge: "実践〜先進向け",
+        title: "PRACTICAL｜疑似案件で本格運用へ（6–8週間）",
+        goal:  "評価・検証〜運用設計まで含め、再現性ある“仕組み化”に踏み込みます。",
+        learnLeft: ["要件定義と設計","運用SLA/権限/失敗時設計","実装と検証","RAGミニPoC"],
+        modules: ["要件定義ロールプレイ","設計書（データ流・権限・失敗時）","実装＋動作検証（GAS）","RAGミニPoC（FAQ50件）"],
+        flow: ["S1：要件定義ロールプレイ","S2：設計フェーズ","S3：構築と動作検証","S4：納品物一式の整備","S5：RAGミニPoC実装","S6：成果発表＆ふりかえり"]
       }
-    }
-    input.value='';
-  });
+    };
 
-  renderFaq();
-});
-</script>
+    function qs(name){
+      const u = new URL(location.href);
+      return u.searchParams.get(name);
+    }
+
+    // ------- 初期化 -------
+    (function init(){
+      const plan = (qs('plan') || '').toLowerCase();
+      const score = qs('score') || '—';
+      const level = qs('level') || '—';
+
+      // planが不正なら practical/ middle / entry の順で推奨を選ぶ（スコアがあれば簡易推定）
+      let planKey = (plan in COURSES) ? plan : null;
+      if(!planKey){
+        const n = Number(score);
+        planKey = Number.isFinite(n)
+          ? (n>=70 ? 'practical' : n>=40 ? 'middle' : 'entry')
+          : 'entry';
+      }
+      const data = COURSES[planKey];
+
+      // バッジ/タイトル
+      document.getElementById('badges').innerHTML =
+        `<span class="badge">${data.badge}</span>` +
+        (level && level!=='—' ? `<span class="badge">レベル：${level}</span>` : '');
+      document.getElementById('title').textContent = data.title;
+      document.getElementById('meta').textContent = `診断スコア：${score} ／ レベル：${level || '—'}`;
+
+      // 本文
+      document.getElementById('goalBody').textContent = data.goal;
+      document.getElementById('learnLeft').innerHTML = data.learnLeft.map(li=>`<li>${li}</li>`).join('');
+      document.getElementById('modules').innerHTML  = data.modules.map(li=>`<li>${li}</li>`).join('');
+      document.getElementById('flow').innerHTML     = data.flow.map(li=>`<li>${li}</li>`).join('');
+
+      // 申込みリンク（Stripe）
+      const apply = document.getElementById('applyBtn');
+      const url = STRIPE[planKey] || '#';
+      apply.href = url;
+      apply.textContent = "この内容で申し込む";
+      if(url==='#'){ apply.title = "Stripeリンク未設定（管理者向け）"; }
+
+    })();
+  </script>
 </body>
 </html>
-
