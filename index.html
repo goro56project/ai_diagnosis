@@ -14,7 +14,7 @@
     gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type: 'beacon', debug_mode: true });
   </script>
 
-  <!-- ★ 本番GAS URL（そのまま差し替え可） -->
+  <!-- 本番GAS URL（そのまま使用可） -->
   <script>
     window.GAS_URL = "https://script.google.com/macros/s/AKfycbzwyapWYDOHfPbh0LJwc92Kp1IrRM2ZmAfNHsM3ub5j4UCSzfusmIvha1lv4olh1BuB/exec";
 
@@ -128,7 +128,6 @@
       </div>
 
       <div id="questions" aria-live="polite">
-        <!-- 1〜10：デフォルトは「普通(3)」にチェック -->
         <!-- 1 -->
         <fieldset>
           <legend>1. ChatGPTなどのAIツールを業務で使ったことはありますか？</legend>
@@ -334,7 +333,7 @@
       }
       return a;
     }
-    // スコア（従来ロジック：合計×2 → 0〜100）
+    // スコア（合計×2 → 0〜100）
     function calcScore(answers){
       const sum = Object.values(answers).reduce((s,v)=>s + Number(v||0), 0);
       return Math.max(0, Math.min(100, Math.round(sum * 2)));
@@ -421,21 +420,26 @@
       document.getElementById('sec-questions').scrollIntoView({behavior:"smooth"});
     });
 
-    // メール登録（※ここでは結果を表示しない）
+    // メール登録（ここでは結果を表示しない＆スコア計算しない）
     $btnReg.addEventListener("click", () => {
       const v = ($email.value||"").trim();
-      if (!isEmail(v)){ alert("メールアドレスを正しく入力してください。"); $email.focus(); return; }
+      if (!isEmail(v)){
+        alert("メールアドレスを正しく入力してください。");
+        $email.focus();
+        return;
+      }
       $btnReg.setAttribute("aria-disabled","true");
 
-      // 任意：現時点の選択肢を同時ログ（スコアは計算しない）
+      // 回答はログ用に送る（スコア計算はしない）
       const answers = gatherAnswers();
       const payload = { type:"register", email:v, timestamp: Date.now() };
       for(let i=1;i<=QUESTIONS_COUNT;i++) payload["q"+i] = answers["q"+i];
       sendToGAS(payload);
 
+      // 状態更新（score は null のまま）
       state.email = v;
 
-      updateLockUI(); // ロック状態のみ更新（結果は出さない）
+      updateLockUI(); // ロックUIだけ更新
       alert("登録が完了しました。続けて［診断する］を押して結果を表示してください。");
       $btnReg.setAttribute("aria-disabled","false");
     });
