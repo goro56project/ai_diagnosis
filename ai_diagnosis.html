@@ -84,5 +84,16 @@
       }
     })();
   </script>
+  <script>
+  // 「診断結果の詳細を見る」→「おすすめコースを見る」に一括置換
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('a[href*="exo_courses.html"]').forEach(a => {
+      if (a.textContent.trim() === '診断結果の詳細を見る') {
+        a.textContent = 'おすすめコースを見る';
+      }
+    });
+  });
+</script>
+
 </body>
 </html>
