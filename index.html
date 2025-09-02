@@ -124,7 +124,6 @@
       </div>
 
       <div id="questions" aria-live="polite">
-        <!-- 設問（省略なし・元のまま） -->
         <!-- 1 -->
         <fieldset>
           <legend>1. ChatGPTなどのAIツールを業務で使ったことはありますか？</legend>
@@ -286,19 +285,19 @@
     </p>
   </footer>
 
-  <!-- ===== JS ===== -->
+  <!-- ===== JS（エラー解消・動作版） ===== -->
   <script>
   document.addEventListener('DOMContentLoaded', () => {
-    /*** 設定 ***/
     const QUESTIONS_COUNT = 10;
 
-    /*** 要素取得 ***/
-    const $email    = document.getElementById("email");
-    const $btnReg   = document.getElementById("btn-register");
-    const $btnSkip  = document.getElementById("btn-skip");  // ← 修正
-    const $btnDiag  = document.getElementById("btn-diagnose");
-    const $lpLink   = document.getElementById("lp-link");
-    const $apply    = document.getElementById("apply-link");
+    // 要素取得
+    const $email   = document.getElementById("email");
+    const $btnReg  = document.getElementById("btn-register");
+    const $btnSkip = document.getElementById("btn-skip");
+    const $btnDiag = document.getElementById("btn-diagnose");
+    const $lpLink  = document.getElementById("lp-link");
+    const $apply   = document.getElementById("apply-link");
+
     const $scoreOut = document.getElementById("score-out");
     const $lvLabel  = document.getElementById("lv-label");
     const $heading  = document.getElementById("cta-heading");
@@ -306,22 +305,20 @@
     const $bullets  = document.getElementById("result-bullets");
     const $lockMsg  = document.getElementById("detail-lock-msg");
 
-    /*** 状態 ***/
+    // 状態
     const state = { email:"", score:null, levelLabel:"--", lvKey:"", answers:{} };
 
-    /*** ユーティリティ ***/
+    // util
     const isEmail = (v)=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
-    // GASへ到達させる：GET + no-cors
     function sendToGAS(paramsObj){
       try{
         const qs = new URLSearchParams(paramsObj);
         if(!qs.has('origin')) qs.set('origin', location.origin);
         const url = `${window.GAS_URL}?${qs.toString()}`;
-        fetch(url, { method: "GET", mode: "no-cors", cache: "no-store" }).catch(()=>{});
-        const img = new Image();
-        img.src = `${url}&t=${Date.now()}`;
-      }catch(_){}
+        fetch(url, { method:"GET", mode:"no-cors", cache:"no-store" }).catch(()=>{});
+        const img = new Image(); img.src = `${url}&t=${Date.now()}`;
+      }catch(e){ console.warn('GAS送信で例外:', e); }
     }
 
     function gatherAnswers(){
@@ -333,10 +330,12 @@
       }
       return a;
     }
+
     function calcScore(answers){
       const sum = Object.values(answers).reduce((s,v)=>s + Number(v||0), 0);
       return Math.max(0, Math.min(100, Math.round(sum * 2))); // 10〜50点 → 20〜100
     }
+
     function levelFrom(score){
       if (score >= 70) return {label:"先進層",   key:"practical"};
       if (score >= 55) return {label:"実践層",   key:"middle"};
@@ -344,7 +343,6 @@
       return {label:"入門層", key:"entry"};
     }
 
-    // ✨ コピー
     const COPY = {
       entry: {
         heading: "AIを“安全に業務へ導入する”第一歩。2週間で成果を実感して次の改善へ。",
@@ -353,8 +351,7 @@
           "基本リテラシーと安全ルールを整備（業務に安心してAIを導入）",
           "勝ちやすい3領域（資料・メール・要約）のAIテンプレを獲得",
           "成功したプロンプトをテンプレ化し、再利用で業務改善を加速"
-        ],
-        cta: "ENTRY講座でAI業務改善の基礎をつくる"
+        ]
       },
       middle: {
         heading: "テンプレ＋GASで“勝手に回るAI業務フロー”を構築しましょう。",
@@ -363,8 +360,7 @@
           "議事録／FAQ／メール対応をAIテンプレ化し再利用",
           "フォーム→自動返信→記録→レポートの小さな自動化",
           "KPIとA/Bテストで改善サイクルを回し続ける"
-        ],
-        cta: "MIDDLE講座でAI業務改善の自動化を実装する"
+        ]
       },
       practical: {
         heading: "AIを組織に“本格導入”。要件定義〜実装まで行い、業務改善を仕組み化。",
@@ -373,49 +369,45 @@
           "AI導入ロードマップと業務要件を定義",
           "運用ルールと失敗時ハンドリングを含めたガバナンス設計",
           "RAG/エージェントによる業務改善PoCを社内展開"
-        ],
-        cta: "PRACTICAL講座でAI業務改善を仕組み化する"
+        ]
       }
     };
 
     function updateLockUI(){
       const locked = !state.email;
-      $lpLink.setAttribute("aria-disabled", locked ? "true" : "false");
-      $lockMsg.style.display = locked ? "block" : "none";
-      $lpLink.title = locked ? "メール登録すると詳細を表示できます" : "おすすめコースを見る";
+      if ($lpLink){ $lpLink.setAttribute("aria-disabled", locked ? "true" : "false"); }
+      if ($lockMsg){ $lockMsg.style.display = locked ? "block" : "none"; }
+      if ($lpLink){ $lpLink.title = locked ? "メール登録すると詳細を表示できます" : "おすすめコースを見る"; }
     }
 
     function renderResult(){
-      $scoreOut.textContent = (state.score ?? "--");
+      if ($scoreOut) $scoreOut.textContent = (state.score ?? "--");
       const lv = levelFrom(state.score);
-      state.levelLabel = lv.label;
-      state.lvKey = lv.key;
-      $lvLabel.textContent = state.levelLabel;
+      state.levelLabel = lv.label; state.lvKey = lv.key;
+      if ($lvLabel) $lvLabel.textContent = state.levelLabel;
 
       const cp = COPY[state.lvKey] || COPY.entry;
-      $heading.textContent = cp.heading;
-      $lead.textContent = cp.lead;
-      $bullets.innerHTML = (cp.bullets||[]).map(t=>`<li>${t}</li>`).join("");
+      if ($heading) $heading.textContent = cp.heading;
+      if ($lead) $lead.textContent = cp.lead;
+      if ($bullets) $bullets.innerHTML = (cp.bullets||[]).map(t=>`<li>${t}</li>`).join("");
 
-      // 詳細へ：一覧LP（スコア引き回し）
-      $lpLink.href = `./exo_courses.html?score=${state.score}`;
-
-      // 申込みへ：該当コース詳細
-      $apply.textContent = "この講座に申し込む";
-      $apply.href = `./exo_course_detail.html?plan=${state.lvKey}&score=${state.score}&level=${encodeURIComponent(state.levelLabel)}`;
+      if ($lpLink) $lpLink.href = `./exo_courses.html?score=${state.score}`;
+      if ($apply){
+        $apply.textContent = "この講座に申し込む";
+        $apply.href = `./exo_course_detail.html?plan=${state.lvKey}&score=${state.score}&level=${encodeURIComponent(state.levelLabel)}`;
+      }
 
       updateLockUI();
-      document.getElementById("result-card").scrollIntoView({behavior:"smooth", block:"start"});
+      document.getElementById("result-card")?.scrollIntoView({behavior:"smooth", block:"start"});
     }
 
-    // 「おすすめコースを見る」無効時のクリック抑止
-    $lpLink.addEventListener('click', (e) => {
+    // クリック抑止
+    $lpLink?.addEventListener('click', (e) => {
       if ($lpLink.getAttribute('aria-disabled') === 'true') e.preventDefault();
     });
 
-    // 診断する（結果ログ送信 → 画面反映）
-    const $btnDiag = document.getElementById("btn-diagnose");
-    $btnDiag.addEventListener("click", () => {
+    // 診断する
+    $btnDiag?.addEventListener("click", () => {
       state.answers = gatherAnswers();
       state.score   = calcScore(state.answers);
       const payload = { type:"result", email: state.email || "(noemail)", score: state.score, timestamp: Date.now() };
@@ -425,19 +417,18 @@
     });
 
     // 登録せずに診断へ
-    $btnSkip.addEventListener("click", () => {
+    $btnSkip?.addEventListener("click", () => {
       state.email = "";
       updateLockUI();
-      document.getElementById('sec-questions').scrollIntoView({behavior:"smooth"});
+      document.getElementById('sec-questions')?.scrollIntoView({behavior:"smooth"});
     });
 
-    // 登録（※診断は走らせない）
-    $btnReg.addEventListener("click", () => {
-      const v = ($email.value||"").trim();
-      if (!isEmail(v)){ alert("メールアドレスを正しく入力してください。"); $email.focus(); return; }
+    // 登録
+    $btnReg?.addEventListener("click", () => {
+      const v = ($email?.value||"").trim();
+      if (!isEmail(v)){ alert("メールアドレスを正しく入力してください。"); $email?.focus(); return; }
       $btnReg.setAttribute("aria-disabled","true");
 
-      // ログ送信のみ（score/answersは現時点のまま。診断は実行しない）
       const payload = { type:"register", email:v, timestamp: Date.now() };
       sendToGAS(payload);
 
