@@ -14,16 +14,9 @@
     gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type: 'beacon', debug_mode: true });
   </script>
 
-  <!-- 本番GAS URL（そのまま使用可） -->
+  <!-- ★ 本番GAS URL（変更可） -->
   <script>
     window.GAS_URL = "https://script.google.com/macros/s/AKfycbzwyapWYDOHfPbh0LJwc92Kp1IrRM2ZmAfNHsM3ub5j4UCSzfusmIvha1lv4olh1BuB/exec";
-
-    /* （任意）Stripe 決済リンク：結果カードの「この講座に申し込む」で使用 */
-    window.STRIPE_LINKS = {
-      entry:     "https://buy.stripe.com/REPLACE_WITH_YOUR_ENTRY_LINK",
-      middle:    "https://buy.stripe.com/REPLACE_WITH_YOUR_MIDDLE_LINK",
-      practical: "https://buy.stripe.com/REPLACE_WITH_YOUR_PRACTICAL_LINK"
-    };
   </script>
 
   <style>
@@ -57,7 +50,7 @@
     .warn{ font-size:12px; color:var(--warn); background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; border-radius:10px; }
     fieldset{ border:1px solid #eee; border-radius:12px; padding:14px; margin:10px 0; }
 
-    /* 設問UI（可変幅で崩れない） */
+    /* 設問UI */
     .qgrid{
       display:grid;
       grid-template-columns: minmax(140px,1fr) repeat(5, minmax(48px,72px));
@@ -74,8 +67,11 @@
 
     /* 結果表示 */
     .result{ display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
-    .score{ font-size:28px; color:#41b; font-weight:700; }
+    .score{ font-size:28px; color:#4338ca; font-weight:800; }
     ul.bullets{ margin:8px 0 0 20px; }
+
+    .cta-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; }
+    .btn.ghost{ background:#fff; color:#4338ca; border:1px solid #c7c8ff; }
 
     footer{ text-align:center; font-size:14px; margin-top:40px; padding:20px; border-top:1px solid #ddd; }
     footer a{ color:#0a58ca; text-decoration:none; }
@@ -93,7 +89,7 @@
   <header>
     <div class="wrap">
       <h1 class="title-lg">AI偏差値診断</h1>
-      <p class="sublead">AIの基礎知識・活用経験と、ChatGPT／GASなどを使った業務改善スキルを、10問でかんたんに測定します。</p>
+      <p class="sublead">AIの基礎知識・活用経験と、ChatGPT／GASなどを使った<b>業務改善スキル</b>を、10問でかんたんに測定します。</p>
     </div>
   </header>
 
@@ -263,16 +259,18 @@
         <span class="score"><span id="score-out">--</span></span>
         <span class="pill">レベル：<span id="lv-label">--</span></span>
       </p>
-      <p id="result-lead" class="lead muted" style="margin-top:4px;">診断後にサマリを表示します。</p>
+
+      <h3 id="cta-heading" style="margin:.3rem 0 .4rem"></h3>
+      <p id="result-lead" class="lead muted" style="margin-top:0;"></p>
       <ul id="result-bullets" class="bullets"></ul>
 
       <div id="detail-lock-msg" class="warn" style="display:none; margin-top:10px;">
-        ※ <b>メール登録と診断の完了</b>が必要です。登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
+        ※ <b>メール登録が必要です。</b>登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
       </div>
 
-      <div class="row" style="margin-top:14px;">
-        <a id="lp-link" class="btn primary" href="#" aria-disabled="true" title="メール登録と診断完了で有効になります" rel="noopener">診断結果の詳細を見る</a>
-        <a id="apply-link" class="btn" href="#" target="_blank" rel="noopener">この講座に申し込む</a>
+      <div class="cta-row">
+        <a id="lp-link" class="btn ghost" href="#" aria-disabled="true" title="メール登録すると詳細を表示できます" rel="noopener">診断結果の詳細を見る</a>
+        <a id="apply-link" class="btn primary" href="#" rel="noopener">この講座に申し込む</a>
       </div>
 
       <div class="hint" style="margin-top:10px;">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</div>
@@ -299,9 +297,10 @@
     const $btnSkip  = document.getElementById("btn-skip");
     const $btnDiag  = document.getElementById("btn-diagnose");
     const $lpLink   = document.getElementById("lp-link");
-    const $applyLink= document.getElementById("apply-link");
+    const $apply    = document.getElementById("apply-link");
     const $scoreOut = document.getElementById("score-out");
     const $lvLabel  = document.getElementById("lv-label");
+    const $heading  = document.getElementById("cta-heading");
     const $lead     = document.getElementById("result-lead");
     const $bullets  = document.getElementById("result-bullets");
     const $lockMsg  = document.getElementById("detail-lock-msg");
@@ -312,7 +311,7 @@
     /*** ユーティリティ ***/
     const isEmail = (v)=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
-    // GASへ到達させる：GET + no-cors（CORS/プリフライト回避）
+    // GASへ到達させる：GET + no-cors
     function sendToGAS(paramsObj){
       try{
         const qs = new URLSearchParams(paramsObj);
@@ -333,49 +332,56 @@
       }
       return a;
     }
-    // スコア（合計×2 → 0〜100）
     function calcScore(answers){
       const sum = Object.values(answers).reduce((s,v)=>s + Number(v||0), 0);
-      return Math.max(0, Math.min(100, Math.round(sum * 2)));
+      return Math.max(0, Math.min(100, Math.round(sum * 2))); // 10〜50点 → 20〜100
     }
     function levelFrom(score){
       if (score >= 70) return {label:"先進層",   key:"practical"};
-      if (score >= 55) return {label:"実践層",   key:"practical"};
+      if (score >= 55) return {label:"実践層",   key:"middle"};     // ※スコア帯は運用に合わせて調整可
       if (score >= 40) return {label:"初級〜中級", key:"middle"};
       return {label:"入門層", key:"entry"};
     }
 
-    const LEADS = {
-      entry:"まずは安全な使い方と型を整えて、短期で成果を出す土台を作ります。",
-      middle:"差し込み型テンプレと小さな自動化で、品質と効率を同時に伸ばします。",
-      practical:"評価・検証〜運用設計までを含め、再現性のある仕組み化へ踏み込みましょう。"
-    };
-    const BULLETS = {
-      entry:["基本リテラシーと安全ルールを整備","業務テンプレ/良いプロンプトの型を準備","小さく試して成功体験を蓄積"],
-      middle:["差し込み型テンプレ設計","GASで作る小さな自動化","AIと人のバトン設計","A/BテストとKPI可視化"],
-      practical:["要件整理・導入ロードマップの設計","運用SLA設計とガバナンス","RAG/エージェントの社内展開"]
+    // ✨ AI×業務改善トーンのコピー
+    const COPY = {
+      entry: {
+        heading: "AIを“安全に業務へ導入する”第一歩。2週間で成果を実感して次の改善へ。",
+        lead: "今はまだAI活用の入り口。まずは安全な使い方と良いプロンプトの型を整えれば、資料・メール・要約などの業務ですぐに時短と品質向上が得られます。これがAI業務改善の土台になります。",
+        bullets: [
+          "基本リテラシーと安全ルールを整備（業務に安心してAIを導入）",
+          "勝ちやすい3領域（資料・メール・要約）のAIテンプレを獲得",
+          "成功したプロンプトをテンプレ化し、再利用で業務改善を加速"
+        ],
+        cta: "ENTRY講座でAI業務改善の基礎をつくる"
+      },
+      middle: {
+        heading: "テンプレ＋GASで“勝手に回るAI業務フロー”を構築しましょう。",
+        lead: "AIと人の役割を切り分け、差し込み型テンプレとGASを組み合わせれば、定型業務は半自動化できます。KPIで成果を可視化することで、業務改善を仕組みとして定着させます。",
+        bullets: [
+          "議事録／FAQ／メール対応をAIテンプレ化し再利用",
+          "フォーム→自動返信→記録→レポートの小さな自動化",
+          "KPIとA/Bテストで改善サイクルを回し続ける"
+        ],
+        cta: "MIDDLE講座でAI業務改善の自動化を実装する"
+      },
+      practical: {
+        heading: "AIを組織に“本格導入”。要件定義〜実装まで行い、業務改善を仕組み化。",
+        lead: "要件整理から設計・実装・SOP作成までを一気通貫で体験。実案件に近い流れで、RAGやAIエージェントを使った高度な業務改善の仕組みを社内に持ち込めます。",
+        bullets: [
+          "AI導入ロードマップと業務要件を定義",
+          "運用ルールと失敗時ハンドリングを含めたガバナンス設計",
+          "RAG/エージェントによる業務改善PoCを社内展開"
+        ],
+        cta: "PRACTICAL講座でAI業務改善を仕組み化する"
+      }
     };
 
-    // 詳細リンクのロック条件：メール登録 & 診断済み（score!=null）
     function updateLockUI(){
-      const locked = !(state.email && state.score != null);
+      const locked = !state.email;
       $lpLink.setAttribute("aria-disabled", locked ? "true" : "false");
       $lockMsg.style.display = locked ? "block" : "none";
-      $lpLink.title = locked ? "メール登録と診断完了で有効になります" : "診断結果の詳細を見る";
-    }
-
-    // CTAリンクを現在のおすすめ講座に合わせて更新
-    function updateCTALinks(){
-      const plan  = state.lvKey || "entry";
-      const score = state.score ?? "";
-      const level = state.levelLabel || "";
-      // 詳細ページ（plan/score/level を付与）
-      $lpLink.href = `./exo_course_detail.html?plan=${plan}&score=${encodeURIComponent(score)}&level=${encodeURIComponent(level)}`;
-      // 申込み（Stripe）
-      const stripeUrl = (window.STRIPE_LINKS && window.STRIPE_LINKS[plan]) ? window.STRIPE_LINKS[plan] : "#";
-      $applyLink.href = stripeUrl;
-      $applyLink.classList.toggle('primary', !!stripeUrl && stripeUrl !== "#");
-      $applyLink.title = (stripeUrl && stripeUrl !== "#") ? "Stripe決済ページを開きます" : "Stripeリンク未設定です（管理者向け）";
+      $lpLink.title = locked ? "メール登録すると詳細を表示できます" : "診断結果の詳細を見る";
     }
 
     function renderResult(){
@@ -383,33 +389,36 @@
       const lv = levelFrom(state.score);
       state.levelLabel = lv.label;
       state.lvKey = lv.key;
-
       $lvLabel.textContent = state.levelLabel;
-      $lead.textContent = {entry:LEADS.entry, middle:LEADS.middle, practical:LEADS.practical}[state.lvKey] || "";
-      $bullets.innerHTML = (BULLETS[state.lvKey]||[]).map(t=>`<li>${t}</li>`).join("");
 
-      updateCTALinks();
+      const cp = COPY[state.lvKey] || COPY.entry;
+      $heading.textContent = cp.heading;
+      $lead.textContent = cp.lead;
+      $bullets.innerHTML = (cp.bullets||[]).map(t=>`<li>${t}</li>`).join("");
+
+      // 詳細へ：一覧LP（スコア引き回し）
+      $lpLink.href = `./exo_courses.html?score=${state.score}`;
+
+      // 申込みへ：該当コース詳細
+      $apply.textContent = "この講座に申し込む";
+      $apply.href = `./exo_course_detail.html?plan=${state.lvKey}&score=${state.score}&level=${encodeURIComponent(state.levelLabel)}`;
+
       updateLockUI();
-
       document.getElementById("result-card").scrollIntoView({behavior:"smooth", block:"start"});
     }
 
-    // 「詳細を見る」無効時のクリック抑止（申込みは常に許可）
+    // 「詳細を見る」無効時のクリック抑止
     $lpLink.addEventListener('click', (e) => {
       if ($lpLink.getAttribute('aria-disabled') === 'true') e.preventDefault();
     });
 
-    /* === イベント === */
-
-    // 診断する（→ この時だけ結果を表示）
+    // 診断する（結果ログ送信 → 画面反映）
     $btnDiag.addEventListener("click", () => {
       state.answers = gatherAnswers();
       state.score   = calcScore(state.answers);
-
       const payload = { type:"result", email: state.email || "(noemail)", score: state.score, timestamp: Date.now() };
       for(let i=1;i<=QUESTIONS_COUNT;i++) payload["q"+i] = state.answers["q"+i];
       sendToGAS(payload);
-
       renderResult();
     });
 
@@ -420,27 +429,19 @@
       document.getElementById('sec-questions').scrollIntoView({behavior:"smooth"});
     });
 
-    // メール登録（ここでは結果を表示しない＆スコア計算しない）
+    // 登録（※診断は走らせない）
     $btnReg.addEventListener("click", () => {
       const v = ($email.value||"").trim();
-      if (!isEmail(v)){
-        alert("メールアドレスを正しく入力してください。");
-        $email.focus();
-        return;
-      }
+      if (!isEmail(v)){ alert("メールアドレスを正しく入力してください。"); $email.focus(); return; }
       $btnReg.setAttribute("aria-disabled","true");
 
-      // 回答はログ用に送る（スコア計算はしない）
-      const answers = gatherAnswers();
+      // ログ送信のみ（score/answersは現時点のまま。診断は実行しない）
       const payload = { type:"register", email:v, timestamp: Date.now() };
-      for(let i=1;i<=QUESTIONS_COUNT;i++) payload["q"+i] = answers["q"+i];
       sendToGAS(payload);
 
-      // 状態更新（score は null のまま）
       state.email = v;
-
-      updateLockUI(); // ロックUIだけ更新
-      alert("登録が完了しました。続けて［診断する］を押して結果を表示してください。");
+      updateLockUI();
+      alert("登録が完了しました。詳細表示が有効になりました。");
       $btnReg.setAttribute("aria-disabled","false");
     });
 
