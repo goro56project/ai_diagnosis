@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>AI偏差値診断｜メール登録→診断→結果表示</title>
 
-  <!-- ===== GA4 ===== -->
+  <!-- GA4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -16,44 +16,47 @@
 
   <style>
     :root{
-      --ink:#0f172a;--muted:#475569;--brand:#4f46e5;--brand-ink:#fff;
-      --bg:#f8fafc;--card:#ffffff;--line:#e5e7eb;--pill:#eef2ff;--pill-ink:#3730a3;
+      --ink:#0f172a; --muted:#475569; --bg:#f6f7fb;
+      --card:#ffffff; --line:#e6e8ef;
+      --brand:#5b4bff; --brand-ink:#ffffff; --brand-weak:#efeefe;
+      --shadow:0 6px 18px rgba(17,24,39,.06);
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Meiryo,sans-serif}
+    html,body{margin:0;background:var(--bg);color:var(--ink);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Meiryo,sans-serif}
     a{color:var(--brand);text-decoration:none}
     .wrap{max-width:1100px;margin:0 auto;padding:28px 16px 80px}
-    h1{font-size:clamp(22px,3.6vw,36px);margin:0 0 8px}
+    h1{font-size:clamp(24px,3.8vw,40px);margin:0 0 8px}
     .lead{color:var(--muted);margin:0 0 28px}
-    .section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin:18px 0}
+    .section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0;box-shadow:var(--shadow)}
     .section h2{font-size:18px;margin:0 0 12px}
-    .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-    .input{flex:1;min-width:260px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font-size:15px;background:#fff}
-    .btn{appearance:none;border:none;border-radius:12px;padding:12px 16px;background:var(--brand);color:var(--brand-ink);font-weight:600;cursor:pointer}
-    .btn.secondary{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+    .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .input{flex:1;min-width:260px;height:46px;padding:12px 14px;border:1px solid var(--line);border-radius:999px;font-size:15px;background:#fff}
+    .btn{appearance:none;border:none;border-radius:999px;height:46px;padding:0 18px;font-weight:700;cursor:pointer}
+    .btn-brand{background:var(--brand);color:var(--brand-ink)}
+    .btn-outline{background:#fff;color:var(--brand);border:2px solid var(--brand)}
+    .btn-ghost{background:#fff;color:var(--muted);border:1px solid var(--line)}
     .note{font-size:12px;color:var(--muted);margin-top:8px}
+    .muted{color:var(--muted)}
     .q{border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0;background:#fff}
     .q h3{font-size:15px;margin:0 0 10px}
     .scale{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
     .scale small{color:var(--muted)}
     .scale label{display:flex;align-items:center;gap:8px}
-    .result-badge{display:flex;align-items:center;gap:12px;margin:8px 0 14px}
-    .score{display:inline-flex;align-items:center;justify-content:center;min-width:56px;height:44px;padding:0 10px;border-radius:10px;background:var(--pill);color:var(--pill-ink);font-size:22px;font-weight:800}
-    .level{font-size:13px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff}
-    .bullets{margin:10px 0 0 0;padding:0 0 0 18px}
-    .bullets li{margin:3px 0}
+    .result-badge{display:flex;gap:12px;align-items:center;margin:8px 0 14px}
+    .score{display:inline-flex;align-items:center;justify-content:center;min-width:60px;height:48px;padding:0 12px;border-radius:12px;background:var(--brand-weak);color:#3b2fd9;font-size:24px;font-weight:800}
+    .level{font-size:13px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff}
     .course{border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0;background:#fff}
     .course h4{margin:0 0 8px;font-size:16px}
+    .bullets{margin:10px 0 0 0;padding:0 0 0 18px}
+    .bullets li{margin:4px 0}
     .cta-row{display:flex;gap:10px;flex-wrap:wrap}
-    .compare{overflow:auto}
-    table{border-collapse:collapse;width:100%;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
-    th,td{border-bottom:1px solid var(--line);padding:12px 10px;text-align:left;vertical-align:top}
-    th{background:#fafafa;font-weight:700}
     .divider{height:1px;background:var(--line);margin:18px 0}
-    .muted{color:var(--muted)}
-    .tag{display:inline-block;font-size:12px;background:var(--pill);color:var(--pill-ink);border-radius:999px;padding:4px 10px;margin-left:6px}
-    .subtle{font-size:13px;color:var(--muted)}
+    .tag{display:inline-block;font-size:12px;background:#f2f0ff;color:#3b2fd9;border-radius:999px;padding:4px 10px;margin-left:6px}
     .hidden{display:none !important;}
+    table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    th,td{border-bottom:1px solid var(--line);padding:12px 10px;text-align:left;vertical-align:top}
+    th{background:#faf9ff}
   </style>
 </head>
 <body>
@@ -61,30 +64,38 @@
     <h1>AI偏差値診断</h1>
     <p class="lead">AIの基礎知識・活用経験と、ChatGPT／GASなどを使った業務改善スキルを、10問でかんたんに測定します。</p>
 
-    <!-- ======================= STEP 1 ======================= -->
+    <!-- STEP 1 -->
     <section class="section" id="step1">
       <h2>STEP 1｜診断結果をメールで受け取る（任意）</h2>
-      <p class="subtle">登録すると、診断の詳細（解説・おすすめコース）が表示できるようになります。未登録でも簡易結果は見られます。</p>
+      <p class="muted" style="margin:0 0 12px">登録すると、診断の詳細（解説・おすすめコース）が表示できるようになります。未登録でも簡易結果は見られます。</p>
       <div class="row">
         <input id="email" type="email" class="input" placeholder="yourname@example.com" />
-        <button class="btn" id="btnRegister">登録する</button>
-        <button class="btn secondary" id="btnSkip">登録せずに診断へ</button>
+        <button class="btn btn-brand" id="btnRegister">登録する</button>
+        <button class="btn btn-outline" id="btnSkip">登録せずに診断へ</button>
       </div>
       <p class="note">送信先の管理：Google スプレッドシート（自動作成／既存連携）。用途は診断に関するご連絡のみ。不要時はいつでも停止できます。</p>
       <p id="regMsg" class="note"></p>
     </section>
 
-    <!-- ======================= STEP 2 ======================= -->
+    <!-- STEP 2 -->
     <section class="section" id="step2">
       <h2>STEP 2｜10問の自己評価に回答</h2>
-      <div id="questions"></div>
-      <div class="row" style="margin-top:10px">
-        <button class="btn" id="btnCalc">診断する</button>
-        <span class="subtle" id="calcMsg"></span>
+
+      <div id="collapsedHint" class="muted" style="margin-bottom:10px;">ボタンを押すと設問が開きます（1〜2分）</div>
+      <div class="row">
+        <button class="btn btn-brand" id="btnToggle">診断する</button>
+      </div>
+
+      <div id="questionsWrap" class="hidden">
+        <div id="questions"></div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn btn-brand" id="btnCalc">回答を送信して結果を見る</button>
+          <span class="muted" id="calcMsg"></span>
+        </div>
       </div>
     </section>
 
-    <!-- ======================= STEP 3 ======================= -->
+    <!-- STEP 3 -->
     <section class="section" id="step3">
       <h2>STEP 3｜診断結果</h2>
 
@@ -94,25 +105,25 @@
       </div>
 
       <p id="summary" class="muted" style="margin-top:6px;">
-        まずは回答後に「診断する」を押してください。おすすめ講座と比較表が表示されます。
+        設問に回答して「結果を見る」を押すと、おすすめ講座と比較表が表示されます。
       </p>
 
-      <!-- おすすめ講座（診断に応じて1つ強調） -->
+      <!-- おすすめ講座 -->
       <div id="recommended" class="course hidden">
         <h4 id="recTitle">あなたへのおすすめ講座</h4>
         <p id="recBullets" class="muted"></p>
         <ul id="recList" class="bullets"></ul>
         <div class="cta-row" style="margin-top:8px">
-          <a id="recDetail" class="btn" href="#" target="_blank" rel="noopener">講座の詳細を見る</a>
-          <a id="recApply"  class="btn secondary" href="#" target="_blank" rel="noopener">この講座に申し込む</a>
+          <a id="recDetail" class="btn btn-brand" href="#" target="_blank" rel="noopener">講座の詳細を見る</a>
+          <a id="recApply"  class="btn btn-outline" href="#" target="_blank" rel="noopener">この講座に申し込む</a>
         </div>
       </div>
 
       <div class="divider"></div>
 
-      <!-- 他講座カード -->
+      <!-- 他講座 -->
       <div id="otherCourses" class="hidden">
-        <p class="subtle">▼ 他の講座もチェック</p>
+        <p class="muted">▼ 他の講座もチェック</p>
 
         <div id="entryBox" class="course">
           <h4>ENTRY講座｜AI基礎＆日常業務の成功体験 <span class="tag">入門〜初級</span></h4>
@@ -123,7 +134,7 @@
             <li>成功パターンのテンプレ化＆共有（S4〜S6）</li>
           </ul>
           <div class="cta-row" style="margin-top:8px">
-            <a class="btn secondary" href="./exo_courses.html#entry" target="_blank" rel="noopener">ENTRYの詳細</a>
+            <a class="btn btn-outline" href="./exo_courses.html#entry" target="_blank" rel="noopener">ENTRYの詳細</a>
           </div>
         </div>
 
@@ -135,8 +146,8 @@
             <li>AIと人のバトンで半自動フロー（S3）</li>
             <li>A/B改善とKPI可視化（S4〜S5）</li>
           </ul>
-          <div class="cta-row" style="margin-top:8px">
-            <a class="btn secondary" href="./exo_courses.html#middle" target="_blank" rel="noopener">MIDDLEの詳細</a>
+          <div class="cta-row" style="margin-top:8px)">
+            <a class="btn btn-outline" href="./exo_courses.html#middle" target="_blank" rel="noopener">MIDDLEの詳細</a>
           </div>
         </div>
 
@@ -148,64 +159,33 @@
             <li>納品物一式の整備（S4）／RAGミニPoC（S5）</li>
           </ul>
           <div class="cta-row" style="margin-top:8px">
-            <a class="btn secondary" href="./exo_courses.html#practical" target="_blank" rel="noopener">PRACTICALの詳細</a>
+            <a class="btn btn-outline" href="./exo_courses.html#practical" target="_blank" rel="noopener">PRACTICALの詳細</a>
           </div>
         </div>
       </div>
 
-      <!-- 比較表＋最終CTA -->
+      <!-- 比較表 -->
       <div id="compareWrap" class="hidden">
         <div class="divider"></div>
         <h3 style="margin:0 0 10px;font-size:16px;">３コース比較表（一覧）</h3>
-        <div class="compare">
+        <div style="overflow:auto">
           <table>
             <thead>
-              <tr>
-                <th>比較軸</th>
-                <th>ENTRY</th>
-                <th>MIDDLE</th>
-                <th>PRACTICAL</th>
-              </tr>
+            <tr><th>比較軸</th><th>ENTRY</th><th>MIDDLE</th><th>PRACTICAL</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <td>主なテーマ</td>
-                <td>AIの基礎＆日常業務適用</td>
-                <td>業務テンプレ構築と半自動化</td>
-                <td>実務案件の要件定義〜納品</td>
-              </tr>
-              <tr>
-                <td>対象</td>
-                <td>AI初心者〜基礎を固めたい</td>
-                <td>ENTRY修了／仕組み化に進みたい</td>
-                <td>MIDDLE修了／案件を完遂したい</td>
-              </tr>
-              <tr>
-                <td>学ぶこと</td>
-                <td>プロンプト・要約・画像・テンプレ化</td>
-                <td>テンプレ設計／GAS自動化／A/B改善／KPI</td>
-                <td>要件定義／設計／実装／納品物整備／RAG基礎</td>
-              </tr>
-              <tr>
-                <td>成果物</td>
-                <td>成功プロンプト＋Before/After</td>
-                <td>自動化フロー＋改善レポート＋KPI</td>
-                <td>案件一式（設計書・コード・SOP・RAGレポート）</td>
-              </tr>
-              <tr>
-                <td>ゴール</td>
-                <td>AIを使う習慣の形成</td>
-                <td>AIを仕組みに組み込み、改善を回す</td>
-                <td>案件を自力で完遂し、納品できる</td>
-              </tr>
+              <tr><td>主なテーマ</td><td>AIの基礎＆日常業務適用</td><td>業務テンプレ構築と半自動化</td><td>実務案件の要件定義〜納品</td></tr>
+              <tr><td>対象</td><td>AI初心者〜基礎を固めたい</td><td>ENTRY修了／仕組み化に進みたい</td><td>MIDDLE修了／案件を完遂したい</td></tr>
+              <tr><td>学ぶこと</td><td>プロンプト・要約・画像・テンプレ化</td><td>テンプレ設計／GAS自動化／A/B改善／KPI</td><td>要件定義／設計／実装／納品物整備／RAG基礎</td></tr>
+              <tr><td>成果物</td><td>成功プロンプト＋Before/After</td><td>自動化フロー＋改善レポート＋KPI</td><td>案件一式（設計書・コード・SOP・RAGレポート）</td></tr>
+              <tr><td>ゴール</td><td>AIを使う習慣の形成</td><td>AIを仕組みに組み込み、改善を回す</td><td>案件を自力で完遂し、納品できる</td></tr>
             </tbody>
           </table>
         </div>
-
         <div class="cta-row" style="margin-top:12px">
-          <a class="btn" href="./exo_course_detail.html#entry" target="_blank" rel="noopener">ENTRYに申し込む</a>
-          <a class="btn" href="./exo_course_detail.html#middle" target="_blank" rel="noopener">MIDDLEに申し込む</a>
-          <a class="btn" href="./exo_course_detail.html#practical" target="_blank" rel="noopener">PRACTICALに申し込む</a>
+          <a class="btn btn-brand" href="./exo_course_detail.html#entry" target="_blank" rel="noopener">ENTRYに申し込む</a>
+          <a class="btn btn-brand" href="./exo_course_detail.html#middle" target="_blank" rel="noopener">MIDDLEに申し込む</a>
+          <a class="btn btn-brand" href="./exo_course_detail.html#practical" target="_blank" rel="noopener">PRACTICALに申し込む</a>
         </div>
       </div>
 
@@ -213,16 +193,15 @@
     </section>
 
     <footer class="wrap" style="padding:16px 0 40px">
-      <p class="subtle">© 56project｜<a href="./privacy.html">プライバシーポリシー</a>・<a href="./terms.html">利用規約</a>・<a href="./law.html">特定商取引法に基づく表記</a></p>
+      <p class="muted">© 56project｜<a href="./privacy.html">プライバシーポリシー</a>・<a href="./terms.html">利用規約</a>・<a href="./law.html">特定商取引法に基づく表記</a></p>
     </footer>
   </main>
 
   <script>
-    // ===== 既存のGASエンドポイントを使う場合はここに設定 =====
-    // 空のままでも診断は動作します（登録ボタンはフロント側でメッセージ表示）
-    const GAS_ENDPOINT = "";  // 例: "https://script.google.com/macros/s/AKfycb.../exec"
+    // ===== Backend設定（既存GASに接続する場合のみURLを入れる） =====
+    const GAS_ENDPOINT = ""; // 例: "https://script.google.com/macros/s/AKfycb.../exec"
 
-    // ===== 設問 =====
+    // ===== 設問文 =====
     const QUESTIONS = [
       "ChatGPTなどのAIツールを業務で使ったことはありますか？",
       "プロンプト（AIへの指示文）を工夫して出力を改善した経験はありますか？",
@@ -236,29 +215,152 @@
       "要件定義→設計→実装→納品までの流れを一通り経験したことはありますか？"
     ];
 
-    // ===== コース定義 =====
+    // ===== 講座定義 =====
     const COURSES = {
-      entry: {
-        id: "entry",
-        name: "ENTRY講座｜AI基礎＆日常業務の成功体験",
-        summary: "まずは安心して成果を出せる型を身につけ、メール・資料・要約などで“速い成功体験”を積みます。",
-        bullets: [
-          "安全に使えるプロンプトのルールと型（S1）",
-          "資料×メール×要約の高速化（S2）",
-          "画像生成＆図解の基礎（S3）",
-          "成功プロンプトをテンプレ化（S4〜S6）"
-        ],
-        detail: "./exo_courses.html#entry",
-        apply: "./exo_course_detail.html#entry"
-      },
-      middle: {
-        id: "middle",
-        name: "MIDDLE講座｜AI × 業務改善の入口",
-        summary: "差し込み型テンプレとGASで“小さな自動化”を構築。AIと人のバトンで半自動フローに落とし込み、KPIで可視化します。",
-        bullets: [
-          "差し込み型テンプレ設計（S1）",
-          "GASで作る小さな自動化（S2）",
-          "AIと人のバトン設計（S3）",
-          "A/BテストとKPI可視化（S4〜S5）"
-        ],
-        detail:
+      entry:{ id:"entry", name:"ENTRY講座｜AI基礎＆日常業務の成功体験",
+        summary:"まずは安心して成果を出せる型を身につけ、メール・資料・要約などで“速い成功体験”を積みます。",
+        bullets:["安全に使えるプロンプトのルールと型（S1）","資料×メール×要約の高速化（S2）","画像生成＆図解の基礎（S3）","成功プロンプトをテンプレ化（S4〜S6）"],
+        detail:"./exo_courses.html#entry", apply:"./exo_course_detail.html#entry" },
+      middle:{ id:"middle", name:"MIDDLE講座｜AI × 業務改善の入口",
+        summary:"差し込み型テンプレとGASで“小さな自動化”を構築。AIと人のバトンで半自動フローに落とし込み、KPIで可視化します。",
+        bullets:["差し込み型テンプレ設計（S1）","GASで作る小さな自動化（S2）","AIと人のバトン設計（S3）","A/BテストとKPI可視化（S4〜S5）"],
+        detail:"./exo_courses.html#middle", apply:"./exo_course_detail.html#middle" },
+      practical:{ id:"practical", name:"PRACTICAL講座｜実務案件で成果を出す力",
+        summary:"要件定義→設計→実装→納品までを実案件フローで学び、RAGミニPoCまで実装して“任せられる力”を証明します。",
+        bullets:["要件定義ロールプレイ＆定義書（S1）","設計→GAS実装→テスト（S2〜S3）","納品物一式の整備（S4）／RAGミニPoC（S5）"],
+        detail:"./exo_courses.html#practical", apply:"./exo_course_detail.html#practical" }
+    };
+
+    // ===== 設問の展開 =====
+    const qWrap = document.getElementById("questions");
+    function renderQuestions(){
+      qWrap.innerHTML = "";
+      QUESTIONS.forEach((text, i) => {
+        const id = `q${i}`;
+        const el = document.createElement("div");
+        el.className = "q";
+        el.innerHTML = `
+          <h3>${i+1}. ${text}</h3>
+          <div class="scale" role="radiogroup" aria-labelledby="${id}">
+            <small>全くない</small>
+            ${[0,1,2,3,4].map(v => `
+              <label><input type="radio" name="${id}" value="${v}">${v}</label>
+            `).join("")}
+            <small>とてもある</small>
+          </div>
+        `;
+        qWrap.appendChild(el);
+      });
+    }
+
+    // 折りたたみ
+    const btnToggle = document.getElementById("btnToggle");
+    const questionsWrap = document.getElementById("questionsWrap");
+    btnToggle.addEventListener("click", () => {
+      if(questionsWrap.classList.contains("hidden")){
+        renderQuestions();
+        questionsWrap.classList.remove("hidden");
+        document.getElementById("collapsedHint").classList.add("hidden");
+        btnToggle.textContent = "設問を閉じる";
+        btnToggle.className = "btn btn-ghost";
+      }else{
+        questionsWrap.classList.add("hidden");
+        document.getElementById("collapsedHint").classList.remove("hidden");
+        btnToggle.textContent = "診断する";
+        btnToggle.className = "btn btn-brand";
+      }
+    });
+
+    // ===== メール登録 =====
+    const regMsg = document.getElementById("regMsg");
+    document.getElementById("btnRegister").addEventListener("click", async () => {
+      const email = (document.getElementById("email").value || "").trim();
+      if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        regMsg.textContent = "メールアドレスを正しく入力してください。";
+        return;
+      }
+      if(!GAS_ENDPOINT){
+        regMsg.textContent = "登録を受け付けました（サーバ連携は現在オフです）。診断を進めてください。";
+        return;
+      }
+      regMsg.textContent = "登録中…";
+      try{
+        const res = await fetch(GAS_ENDPOINT, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ type:"register", email, userAgent:navigator.userAgent, referer:location.href })
+        });
+        if(!res.ok) throw new Error("network");
+        const json = await res.json().catch(()=>({ok:true}));
+        regMsg.textContent = json.ok ? "登録しました。診断を進めてください。" : "登録に失敗しました。時間をおいてお試しください。";
+      }catch(e){
+        regMsg.textContent = "登録APIに接続できませんでしたが、診断は続行できます。";
+      }
+    });
+    document.getElementById("btnSkip").addEventListener("click", () => {
+      window.scrollTo({ top: document.getElementById("step2").offsetTop - 10, behavior:"smooth" });
+    });
+
+    // ===== スコア計算・おすすめ判定 =====
+    function calcScore(){
+      let answered = 0, sum = 0;
+      QUESTIONS.forEach((_, i) => {
+        const chosen = document.querySelector(`input[name="q${i}"]:checked`);
+        if(chosen){ answered++; sum += Number(chosen.value); }
+      });
+      if(answered === 0) return { score: 0, level:"--", raw:-1 };
+      const avg = sum / answered;                 // 0〜4
+      const score = Math.round((avg / 4) * 100);  // 0〜100
+      let level;
+      if(score < 35) level = "入門層";
+      else if(score < 65) level = "実践層";
+      else level = "実務応用層";
+      return { score, level, raw:avg };
+    }
+    function pickCourse(score){
+      if(score < 35) return COURSES.entry;
+      if(score < 65) return COURSES.middle;
+      return COURSES.practical;
+    }
+
+    // ===== 結果反映 =====
+    const elScore = document.getElementById("score");
+    const elLevel = document.getElementById("level");
+    const elSummary = document.getElementById("summary");
+    const boxRec = document.getElementById("recommended");
+    const boxOthers = document.getElementById("otherCourses");
+    const boxCompare = document.getElementById("compareWrap");
+
+    document.getElementById("btnCalc").addEventListener("click", () => {
+      const { score, level, raw } = calcScore();
+      if(raw < 0){
+        document.getElementById("calcMsg").textContent = "未回答の設問があります。";
+        return;
+      }
+      document.getElementById("calcMsg").textContent = "";
+      elScore.textContent = String(score);
+      elLevel.textContent = `レベル：${level}`;
+
+      const c = pickCourse(score);
+      document.getElementById("recTitle").textContent = `あなたへのおすすめ｜${c.name}`;
+      document.getElementById("recBullets").textContent = c.summary;
+
+      const ul = document.getElementById("recList");
+      ul.innerHTML = "";
+      c.bullets.forEach(b => { const li = document.createElement("li"); li.textContent = b; ul.appendChild(li); });
+
+      document.getElementById("recDetail").href = c.detail;
+      document.getElementById("recApply").href  = c.apply;
+
+      elSummary.innerHTML = `<strong>📌 診断結果：</strong> AI偏差値 <strong>${score}</strong>（${level}）。あなたには<strong>${c.name}</strong> が最適です。短期間で成果を実感し、次のステップにつなげましょう。`;
+
+      boxRec.classList.remove("hidden");
+      boxOthers.classList.remove("hidden");
+      boxCompare.classList.remove("hidden");
+
+      try{ gtag('event','diagnosis_result',{ score, level, course:c.id }); }catch(_){}
+      window.scrollTo({ top: document.getElementById("step3").offsetTop - 10, behavior:"smooth" });
+    });
+  </script>
+</body>
+</html>
