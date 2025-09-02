@@ -14,11 +14,11 @@
     gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type: 'beacon', debug_mode: true });
   </script>
 
-  <!-- ★ 本番GAS URL（必ず<script>内で保持） -->
+  <!-- ★ 本番GAS URL（そのまま差し替え可） -->
   <script>
     window.GAS_URL = "https://script.google.com/macros/s/AKfycbzwyapWYDOHfPbh0LJwc92Kp1IrRM2ZmAfNHsM3ub5j4UCSzfusmIvha1lv4olh1BuB/exec";
 
-    // ★ Stripe 決済リンク（必ずあなたの実URLに差し替えてください）
+    /* （任意）Stripe 決済リンク：結果カードの「この講座に申し込む」で使用 */
     window.STRIPE_LINKS = {
       entry:     "https://buy.stripe.com/REPLACE_WITH_YOUR_ENTRY_LINK",
       middle:    "https://buy.stripe.com/REPLACE_WITH_YOUR_MIDDLE_LINK",
@@ -128,6 +128,7 @@
       </div>
 
       <div id="questions" aria-live="polite">
+        <!-- 1〜10：デフォルトは「普通(3)」にチェック -->
         <!-- 1 -->
         <fieldset>
           <legend>1. ChatGPTなどのAIツールを業務で使ったことはありますか？</legend>
@@ -267,11 +268,11 @@
       <ul id="result-bullets" class="bullets"></ul>
 
       <div id="detail-lock-msg" class="warn" style="display:none; margin-top:10px;">
-        ※ <b>メール登録が必要です。</b>登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
+        ※ <b>メール登録と診断の完了</b>が必要です。登録後に「診断結果の詳細を見る」から、解説とおすすめコースをご確認ください。
       </div>
 
       <div class="row" style="margin-top:14px;">
-        <a id="lp-link" class="btn primary" href="#" aria-disabled="true" title="メール登録すると詳細を表示できます" rel="noopener">診断結果の詳細を見る</a>
+        <a id="lp-link" class="btn primary" href="#" aria-disabled="true" title="メール登録と診断完了で有効になります" rel="noopener">診断結果の詳細を見る</a>
         <a id="apply-link" class="btn" href="#" target="_blank" rel="noopener">この講座に申し込む</a>
       </div>
 
@@ -318,11 +319,7 @@
         const qs = new URLSearchParams(paramsObj);
         if(!qs.has('origin')) qs.set('origin', location.origin);
         const url = `${window.GAS_URL}?${qs.toString()}`;
-
-        // fetch（no-cors）
         fetch(url, { method: "GET", mode: "no-cors", cache: "no-store" }).catch(()=>{});
-
-        // imgビーコン（二重でも問題なし）
         const img = new Image();
         img.src = `${url}&t=${Date.now()}`;
       }catch(_){}
@@ -337,7 +334,7 @@
       }
       return a;
     }
-    // ※ この版は従来ロジック（合計×2で0〜100）
+    // スコア（従来ロジック：合計×2 → 0〜100）
     function calcScore(answers){
       const sum = Object.values(answers).reduce((s,v)=>s + Number(v||0), 0);
       return Math.max(0, Math.min(100, Math.round(sum * 2)));
@@ -351,34 +348,34 @@
 
     const LEADS = {
       entry:"まずは安全な使い方と型を整えて、短期で成果を出す土台を作ります。",
-      middle:"品質と効率を同時に上げる短期集中プランをおすすめします。",
+      middle:"差し込み型テンプレと小さな自動化で、品質と効率を同時に伸ばします。",
       practical:"評価・検証〜運用設計までを含め、再現性のある仕組み化へ踏み込みましょう。"
     };
     const BULLETS = {
       entry:["基本リテラシーと安全ルールを整備","業務テンプレ/良いプロンプトの型を準備","小さく試して成功体験を蓄積"],
-      middle:["業務テンプレの整備と自動化の入口","評価・検証フレームとA/B運用","短期集中プラン（成果レビュー）"],
+      middle:["差し込み型テンプレ設計","GASで作る小さな自動化","AIと人のバトン設計","A/BテストとKPI可視化"],
       practical:["要件整理・導入ロードマップの設計","運用SLA設計とガバナンス","RAG/エージェントの社内展開"]
     };
 
+    // 詳細リンクのロック条件：メール登録 & 診断済み（score!=null）
     function updateLockUI(){
-      const locked = !state.email;
+      const locked = !(state.email && state.score != null);
       $lpLink.setAttribute("aria-disabled", locked ? "true" : "false");
       $lockMsg.style.display = locked ? "block" : "none";
-      $lpLink.title = locked ? "メール登録すると詳細を表示できます" : "診断結果の詳細を見る";
+      $lpLink.title = locked ? "メール登録と診断完了で有効になります" : "診断結果の詳細を見る";
     }
 
     // CTAリンクを現在のおすすめ講座に合わせて更新
     function updateCTALinks(){
-      // 詳細ページへ（plan と score を付与）
-      const plan = state.lvKey || "entry";
+      const plan  = state.lvKey || "entry";
       const score = state.score ?? "";
-      $lpLink.href = `./exo_courses.html?plan=${plan}&score=${encodeURIComponent(score)}`;
-
-      // 申込み（Stripe）へ
+      const level = state.levelLabel || "";
+      // 詳細ページ（plan/score/level を付与）
+      $lpLink.href = `./exo_course_detail.html?plan=${plan}&score=${encodeURIComponent(score)}&level=${encodeURIComponent(level)}`;
+      // 申込み（Stripe）
       const stripeUrl = (window.STRIPE_LINKS && window.STRIPE_LINKS[plan]) ? window.STRIPE_LINKS[plan] : "#";
       $applyLink.href = stripeUrl;
       $applyLink.classList.toggle('primary', !!stripeUrl && stripeUrl !== "#");
-      $applyLink.textContent = "この講座に申し込む";
       $applyLink.title = (stripeUrl && stripeUrl !== "#") ? "Stripe決済ページを開きます" : "Stripeリンク未設定です（管理者向け）";
     }
 
@@ -392,8 +389,8 @@
       $lead.textContent = {entry:LEADS.entry, middle:LEADS.middle, practical:LEADS.practical}[state.lvKey] || "";
       $bullets.innerHTML = (BULLETS[state.lvKey]||[]).map(t=>`<li>${t}</li>`).join("");
 
-      updateLockUI();     // 「詳細を見る」のロック/解除
-      updateCTALinks();   // 申込み/詳細リンクの更新
+      updateCTALinks();
+      updateLockUI();
 
       document.getElementById("result-card").scrollIntoView({behavior:"smooth", block:"start"});
     }
@@ -403,7 +400,9 @@
       if ($lpLink.getAttribute('aria-disabled') === 'true') e.preventDefault();
     });
 
-    // 診断する（結果ログ送信）
+    /* === イベント === */
+
+    // 診断する（→ この時だけ結果を表示）
     $btnDiag.addEventListener("click", () => {
       state.answers = gatherAnswers();
       state.score   = calcScore(state.answers);
@@ -422,25 +421,22 @@
       document.getElementById('sec-questions').scrollIntoView({behavior:"smooth"});
     });
 
-    // 登録（register 行を確実に残す）
+    // メール登録（※ここでは結果を表示しない）
     $btnReg.addEventListener("click", () => {
       const v = ($email.value||"").trim();
       if (!isEmail(v)){ alert("メールアドレスを正しく入力してください。"); $email.focus(); return; }
       $btnReg.setAttribute("aria-disabled","true");
 
-      const answers = Object.keys(state.answers).length ? state.answers : gatherAnswers();
-      const score   = (state.score==null) ? calcScore(answers) : state.score;
-
-      const payload = { type:"register", email:v, score, timestamp: Date.now() };
+      // 任意：現時点の選択肢を同時ログ（スコアは計算しない）
+      const answers = gatherAnswers();
+      const payload = { type:"register", email:v, timestamp: Date.now() };
       for(let i=1;i<=QUESTIONS_COUNT;i++) payload["q"+i] = answers["q"+i];
       sendToGAS(payload);
 
       state.email = v;
-      state.answers = answers;
-      state.score = score;
 
-      renderResult();
-      alert("登録が完了しました。詳細表示が有効になりました。");
+      updateLockUI(); // ロック状態のみ更新（結果は出さない）
+      alert("登録が完了しました。続けて［診断する］を押して結果を表示してください。");
       $btnReg.setAttribute("aria-disabled","false");
     });
 
