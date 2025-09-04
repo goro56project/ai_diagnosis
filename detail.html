@@ -70,8 +70,17 @@
       学びを売上に直結させる場です。</p>
 
     <div class="cta">
-      <a class="btn" id="link-evh" href="#" target="_blank" rel="noopener">EVHの案内を見る</a>
+      <a class="btn" id="link-evh" href="#" target="_blank" rel="noopener">EVHの案内を見る（note）</a>
       <a class="btn secondary" id="link-pdf" href="#" target="_blank" rel="noopener">特典PDF「業務改善50選」を入手</a>
+    </div>
+
+    <div class="hr"></div>
+
+    <h2>💬 無料相談のご案内</h2>
+    <p>まずは <strong>MY GPT School公式LINE</strong> にご登録ください。<br>
+    登録後に「無料相談」と投稿いただければ、後日スタッフからご返信いたします。</p>
+    <div class="cta">
+      <a class="btn" id="link-line" href="https://lin.ee/bfwlLGi" target="_blank" rel="noopener">公式LINEに登録する</a>
     </div>
 
     <div class="hr"></div>
@@ -90,11 +99,11 @@
 <script>
   // ======== 設定（リンク差し替え） ========
   const LINKS = {
-    entry: 'https://example.com/entry',         // ENTRY申込
-    middle: 'https://example.com/middle',       // MIDDLE申込
-    practical: 'https://example.com/practical', // PRACTICAL申込
-    evh: 'https://example.com/evh',             // EVH案内
-    pdf: 'https://example.com/ai-50.pdf'        // 特典PDF
+    entry: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=entry#contact',
+    middle: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=middle#contact',
+    practical: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=practical#contact',
+    evh: 'https://note.com/56projectai/n/nb6e552d4fa3c',
+    pdf: 'https://drive.google.com/file/d/1LTB1cT_YA0Y1ixTv3SG0p3qBLnhde3g2/view?usp=sharing'
   };
 
   // ======== ユーティリティ ========
@@ -216,74 +225,4 @@
       level:'先進層（81–100）',
       recommend:'PRACTICAL＋EVH（共同開発/発信）',
       ctas:[
-        {label:'PRACTICALに申し込む', href:LINKS.practical},
-        {label:'EVHの案内を見る', href:LINKS.evh}
-      ],
-      body: `
-        <h2>🧠 診断結果の解説</h2>
-        <p>あなたはリーダー層。社内外の成功事例を体系化し、コミュニティと共に“広げる側”へ。</p>
-        <h2>🔧 今日からの3ステップ</h2>
-        <ol>
-          <li>プレイブック化（社内手順を外販可能に）</li>
-          <li>共同検証（EVHでテンプレ検証と配布）</li>
-          <li>収益化（講座/テンプレ/エージェント）</li>
-        </ol>
-      `,
-      roadmap:[
-        {t:'Week 1–2',d:'成功プロセスの形式知化'},
-        {t:'Week 3–6',d:'EVHで共同実験＆ナレッジ共有'},
-        {t:'Week 7–12',d:'販売モデル確立・外部発信'}
-      ],
-      cases:[
-        {t:'コミュ設計',d:'共同テンプレで導入期間1/2'},
-        {t:'講座化',d:'事例→教材→収益化ライン構築'},
-        {t:'外販',d:'テンプレ提供で新規売上の柱に'}
-      ]
-    };
-  }
-
-  function render(){
-    const d = decide(score);
-
-    document.getElementById('level').textContent = d.level;
-    document.getElementById('recommend').textContent = d.recommend;
-
-    // コースCTA
-    const cta = document.getElementById('cta-courses');
-    cta.innerHTML = '';
-    d.ctas.forEach(x=>{
-      const a = document.createElement('a');
-      a.className = 'btn';
-      a.href = x.href; a.target = '_blank'; a.rel = 'noopener';
-      a.textContent = x.label;
-      cta.appendChild(a);
-    });
-
-    // 本文
-    document.getElementById('block').innerHTML = d.body;
-
-    // ロードマップ
-    const rm = document.getElementById('roadmap');
-    rm.innerHTML = '';
-    d.roadmap.forEach(x=>{
-      const div = document.createElement('div');
-      div.className = 'card';
-      div.innerHTML = `<div class="muted">${x.t}</div><div>${x.d}</div>`;
-      rm.appendChild(div);
-    });
-
-    // 事例
-    const cs = document.getElementById('cases');
-    cs.innerHTML = '';
-    d.cases.forEach(x=>{
-      const div = document.createElement('div');
-      div.className = 'card';
-      div.innerHTML = `<div class="muted">${x.t}</div><div>${x.d}</div>`;
-      cs.appendChild(div);
-    });
-  }
-
-  render();
-</script>
-</body>
-</html>
+        {label:'PRACTICA
