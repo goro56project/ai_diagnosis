@@ -1,142 +1,305 @@
-/***** 基本設定（必要に応じて編集） *****/
-const SHEET_NAME = 'ai_diagnosis';
-const DETAIL_BASE = 'https://goro56project.github.io/ai_diagnosis/detail.html'; // 詳細レポート
-const DIAG_TOP    = 'https://goro56project.github.io/ai_diagnosis/';             // フォーム入口
-const LINE_URL    = 'https://lin.ee/bfwlLGi';                                     // 公式LINE
-const FROM_NAME   = 'MY GPT School 運営事務局';
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI偏差値診断｜詳細レポート</title>
+<style>
+  :root{--ink:#0f172a;--muted:#475569;--line:#e5e7eb;--brand:#111827;--bg:#f8fafc}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:900px;margin:24px auto;padding:24px;background:#fff;border:1px solid var(--line);border-radius:16px}
+  h1{font-size:28px;margin:0 0 8px}
+  h2{font-size:20px;margin:24px 0 8px}
+  p,li{line-height:1.9}
+  .muted{color:var(--muted)}
+  .pill{display:inline-block;padding:6px 10px;border:1px solid var(--line);border-radius:999px;font-size:12px;background:#fff}
+  .score{font-size:32px;font-weight:700}
+  .grid{display:grid;gap:16px}
+  .grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .card{padding:16px;border:1px solid var(--line);border-radius:12px;background:#fff}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+  .btn{padding:12px 16px;border-radius:10px;border:1px solid var(--line);text-decoration:none;color:#fff;background:#111827}
+  .btn.secondary{background:#fff;color:#111827}
+  .hr{height:1px;background:var(--line);margin:24px 0}
+  .small{font-size:12px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div>
+      <span class="pill">AI偏差値診断｜詳細レポート</span>
+      <h1><span id="name">あなた</span>さんの結果</h1>
+      <p class="muted">メールの要約版よりも詳しい解説と、90日ロードマップ、コース案内、特典をご案内します。</p>
+    </div>
 
-const HEADERS = [
-  'timestamp','type','email','name','score',
-  'q1','q2','q3','q4','q5','q6','q7','q8','q9','q10'
-];
+    <div class="card">
+      <div class="grid cols-3">
+        <div>
+          <div class="muted">スコア</div>
+          <div class="score" id="score">--</div>
+        </div>
+        <div>
+          <div class="muted">レベル</div>
+          <div id="level">--</div>
+        </div>
+        <div>
+          <div class="muted">おすすめ</div>
+          <div id="recommend">--</div>
+        </div>
+      </div>
+      <div class="cta" id="cta-courses"></div>
+    </div>
 
-/***** 共通ユーティリティ *****/
-const _tz  = () => Session.getScriptTimeZone();
-const _now = () => Utilities.formatDate(new Date(), _tz(), 'M/d/yyyy HH:mm:ss');
-const _ok  = (obj={}) => ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
-const _ng  = (msg, extra={}) => _ok({ok:false, error:String(msg), ...extra});
+    <div id="block"></div>
 
-function isValidEmail(s){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||'')); }
-function toNum(v){ const n = Number(v); return Number.isFinite(n) ? n : null; }
+    <div class="hr"></div>
 
-/***** シート確保 *****/
-function ensureSheet_(){
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sh = ss.getSheetByName(SHEET_NAME);
-  if (!sh) sh = ss.insertSheet(SHEET_NAME);
-  const first = sh.getRange(1,1,1,HEADERS.length).getValues()[0];
-  const same  = HEADERS.every((h,i)=> first[i] === h);
-  if (!same){ sh.getRange(1,1,1,HEADERS.length).setValues([HEADERS]); sh.setFrozenRows(1); }
-  return sh;
-}
+    <h2>📅 90日ロードマップ</h2>
+    <div id="roadmap" class="grid cols-3"></div>
 
-/***** 1行追記 *****/
-function appendRowFromParams_(p){
-  const sh  = ensureSheet_();
-  const row = [
-    _now(),
-    p.type || '',
-    p.email || '',
-    p.name || '',
-    p.score || '',
-    p.q1||'',p.q2||'',p.q3||'',p.q4||'',p.q5||'',
-    p.q6||'',p.q7||'',p.q8||'',p.q9||'',p.q10||''
-  ];
-  sh.appendRow(row);
-  return { type: row[1], email: row[2], name: row[3], score: row[4] };
-}
+    <div class="hr"></div>
 
-/***** メール本文（登録用） *****/
-function bodyRegister_(name){
-  return `${name||'ご登録者'} 様
+    <h2>📈 事例と効果イメージ</h2>
+    <div id="cases" class="grid cols-3"></div>
 
-AI偏差値診断のメール登録を受け付けました。
+    <div class="hr"></div>
 
-▼診断フォームはこちら
-${DIAG_TOP}
+    <h2>👥 ExoVisionary Hub（EVH）特典</h2>
+    <p>いずれかの有料コースにお申込みの<strong>希望者先着10名</strong>は、追加料金なしでコミュニティ
+      <strong>ExoVisionary Hub（EVH）</strong> に参加いただけます。実践共有・壁打ち・テンプレ配布で、
+      学びを売上に直結させる場です。</p>
 
-診断を完了すると、詳細レポート（90日ロードマップ・事例・特典PDFリンク付き）をお送りします。
+    <div class="cta">
+      <a class="btn" id="link-evh" href="#" target="_blank" rel="noopener">EVHの案内を見る（note）</a>
+      <a class="btn secondary" id="link-pdf" href="#" target="_blank" rel="noopener">特典PDF「業務改善50選」を入手</a>
+    </div>
 
-※ご不明点や無料相談は、公式LINEから「無料相談」と投稿してください。
-MY GPT School公式LINE: ${LINE_URL}
-`;
-}
+    <div class="hr"></div>
 
-/***** メール本文（結果用） *****/
-function bodyResult_(name, score){
-  return `${name||'ご登録者'} 様
+    <h2>💬 無料相談のご案内</h2>
+    <p>まずは <strong>MY GPT School公式LINE</strong> にご登録ください。<br>
+    登録後に「無料相談」と投稿いただければ、後日スタッフからご返信いたします。</p>
+    <div class="cta">
+      <a class="btn" id="link-line" href="https://lin.ee/bfwlLGi" target="_blank" rel="noopener">公式LINEに登録する</a>
+    </div>
 
-AI偏差値診断の結果をご案内します。
+    <div class="hr"></div>
 
-あなたのスコアは【${score}点】です。
+    <h2>FAQ</h2>
+    <details class="card"><summary>スコアはどう算出されていますか？</summary>
+      <p>設問の自己申告と行動指標の重み付けで算出。継続入力で推移を追えます。</p></details>
+    <details class="card"><summary>どのコースを選べばいいですか？</summary>
+      <p>本ページ上部の「おすすめ」に従うのが最短です。迷ったらENTRY→MIDDLEの順で問題ありません。</p></details>
+    <details class="card"><summary>メールの内容と違うのはなぜ？</summary>
+      <p>メールは要点と導線、詳細ページは納得感と実装支援を目的に設計しています。</p></details>
 
-以下のリンクから詳細レポートをご確認いただけます：
-${DETAIL_BASE}?score=${score}&name=${encodeURIComponent(name||'')}
+    <p class="small muted" style="margin-top:24px;">© 56project / ExoVisionary Hub（EVH） / MY GPTスクール運営事務局</p>
+  </div>
 
-レポート内容：
-・診断スコアとレベルの解説
-・90日間ロードマップ（行動指針）
-・事例と効果イメージ
-・特典PDF「AI業務改善50選」へのリンク
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // ======== 設定（リンク差し替え） ========
+    const LINKS = {
+      entry: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=entry#contact',
+      middle: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=middle#contact',
+      practical: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=practical#contact',
+      evh: 'https://note.com/56projectai/n/nb6e552d4fa3c',
+      pdf: 'https://drive.google.com/file/d/1LTB1cT_YA0Y1ixTv3SG0p3qBLnhde3g2/view?usp=sharing'
+    };
 
-※本メールは自動送信です。
-ご不明点や無料相談は、公式LINEから「無料相談」と投稿してください。
-MY GPT School公式LINE: ${LINE_URL}
-`;
-}
+    // ======== ユーティリティ ========
+    const params = new URLSearchParams(location.search);
+    const score = Number(params.get('score') || 0);
+    const name = params.get('name') || 'あなた';
 
-/***** メール送信 *****/
-function sendMail_(to, subject, body){
-  MailApp.sendEmail({ to, subject, body, name: FROM_NAME });
-}
+    const nameEl = document.getElementById('name');
+    const scoreEl = document.getElementById('score');
+    const levelEl = document.getElementById('level');
+    const recEl = document.getElementById('recommend');
 
-/***** 条件分岐して送信 *****/
-function maybeSendEmails_(p){
-  const email = p.email;
-  const name  = p.name || '';
-  const score = toNum(p.score);
+    nameEl.textContent = name;
+    scoreEl.textContent = Number.isFinite(score) ? score : '--';
+    document.getElementById('link-evh').href = LINKS.evh;
+    document.getElementById('link-pdf').href = LINKS.pdf;
 
-  if (!isValidEmail(email)) return {sent:false, reason:'invalid_email'};
-
-  if (p.type === 'register'){
-    sendMail_(email, '【AI偏差値診断】登録ありがとうございます', bodyRegister_(name));
-    return {sent:true, kind:'register', email};
-  }
-  if (p.type === 'result' && score !== null){
-    sendMail_(email, '【AI偏差値診断】診断結果のご案内', bodyResult_(name, score));
-    return {sent:true, kind:'result', email, score};
-  }
-  return {sent:false, reason:'no_action'};
-}
-
-/***** WebAppエンドポイント *****/
-function doPost(e){
-  try{
-    const p = e.parameter || {};
-    const saved = appendRowFromParams_(p);
-    const res   = maybeSendEmails_(saved);
-    return _ok({ok:true, method:'POST', saved, res});
-  }catch(err){ return _ng(err); }
-}
-function doGet(e){
-  try{
-    const p = e.parameter || {};
-    if (p.ping) return _ok({ok:true, pong:true});
-    if (p.type){
-      const saved = appendRowFromParams_(p);
-      const res   = maybeSendEmails_(saved);
-      return _ok({ok:true, method:'GET', saved, res});
+    // スコア帯 → レベル/おすすめ/ボディ/ロードマップ/事例
+    function decide(sc){
+      if (sc <= 20) return {
+        level:'初心者層（0–20）',
+        recommend:'ENTRY',
+        ctas:[{label:'ENTRYに申し込む', href:LINKS.entry}],
+        body: `
+          <h2>🧠 診断結果の解説</h2>
+          <p>AIはこれから。まずは「毎日触る」習慣づくりが最短距離です。</p>
+          <h2>🔧 今日からの3ステップ</h2>
+          <ol>
+            <li>議事録/要約を毎回AIで作る</li>
+            <li>定型文メールの下書きをAIに任せる</li>
+            <li>毎日5分のプロンプト練習を継続</li>
+          </ol>
+        `,
+        roadmap:[
+          {t:'Week 1–2',d:'基本操作＋日報/議事録テンプレ導入'},
+          {t:'Week 3–6',d:'定型業務の自動化（メール/表作成）'},
+          {t:'Week 7–12',d:'効果測定→テンプレ改善→ENTRY修了'}
+        ],
+        cases:[
+          {t:'経理補助',d:'領収書整理→仕訳メモの半自動化で月3h削減'},
+          {t:'営業事務',d:'商談メモ→フォロー案内の即時作成'},
+          {t:'総務',d:'社内周知文の品質均一化'}
+        ]
+      };
+      if (sc <= 40) return {
+        level:'入門層（21–40）',
+        recommend:'ENTRY または MIDDLE',
+        ctas:[
+          {label:'ENTRYに申し込む', href:LINKS.entry},
+          {label:'MIDDLEに挑戦する', href:LINKS.middle}
+        ],
+        body: `
+          <h2>🧠 診断結果の解説</h2>
+          <p>一部で試し始めた段階。小さな成功体験を増やし、業務フローに埋め込みましょう。</p>
+          <h2>🔧 今日からの3ステップ</h2>
+          <ol>
+            <li>繰り返し業務の洗い出し→AIテンプレ化</li>
+            <li>社内共有テンプレを作り、再現性を上げる</li>
+            <li>KPI（時間削減/件数）を毎週記録</li>
+          </ol>
+        `,
+        roadmap:[
+          {t:'Week 1–2',d:'業務棚卸し→AIで置換できる作業を抽出'},
+          {t:'Week 3–6',d:'テンプレ整備→部署内で試行'},
+          {t:'Week 7–12',d:'評価→MIDDLE移行で売上直結へ'}
+        ],
+        cases:[
+          {t:'人事',d:'求人票作成の標準化で作成時間▲60%'},
+          {t:'CS',d:'問い合わせ分類→一次回答の自動草案'},
+          {t:'広報',d:'お知らせ文の量産＆品質安定'}
+        ]
+      };
+      if (sc <= 60) return {
+        level:'中級層（41–60）',
+        recommend:'MIDDLE（売上直結）',
+        ctas:[{label:'MIDDLEに申し込む', href:LINKS.middle}],
+        body: `
+          <h2>🧠 診断結果の解説</h2>
+          <p>基礎はOK。次は「売上直結」への転換。集客〜商談〜成約の各所にAIを組み込みましょう。</p>
+          <h2>🔧 今日からの3ステップ</h2>
+          <ol>
+            <li>LP/SNSコピーの一次稿をAI→人が仕上げる</li>
+            <li>商談議事録→要点→フォローDM/メール即送付</li>
+            <li>日次KPIと連動したToDoをAIに自動生成</li>
+          </ol>
+        `,
+        roadmap:[
+          {t:'Week 1–2',d:'集客コピーと訴求角度のABテスト開始'},
+          {t:'Week 3–6',d:'商談後フォロー完全テンプレ化'},
+          {t:'Week 7–12',d:'CVR改善とLTV向上施策を回す'}
+        ],
+        cases:[
+          {t:'BtoB営業',d:'フォロー即時化で商談化率+18%'},
+          {t:'EC',d:'商品説明の量産でSEO流入増'},
+          {t:'セミナー',d:'告知→アンケ→見込み育成を自動ループ'}
+        ]
+      };
+      if (sc <= 80) return {
+        level:'上級層（61–80）',
+        recommend:'PRACTICAL（事業戦略に統合）',
+        ctas:[{label:'PRACTICALに申し込む', href:LINKS.practical}],
+        body: `
+          <h2>🧠 診断結果の解説</h2>
+          <p>運用は成熟。外部脳化して戦略（商品/価格/導線）に組み込み、半自動収益化を狙う段階。</p>
+          <h2>🔧 今日からの3ステップ</h2>
+          <ol>
+            <li>チャネル別KPIモデルを設計（AARRR）</li>
+            <li>自動化（予約投稿/CRM連携/スコアリング）</li>
+            <li>新規事業PoCを月1本で検証</li>
+          </ol>
+        `,
+        roadmap:[
+          {t:'Week 1–2',d:'KPI設計とダッシュボード連携'},
+          {t:'Week 3–6',d:'オペ自動化・GAS/連携の実装'},
+          {t:'Week 7–12',d:'新規事業の検証→スケール判断'}
+        ],
+        cases:[
+          {t:'プロ講座',d:'入会導線最適化で月売上+28%'},
+          {t:'代理店',d:'見込みスコアで追客効率2倍'},
+          {t:'SaaS',d:'オンボ強化で有料化率UP'}
+        ]
+      };
+      return {
+        level:'先進層（81–100）',
+        recommend:'PRACTICAL＋EVH（共同開発/発信）',
+        ctas:[
+          {label:'PRACTICALに申し込む', href:LINKS.practical},
+          {label:'EVHの案内を見る', href:LINKS.evh}
+        ],
+        body: `
+          <h2>🧠 診断結果の解説</h2>
+          <p>あなたはリーダー層。社内外の成功事例を体系化し、コミュニティと共に“広げる側”へ。</p>
+          <h2>🔧 今日からの3ステップ</h2>
+          <ol>
+            <li>プレイブック化（社内手順を外販可能に）</li>
+            <li>共同検証（EVHでテンプレ検証と配布）</li>
+            <li>収益化（講座/テンプレ/エージェント）</li>
+          </ol>
+        `,
+        roadmap:[
+          {t:'Week 1–2',d:'成功プロセスの形式知化'},
+          {t:'Week 3–6',d:'EVHで共同実験＆ナレッジ共有'},
+          {t:'Week 7–12',d:'販売モデル確立・外部発信'}
+        ],
+        cases:[
+          {t:'コミュ設計',d:'共同テンプレで導入期間1/2'},
+          {t:'講座化',d:'事例→教材→収益化ライン構築'},
+          {t:'外販',d:'テンプレ提供で新規売上の柱に'}
+        ]
+      };
     }
-    return _ok({ok:true, note:'use ?type=register or result'});
-  }catch(err){ return _ng(err); }
-}
 
-/***** テスト実行用 *****/
-function testSendRegisterMail(){
-  const me = Session.getActiveUser().getEmail();
-  sendMail_(me, '【AI偏差値診断】登録ありがとうございます', bodyRegister_('テスト'));
-}
-function testSendResultMail(){
-  const me = Session.getActiveUser().getEmail();
-  sendMail_(me, '【AI偏差値診断】診断結果のご案内', bodyResult_('テスト', 56));
-}
+    function render(){
+      const d = decide(score);
+
+      levelEl.textContent = d.level;
+      recEl.textContent = d.recommend;
+
+      // コースCTA
+      const cta = document.getElementById('cta-courses');
+      cta.innerHTML = '';
+      d.ctas.forEach(x=>{
+        const a = document.createElement('a');
+        a.className = 'btn';
+        a.href = x.href; a.target = '_blank'; a.rel = 'noopener';
+        a.textContent = x.label;
+        cta.appendChild(a);
+      });
+
+      // 本文
+      document.getElementById('block').innerHTML = d.body;
+
+      // ロードマップ
+      const rm = document.getElementById('roadmap');
+      rm.innerHTML = '';
+      d.roadmap.forEach(x=>{
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `<div class="muted">${x.t}</div><div>${x.d}</div>`;
+        rm.appendChild(div);
+      });
+
+      // 事例
+      const cs = document.getElementById('cases');
+      cs.innerHTML = '';
+      d.cases.forEach(x=>{
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `<div class="muted">${x.t}</div><div>${x.d}</div>`;
+        cs.appendChild(div);
+      });
+    }
+
+    render();
+  });
+</script>
+</body>
+</html>
