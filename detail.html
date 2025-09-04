@@ -1,142 +1,171 @@
 /***** 基本設定（必要に応じて編集） *****/
-const SHEET_NAME  = 'ai_diagnosis';                                 // ログ保存先（なければ作成）
-const DETAIL_BASE = 'https://goro56project.github.io/ai_diagnosis/detail.html';
-const LINE_URL    = 'https://lin.ee/bfwlLGi';
-const FROM_NAME   = 'MY GPT School 運営事務局';
-const HEADERS     = ['timestamp','type','email','name','score','q1','q2','q3','q4','q5','q6','q7','q8','q9','q10'];
+const SPREADSHEET_ID = SpreadsheetApp.getActiveSpreadsheet().getId(); // このスクリプトを紐づけたシート
+const SHEET_NAME     = 'ai_diagnosis';                                  // ログ保存タブ名
+const DETAIL_BASE    = 'https://goro56project.github.io/ai_diagnosis/detail.html'; // 詳細レポート
+const LINE_URL       = 'https://lin.ee/bfwlLGi';                         // 公式LINE
+const FROM_NAME      = 'MY GPT School 運営事務局';                        // 差出人名（Gmailの“送信者名”）
+
+// 保存カラム定義（1行目のヘッダーと同じ順）
+const HEADERS = [
+  'timestamp','type','email','name','score',
+  'q1','q2','q3','q4','q5','q6','q7','q8','q9','q10'
+];
 
 /***** 共通ユーティリティ *****/
 const _tz  = () => Session.getScriptTimeZone();
 const _now = () => Utilities.formatDate(new Date(), _tz(), 'M/d/yyyy HH:mm:ss');
-const _ok  = (obj) => ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
-const _ng  = (msg, extra={}) => _ok({ok:false, error:String(msg), ...extra});
-const isValidEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||''));
-const toNum = (v) => { const n = Number(v); return Number.isFinite(n) ? n : null; };
+const _ok  = (obj) => ContentService.createTextOutput(JSON.stringify(obj))
+                     .setMimeType(ContentService.MimeType.JSON);
+const _ng  = (msg, extra={}) => _ok({ ok:false, error:String(msg), ...extra });
 
-/***** シート確保 *****/
-function ensureSheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+function isValidEmail_(s){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||'')); }
+function toNumber_(v){ const n = Number(v); return Number.isFinite(n) ? n : null; }
+
+/***** シート確保＆ヘッダー整備 *****/
+function ensureSheet_(){
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sh = ss.getSheetByName(SHEET_NAME);
-  if (!sh) sh = ss.insertSheet(SHEET_NAME);
-  const head = sh.getRange(1,1,1,HEADERS.length).getValues()[0] || [];
-  const same = HEADERS.every((h,i)=> head[i] === h);
-  if (!same) {
+  if(!sh) sh = ss.insertSheet(SHEET_NAME);
+
+  const first = sh.getRange(1,1,1,HEADERS.length).getValues()[0];
+  const same  = HEADERS.every((h,i) => first[i] === h);
+  if(!same){
     sh.getRange(1,1,1,HEADERS.length).setValues([HEADERS]);
     sh.setFrozenRows(1);
   }
   return sh;
 }
 
-/***** ログ追記（書けたかも返す） *****/
-function appendLog_(p) {
+/***** 1行追記（パラメータ→シート） *****/
+function appendRowFromParams_(p){
   const sh = ensureSheet_();
   const row = [
     _now(),
-    p.type||'',
-    p.email||'',
-    p.name||'',
-    p.score||'',
-    p.q1||'',p.q2||'',p.q3||'',p.q4||'',p.q5||'',
-    p.q6||'',p.q7||'',p.q8||'',p.q9||'',p.q10||''
+    String(p.type || 'register'),
+    String(p.email || ''),
+    String(p.name  || ''),
+    String(p.score || ''),
+    p.q1||'',p.q2||'',p.q3||'',p.q4||'',p.q5||'',p.q6||'',p.q7||'',p.q8||'',p.q9||'',p.q10||''
   ];
   sh.appendRow(row);
-  return {sheetAppended:true};
+  return { type:row[1], email:row[2], name:row[3], score:row[4] };
 }
 
-/***** 本文テンプレ *****/
-function buildRegisterBody_(name='') {
-  const hello = name ? `${name} 様\n` : '';
-  return `${hello}AI偏差値診断のメール登録を受け付けました。
+/***** 詳細ページURL生成 *****/
+function makeDetailUrl_(score, name){
+  const qs = [];
+  if(toNumber_(score) !== null) qs.push('score=' + encodeURIComponent(score));
+  if(name)                   qs.push('name='  + encodeURIComponent(name));
+  return qs.length ? `${DETAIL_BASE}?${qs.join('&')}` : DETAIL_BASE;
+}
 
-診断が完了すると、詳細レポート（90日ロードマップ・事例・特典PDFリンク付き）をお送りします。
+/***** メール送信（共通） *****/
+function sendMail_(to, subject, body){
+  MailApp.sendEmail({ to, subject, body, name: FROM_NAME });
+}
+
+/***** 登録受付メール（スコア未取得時） *****/
+function sendRegisteredMail_(email){
+  const subject = '【AI偏差値診断】登録ありがとうございます';
+  const body =
+`AI偏差値診断のメール登録を受け付けました。
+
+診断を完了すると、詳細レポート（90日ロードマップ・事例・特典PDFリンク付き）をお送りします。
 
 ご不明点や無料相談は、公式LINEから「無料相談」と投稿してください。
-MY GPT School公式LINE: ${LINE_URL}
+MY GPT School公式LINE：${LINE_URL}
 `;
+  sendMail_(email, subject, body);
 }
 
-function buildResultBody_(score, name='') {
-  const s = toNum(score);
-  const hello = name ? `${name} 様\n` : '';
-  const detailUrl = `${DETAIL_BASE}?score=${s ?? ''}${name?`&name=${encodeURIComponent(name)}`:''}`;
-  return `${hello}AI偏差値診断の結果をご案内します。
+/***** 結果メール（スコア取得時） *****/
+function sendResultMail_(email, score, name){
+  const s = toNumber_(score);
+  const url = makeDetailUrl_(s, name);
+  const subject = '【AI偏差値診断】結果のご案内（詳細レポートつき）';
+  const hello = name ? `${name} さん\n\n` : '';
+  const body =
+`${hello}AI偏差値診断にご回答ありがとうございます。あなたの結果をお届けします。
 
-▼診断詳細ページ
-${detailUrl}
+▼詳細レポート（解説・コース提案・特典PDFリンク）
+${url}
 
-レポートには以下が含まれます：
+レポートでは以下が確認できます：
 ・診断スコアとレベルの解説
-・90日ロードマップ（行動指針）
-・事例と効果イメージ
+・90日ロードマップ（週ごとの行動指針）
+・事例と効果イメージ（導入成功パターン）
 ・特典PDF「AI業務改善50選」へのリンク
 
-※本メールは自動送信です。お問い合わせや無料相談は公式LINEからどうぞ。
-MY GPT School公式LINE: ${LINE_URL}
+※本メールは自動送信です。
+ご不明点や無料相談は、公式LINEに登録のうえ「無料相談」と投稿してください。後日スタッフよりご返信します。
+MY GPT School公式LINE：${LINE_URL}
 `;
+  sendMail_(email, subject, body);
 }
 
-/***** 送信共通 *****/
-function sendMail_(to, subject, body) {
-  MailApp.sendEmail({to, subject, body, name: FROM_NAME});
-  return {sent:true, to, subject};
-}
-
-/***** ルーティング（メール送信の可否と内容を決める） *****/
-function routeAndSend_(p) {
-  const type  = String(p.type||'').toLowerCase();
-  const email = p.email || '';
-  const name  = p.name || '';
+/***** 条件に応じてメール送信 *****/
+function maybeSendEmails_(p){
+  const email = p.email;
   const score = p.score;
+  const type  = String(p.type || '').toLowerCase();
 
-  if (!isValidEmail(email)) return {sent:false, reason:'invalid_email', email};
-
-  if (type === 'result') {
-    const n = toNum(score);
-    if (n === null) return {sent:false, reason:'invalid_score', email, score};
-    const sub = '【AI偏差値診断】結果のご案内';
-    const body = buildResultBody_(n, name);
-    return sendMail_(email, sub, body);
+  if(!isValidEmail_(email) || email === '(noemail)'){
+    return { sent:false, reason:'invalid_email' };
   }
-
-  // デフォルトはregister
-  const sub = '【AI偏差値診断】登録ありがとうございます';
-  const body = buildRegisterBody_(name);
-  return sendMail_(email, sub, body);
+  if(toNumber_(score) !== null){
+    sendResultMail_(email, score, p.name || '');
+    return { sent:true, kind:'result', email, score };
+  }
+  if(type === 'register'){
+    sendRegisteredMail_(email);
+    return { sent:true, kind:'register', email };
+  }
+  // fallback（type 指定が無い or 取得前）
+  sendRegisteredMail_(email);
+  return { sent:true, kind:'register_fallback', email };
 }
 
-/***** Web エンドポイント *****/
-function doGet(e) {
-  try {
-    const p = (e && e.parameter) || {};
-    if ((p.ping||'')==='1') return _ok({ok:true, ping:true, time:_now()});
-
-    const logRes = appendLog_(p);                   // 1) ログ
-    const sendRes = routeAndSend_(p);               // 2) 送信（条件に合えば）
-
-    return _ok({ok:true, method:'GET', saved:logRes, res:sendRes, echo:p});
-  } catch (err) {
+/***** Webアプリ：POST/GET *****/
+function doPost(e){
+  try{
+    const p     = (e && e.parameter) || {};
+    const saved = appendRowFromParams_(p);
+    const res   = maybeSendEmails_(saved);
+    return _ok({ ok:true, method:'POST', saved, res });
+  }catch(err){
     return _ng(err);
   }
 }
-function doPost(e) {
-  try {
+function doGet(e){
+  try{
     const p = (e && e.parameter) || {};
-    const logRes = appendLog_(p);
-    const sendRes = routeAndSend_(p);
-    return _ok({ok:true, method:'POST', saved:logRes, res:sendRes, echo:p});
-  } catch (err) {
+    if((p.type || '') === 'ping') return _ok({ ok:true, ping:true, time:_now() });
+
+    const saved = p.type ? appendRowFromParams_(p) : { type:'noop', email:p.email||'', name:p.name||'', score:p.score||'' };
+    const res   = maybeSendEmails_(saved);
+    return _ok({ ok:true, method:'GET', saved, res });
+  }catch(err){
     return _ng(err);
   }
 }
 
-/***** 手動テスト用（GASエディタから実行）*****/
-function testSendRegisterMail() {
-  const me = Session.getActiveUser().getEmail();
-  const r = routeAndSend_({type:'register', email: me, name: 'テスト'});
-  Logger.log(r);
+/***** シートメニュー（任意）＆初期化 *****/
+function onOpen(){
+  SpreadsheetApp.getUi()
+    .createMenu('AI診断ツール')
+    .addItem('初期化（タブ＆ヘッダー作成）', 'ensureSheet_')
+    .addToUi();
 }
-function testSendResultMail() {
-  const me = Session.getActiveUser().getEmail();
-  const r = routeAndSend_({type:'result', email: me, name:'テスト', score: 56});
-  Logger.log(r);
+function init(){ ensureSheet_(); onOpen(); }
+
+/***** テスト用（権限付与・手動確認） *****/
+function testSendRegisterMail(){
+  const me = Session.getActiveUser().getEmail() || '';
+  if(!isValidEmail_(me)) throw new Error('自分のGmailが取得できません。手入力で試してください。');
+  sendRegisteredMail_(me);
+}
+function testSendResultMail(){
+  const me = Session.getActiveUser().getEmail() || '';
+  if(!isValidEmail_(me)) throw new Error('自分のGmailが取得できません。手入力で試してください。');
+  sendResultMail_(me, 56, 'Goro');
 }
