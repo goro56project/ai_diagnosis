@@ -97,132 +97,209 @@
   </div>
 
 <script>
-  // ======== 設定（リンク差し替え） ========
-  const LINKS = {
-    entry: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=entry#contact',
-    middle: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=middle#contact',
-    practical: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=practical#contact',
-    evh: 'https://note.com/56projectai/n/nb6e552d4fa3c',
-    pdf: 'https://drive.google.com/file/d/1LTB1cT_YA0Y1ixTv3SG0p3qBLnhde3g2/view?usp=sharing'
-  };
+  document.addEventListener("DOMContentLoaded", function () {
+    // ======== 設定（リンク差し替え） ========
+    const LINKS = {
+      entry: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=entry#contact',
+      middle: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=middle#contact',
+      practical: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=practical#contact',
+      evh: 'https://note.com/56projectai/n/nb6e552d4fa3c',
+      pdf: 'https://drive.google.com/file/d/1LTB1cT_YA0Y1ixTv3SG0p3qBLnhde3g2/view?usp=sharing'
+    };
 
-  // ======== ユーティリティ ========
-  const params = new URLSearchParams(location.search);
-  const score = Number(params.get('score') || 0);
-  const name = params.get('name') || 'あなた';
+    // ======== ユーティリティ ========
+    const params = new URLSearchParams(location.search);
+    const score = Number(params.get('score') || 0);
+    const name = params.get('name') || 'あなた';
 
-  document.getElementById('name').textContent = name;
-  document.getElementById('score').textContent = Number.isFinite(score) ? score : '--';
-  document.getElementById('link-evh').href = LINKS.evh;
-  document.getElementById('link-pdf').href = LINKS.pdf;
+    const nameEl = document.getElementById('name');
+    const scoreEl = document.getElementById('score');
+    const levelEl = document.getElementById('level');
+    const recEl = document.getElementById('recommend');
 
-  // スコア帯 → レベル/おすすめ/ボディ/ロードマップ/事例
-  function decide(score){
-    if (score <= 20) return {
-      level:'初心者層（0–20）',
-      recommend:'ENTRY',
-      ctas:[{label:'ENTRYに申し込む', href:LINKS.entry}],
-      body: `
-        <h2>🧠 診断結果の解説</h2>
-        <p>AIはこれから。まずは「毎日触る」習慣づくりが最短距離です。</p>
-        <h2>🔧 今日からの3ステップ</h2>
-        <ol>
-          <li>議事録/要約を毎回AIで作る</li>
-          <li>定型文メールの下書きをAIに任せる</li>
-          <li>毎日5分のプロンプト練習を継続</li>
-        </ol>
-      `,
-      roadmap:[
-        {t:'Week 1–2',d:'基本操作＋日報/議事録テンプレ導入'},
-        {t:'Week 3–6',d:'定型業務の自動化（メール/表作成）'},
-        {t:'Week 7–12',d:'効果測定→テンプレ改善→ENTRY修了'}
-      ],
-      cases:[
-        {t:'経理補助',d:'領収書整理→仕訳メモの半自動化で月3h削減'},
-        {t:'営業事務',d:'商談メモ→フォロー案内の即時作成'},
-        {t:'総務',d:'社内周知文の品質均一化'}
-      ]
-    };
-    if (score <= 40) return {
-      level:'入門層（21–40）',
-      recommend:'ENTRY または MIDDLE',
-      ctas:[
-        {label:'ENTRYに申し込む', href:LINKS.entry},
-        {label:'MIDDLEに挑戦する', href:LINKS.middle}
-      ],
-      body: `
-        <h2>🧠 診断結果の解説</h2>
-        <p>一部で試し始めた段階。小さな成功体験を増やし、業務フローに埋め込みましょう。</p>
-        <h2>🔧 今日からの3ステップ</h2>
-        <ol>
-          <li>繰り返し業務の洗い出し→AIテンプレ化</li>
-          <li>社内共有テンプレを作り、再現性を上げる</li>
-          <li>KPI（時間削減/件数）を毎週記録</li>
-        </ol>
-      `,
-      roadmap:[
-        {t:'Week 1–2',d:'業務棚卸し→AIで置換できる作業を抽出'},
-        {t:'Week 3–6',d:'テンプレ整備→部署内で試行'},
-        {t:'Week 7–12',d:'評価→MIDDLE移行で売上直結へ'}
-      ],
-      cases:[
-        {t:'人事',d:'求人票作成の標準化で作成時間▲60%'},
-        {t:'CS',d:'問い合わせ分類→一次回答の自動草案'},
-        {t:'広報',d:'お知らせ文の量産＆品質安定'}
-      ]
-    };
-    if (score <= 60) return {
-      level:'中級層（41–60）',
-      recommend:'MIDDLE（売上直結）',
-      ctas:[{label:'MIDDLEに申し込む', href:LINKS.middle}],
-      body: `
-        <h2>🧠 診断結果の解説</h2>
-        <p>基礎はOK。次は「売上直結」への転換。集客〜商談〜成約の各所にAIを組み込みましょう。</p>
-        <h2>🔧 今日からの3ステップ</h2>
-        <ol>
-          <li>LP/SNSコピーの一次稿をAI→人が仕上げる</li>
-          <li>商談議事録→要点→フォローDM/メール即送付</li>
-          <li>日次KPIと連動したToDoをAIに自動生成</li>
-        </ol>
-      `,
-      roadmap:[
-        {t:'Week 1–2',d:'集客コピーと訴求角度のABテスト開始'},
-        {t:'Week 3–6',d:'商談後フォロー完全テンプレ化'},
-        {t:'Week 7–12',d:'CVR改善とLTV向上施策を回す'}
-      ],
-      cases:[
-        {t:'BtoB営業',d:'フォロー即時化で商談化率+18%'},
-        {t:'EC',d:'商品説明の量産でSEO流入増'},
-        {t:'セミナー',d:'告知→アンケ→見込み育成を自動ループ'}
-      ]
-    };
-    if (score <= 80) return {
-      level:'上級層（61–80）',
-      recommend:'PRACTICAL（事業戦略に統合）',
-      ctas:[{label:'PRACTICALに申し込む', href:LINKS.practical}],
-      body: `
-        <h2>🧠 診断結果の解説</h2>
-        <p>運用は成熟。外部脳化して戦略（商品/価格/導線）に組み込み、半自動収益化を狙う段階。</p>
-        <h2>🔧 今日からの3ステップ</h2>
-        <ol>
-          <li>チャネル別KPIモデルを設計（AARRR）</li>
-          <li>自動化（予約投稿/CRM連携/スコアリング）</li>
-          <li>新規事業PoCを月1本で検証</li>
-        </ol>
-      `,
-      roadmap:[
-        {t:'Week 1–2',d:'KPI設計とダッシュボード連携'},
-        {t:'Week 3–6',d:'オペ自動化・GAS/連携の実装'},
-        {t:'Week 7–12',d:'新規事業の検証→スケール判断'}
-      ],
-      cases:[
-        {t:'プロ講座',d:'入会導線最適化で月売上+28%'},
-        {t:'代理店',d:'見込みスコアで追客効率2倍'},
-        {t:'SaaS',d:'オンボ強化で有料化率UP'}
-      ]
-    };
-    return {
-      level:'先進層（81–100）',
-      recommend:'PRACTICAL＋EVH（共同開発/発信）',
-      ctas:[
-        {label:'PRACTICA
+    nameEl.textContent = name;
+    scoreEl.textContent = Number.isFinite(score) ? score : '--';
+    document.getElementById('link-evh').href = LINKS.evh;
+    document.getElementById('link-pdf').href = LINKS.pdf;
+
+    // スコア帯 → レベル/おすすめ/ボディ/ロードマップ/事例
+    function decide(sc){
+      if (sc <= 20) return {
+        level:'初心者層（0–20）',
+        recommend:'ENTRY',
+        ctas:[{label:'ENTRYに申し込む', href:LINKS.entry}],
+        body: `
+          <h2>🧠 診断結果の解説</h2>
+          <p>AIはこれから。まずは「毎日触る」習慣づくりが最短距離です。</p>
+          <h2>🔧 今日からの3ステップ</h2>
+          <ol>
+            <li>議事録/要約を毎回AIで作る</li>
+            <li>定型文メールの下書きをAIに任せる</li>
+            <li>毎日5分のプロンプト練習を継続</li>
+          </ol>
+        `,
+        roadmap:[
+          {t:'Week 1–2',d:'基本操作＋日報/議事録テンプレ導入'},
+          {t:'Week 3–6',d:'定型業務の自動化（メール/表作成）'},
+          {t:'Week 7–12',d:'効果測定→テンプレ改善→ENTRY修了'}
+        ],
+        cases:[
+          {t:'経理補助',d:'領収書整理→仕訳メモの半自動化で月3h削減'},
+          {t:'営業事務',d:'商談メモ→フォロー案内の即時作成'},
+          {t:'総務',d:'社内周知文の品質均一化'}
+        ]
+      };
+      if (sc <= 40) return {
+        level:'入門層（21–40）',
+        recommend:'ENTRY または MIDDLE',
+        ctas:[
+          {label:'ENTRYに申し込む', href:LINKS.entry},
+          {label:'MIDDLEに挑戦する', href:LINKS.middle}
+        ],
+        body: `
+          <h2>🧠 診断結果の解説</h2>
+          <p>一部で試し始めた段階。小さな成功体験を増やし、業務フローに埋め込みましょう。</p>
+          <h2>🔧 今日からの3ステップ</h2>
+          <ol>
+            <li>繰り返し業務の洗い出し→AIテンプレ化</li>
+            <li>社内共有テンプレを作り、再現性を上げる</li>
+            <li>KPI（時間削減/件数）を毎週記録</li>
+          </ol>
+        `,
+        roadmap:[
+          {t:'Week 1–2',d:'業務棚卸し→AIで置換できる作業を抽出'},
+          {t:'Week 3–6',d:'テンプレ整備→部署内で試行'},
+          {t:'Week 7–12',d:'評価→MIDDLE移行で売上直結へ'}
+        ],
+        cases:[
+          {t:'人事',d:'求人票作成の標準化で作成時間▲60%'},
+          {t:'CS',d:'問い合わせ分類→一次回答の自動草案'},
+          {t:'広報',d:'お知らせ文の量産＆品質安定'}
+        ]
+      };
+      if (sc <= 60) return {
+        level:'中級層（41–60）',
+        recommend:'MIDDLE（売上直結）',
+        ctas:[{label:'MIDDLEに申し込む', href:LINKS.middle}],
+        body: `
+          <h2>🧠 診断結果の解説</h2>
+          <p>基礎はOK。次は「売上直結」への転換。集客〜商談〜成約の各所にAIを組み込みましょう。</p>
+          <h2>🔧 今日からの3ステップ</h2>
+          <ol>
+            <li>LP/SNSコピーの一次稿をAI→人が仕上げる</li>
+            <li>商談議事録→要点→フォローDM/メール即送付</li>
+            <li>日次KPIと連動したToDoをAIに自動生成</li>
+          </ol>
+        `,
+        roadmap:[
+          {t:'Week 1–2',d:'集客コピーと訴求角度のABテスト開始'},
+          {t:'Week 3–6',d:'商談後フォロー完全テンプレ化'},
+          {t:'Week 7–12',d:'CVR改善とLTV向上施策を回す'}
+        ],
+        cases:[
+          {t:'BtoB営業',d:'フォロー即時化で商談化率+18%'},
+          {t:'EC',d:'商品説明の量産でSEO流入増'},
+          {t:'セミナー',d:'告知→アンケ→見込み育成を自動ループ'}
+        ]
+      };
+      if (sc <= 80) return {
+        level:'上級層（61–80）',
+        recommend:'PRACTICAL（事業戦略に統合）',
+        ctas:[{label:'PRACTICALに申し込む', href:LINKS.practical}],
+        body: `
+          <h2>🧠 診断結果の解説</h2>
+          <p>運用は成熟。外部脳化して戦略（商品/価格/導線）に組み込み、半自動収益化を狙う段階。</p>
+          <h2>🔧 今日からの3ステップ</h2>
+          <ol>
+            <li>チャネル別KPIモデルを設計（AARRR）</li>
+            <li>自動化（予約投稿/CRM連携/スコアリング）</li>
+            <li>新規事業PoCを月1本で検証</li>
+          </ol>
+        `,
+        roadmap:[
+          {t:'Week 1–2',d:'KPI設計とダッシュボード連携'},
+          {t:'Week 3–6',d:'オペ自動化・GAS/連携の実装'},
+          {t:'Week 7–12',d:'新規事業の検証→スケール判断'}
+        ],
+        cases:[
+          {t:'プロ講座',d:'入会導線最適化で月売上+28%'},
+          {t:'代理店',d:'見込みスコアで追客効率2倍'},
+          {t:'SaaS',d:'オンボ強化で有料化率UP'}
+        ]
+      };
+      return {
+        level:'先進層（81–100）',
+        recommend:'PRACTICAL＋EVH（共同開発/発信）',
+        ctas:[
+          {label:'PRACTICALに申し込む', href:LINKS.practical},
+          {label:'EVHの案内を見る', href:LINKS.evh}
+        ],
+        body: `
+          <h2>🧠 診断結果の解説</h2>
+          <p>あなたはリーダー層。社内外の成功事例を体系化し、コミュニティと共に“広げる側”へ。</p>
+          <h2>🔧 今日からの3ステップ</h2>
+          <ol>
+            <li>プレイブック化（社内手順を外販可能に）</li>
+            <li>共同検証（EVHでテンプレ検証と配布）</li>
+            <li>収益化（講座/テンプレ/エージェント）</li>
+          </ol>
+        `,
+        roadmap:[
+          {t:'Week 1–2',d:'成功プロセスの形式知化'},
+          {t:'Week 3–6',d:'EVHで共同実験＆ナレッジ共有'},
+          {t:'Week 7–12',d:'販売モデル確立・外部発信'}
+        ],
+        cases:[
+          {t:'コミュ設計',d:'共同テンプレで導入期間1/2'},
+          {t:'講座化',d:'事例→教材→収益化ライン構築'},
+          {t:'外販',d:'テンプレ提供で新規売上の柱に'}
+        ]
+      };
+    }
+
+    function render(){
+      const d = decide(score);
+
+      levelEl.textContent = d.level;
+      recEl.textContent = d.recommend;
+
+      // コースCTA
+      const cta = document.getElementById('cta-courses');
+      cta.innerHTML = '';
+      d.ctas.forEach(x=>{
+        const a = document.createElement('a');
+        a.className = 'btn';
+        a.href = x.href; a.target = '_blank'; a.rel = 'noopener';
+        a.textContent = x.label;
+        cta.appendChild(a);
+      });
+
+      // 本文
+      document.getElementById('block').innerHTML = d.body;
+
+      // ロードマップ
+      const rm = document.getElementById('roadmap');
+      rm.innerHTML = '';
+      d.roadmap.forEach(x=>{
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `<div class="muted">${x.t}</div><div>${x.d}</div>`;
+        rm.appendChild(div);
+      });
+
+      // 事例
+      const cs = document.getElementById('cases');
+      cs.innerHTML = '';
+      d.cases.forEach(x=>{
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `<div class="muted">${x.t}</div><div>${x.d}</div>`;
+        cs.appendChild(div);
+      });
+    }
+
+    render();
+  });
+</script>
+</body>
+</html>
