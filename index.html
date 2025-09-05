@@ -14,10 +14,10 @@
     gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type:'beacon', debug_mode: true });
   </script>
 
-  <!-- ★GAS WebアプリURL＆秘密キー -->
+  <!-- GAS URL & 秘密キー -->
   <script>
     window.GAS_URL = "https://script.google.com/macros/s/AKfycbzLvAEpvLfVGN3V2f9i8ykXC_AqANomEHKQ5jnhP04FUa7oui5nYk6BGSEzsHNJHbvq/exec";
-    window.RESULT_KEY = "RG8rK7vQ3bX1pY2z"; // ← GASのRESULT_KEYと必ず一致させる！
+    window.RESULT_KEY = "RG8rK7vQ3bX1pY2z"; // GAS側と一致させる
   </script>
 
   <style>
@@ -57,7 +57,7 @@
   <header>
     <div class="wrap">
       <h1>AI偏差値診断</h1>
-      <p class="lead">メール登録 → 10問に回答 → スコアと詳細レポートが届きます。</p>
+      <p class="lead">STEP1 メール登録 → STEP2 設問に回答 → STEP3 診断結果メール</p>
     </div>
   </header>
 
@@ -73,14 +73,37 @@
       <p id="toast" class="hint"></p>
     </section>
 
-    <!-- STEP 2（設問10問：省略せず入れてください。ゴローさんが持ってる質問セットでOK） -->
+    <!-- STEP 2：設問（例として2問だけ、実際は10問入れてください） -->
     <section class="card" id="sec-questions">
       <h2>STEP 2｜10問に回答</h2>
-      <!-- …設問ここ… -->
-      <button id="btn-diagnose" class="btn primary" type="button">診断する</button>
+      <fieldset>
+        <legend>1. ChatGPTを業務で使ったことがありますか？</legend>
+        <div class="qgrid">
+          <label class="choice"><input type="radio" name="q1" value="1"></label>
+          <label class="choice"><input type="radio" name="q1" value="2"></label>
+          <label class="choice"><input type="radio" name="q1" value="3" checked></label>
+          <label class="choice"><input type="radio" name="q1" value="4"></label>
+          <label class="choice"><input type="radio" name="q1" value="5"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>2. プロンプトを工夫して出力改善した経験はありますか？</legend>
+        <div class="qgrid">
+          <label class="choice"><input type="radio" name="q2" value="1"></label>
+          <label class="choice"><input type="radio" name="q2" value="2"></label>
+          <label class="choice"><input type="radio" name="q2" value="3" checked></label>
+          <label class="choice"><input type="radio" name="q2" value="4"></label>
+          <label class="choice"><input type="radio" name="q2" value="5"></label>
+        </div>
+      </fieldset>
+
+      <!-- ここに残り8問を入れて完成 -->
+      <div style="text-align:right;margin-top:10px">
+        <button id="btn-diagnose" class="btn primary" type="button">診断する</button>
+      </div>
     </section>
 
-    <!-- STEP 3（結果表示） -->
+    <!-- STEP 3：診断結果 -->
     <section class="card" id="result-card">
       <h2>STEP 3｜診断結果</h2>
       <p>AI偏差値：<span id="score-out">--</span></p>
