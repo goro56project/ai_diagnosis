@@ -64,7 +64,8 @@
       <p class="lead">登録すると、詳細レポート（解説・おすすめコース・特典PDFリンク）が表示できるようになります。未登録でも簡易結果は見られますが、<strong>詳細を見るには登録が必要</strong>です。</p>
       <div class="flex">
         <input id="email" class="grow" type="email" inputmode="email" autocomplete="email" placeholder="メールアドレスを入力" />
-        <button id="btn-register" type="button">登録する</button>
+        <!-- onclick で直接呼び出し（結び忘れ防止） -->
+        <button id="btn-register" type="button" onclick="sendNow()">登録する</button>
         <a id="btn-skip" class="btn secondary" href="#form">登録せずに診断へ</a>
       </div>
       <div id="toast" class="toast hidden"></div>
@@ -94,17 +95,26 @@
     </p>
   </footer>
 
-  <!-- ここから：確実に届く「隠しiframe＋フォーム」方式 -->
-  <iframe name="gs_ghost" id="gs_ghost" style="display:none;width:0;height:0;border:0"></iframe>
-  <form id="fallback-post" method="POST" action="" target="gs_ghost" style="display:none">
+  <!-- 新規タブに直POSTするフォーム（確実に届く） -->
+  <form id="direct-post" method="POST" action="" target="_blank" style="display:none">
     <input type="hidden" name="email" />
     <input type="hidden" name="userId" />
     <input type="hidden" name="score" />
   </form>
 
   <script>
-    // ===== 設定（GAS WebアプリURL） =====
+    // ===== 設定（最新の /exec） =====
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwFJvLe1uZqscN3WpeF_61BSxqpBW0l5q_voJbgb4n5-92JkVQApvPelSoTe7tgh0hl/exec";
+
+    // ===== 小さな通知（トースト） =====
+    function toast(msg, ok=true, ms=3500){
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.className = "toast " + (ok ? "ok" : "ng");
+      el.classList.remove("hidden");
+      clearTimeout(window._toastTimer);
+      if (ms) window._toastTimer = setTimeout(() => el.classList.add("hidden"), ms);
+    }
 
     // ===== ユーティリティ =====
     function clampScore(n){ n = Number(n)||0; return Math.max(0, Math.min(100, n)); }
@@ -114,44 +124,33 @@
       if(!id){ id = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()); localStorage.setItem(k, id); }
       return id;
     }
-    function toast(msg, ok=true){
-      const el = document.getElementById("toast");
-      el.textContent = msg;
-      el.classList.remove("hidden","ok","ng");
-      el.classList.add(ok ? "ok" : "ng");
-    }
 
-    // ===== 送信（隠しフォームでGASに直POST） =====
-    function postViaHiddenForm(email, userId, score){
-      const f = document.getElementById('fallback-post');
-      f.action = GAS_URL;
-      f.querySelector('input[name="email"]').value  = email;
-      f.querySelector('input[name="userId"]').value = userId;
-      f.querySelector('input[name="score"]').value  = String(score);
-      window._pending = true;
-      f.submit();  // ← CORSに影響されず確実に届く
-    }
+    // ===== 送信本体（新規タブに直POST） =====
+    function sendNow(){
+      try{
+        const emailEl = document.getElementById("email");
+        const email = (emailEl.value || "").trim();
+        if(!email){ toast("メールアドレスを入力してください。", false); emailEl.focus(); return; }
 
-    // ===== 応答受信（iframe の load で確認メッセージ） =====
-    document.getElementById('gs_ghost').addEventListener('load', () => {
-      if (window._pending){
-        window._pending = false;
-        toast("サーバーの応答を受信しました。数秒後にメールが届きます。", true);
+        const score  = clampScore(new URLSearchParams(location.search).get("score"));
+        const userId = getUserId();
+
+        const f = document.getElementById("direct-post");
+        f.action = GAS_URL;
+        f.querySelector('input[name="email"]').value  = email;
+        f.querySelector('input[name="userId"]').value = userId;
+        f.querySelector('input[name="score"]').value  = String(score);
+
+        // 送信 → 新規タブで JSON が開けばOK（サーバー到達の証拠）
+        f.submit();
+
+        toast("送信しました。新しいタブが開けば到達しています。メール受信箱をご確認ください。", true);
+        gtag('event', 'send_detail_mail', { method:'form_target_blank', score: score });
+      }catch(err){
+        console.error(err);
+        toast("送信に失敗しました：" + String(err.message || err), false);
       }
-    });
-
-    // ===== クリック処理 =====
-    document.getElementById("btn-register").addEventListener("click", () => {
-      const emailEl = document.getElementById("email");
-      const email = emailEl.value.trim();
-      if(!email){ toast("メールアドレスを入力してください。", false); emailEl.focus(); return; }
-
-      const score  = clampScore(new URLSearchParams(location.search).get("score")); // 未回答なら0
-      const userId = getUserId();
-
-      postViaHiddenForm(email, userId, score);
-      gtag('event', 'send_detail_mail', { method:'iframe_form', score: score });
-    });
+    }
 
     // ===== 診断後のコースCTA（?score= があれば表示） =====
     (function () {
