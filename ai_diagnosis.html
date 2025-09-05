@@ -38,7 +38,7 @@
     .btn:active, button:active{ transform:translateY(1px) }
     .btn.secondary{ background:#fff; color:#0f172a; border:1px solid var(--line); box-shadow:none }
     .note{ font-size:13px; color:var(--muted); margin-top:8px; text-align:center; }
-    iframe{ width:100%; max-width:860px; height:520px; border:0; display:block; margin:0 auto; background:#fff; border:1px solid var(--line); border-radius:12px; }
+    iframe.form{ width:100%; max-width:860px; height:520px; border:0; display:block; margin:0 auto; background:#fff; border:1px solid var(--line); border-radius:12px; }
     .cta{ margin:24px auto 0; display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
     .hidden{ display:none }
     .toast{ margin-top:8px; font-size:14px }
@@ -74,6 +74,7 @@
     <!-- STEP2: フォーム -->
     <section id="form" class="center card" style="margin-top:20px">
       <iframe
+        class="form"
         src="https://docs.google.com/forms/d/e/1FAIpQLScZN8k-L3FCCvHzpnknxv5duAKZSOzSF33KeooVGFD1F5Dwvg/viewform?embedded=true"
         loading="lazy"
         title="AI偏差値診断フォーム"></iframe>
@@ -93,21 +94,24 @@
     </p>
   </footer>
 
+  <!-- ここから：確実に届く「隠しiframe＋フォーム」方式 -->
+  <iframe name="gs_ghost" style="display:none;width:0;height:0;border:0"></iframe>
+  <form id="fallback-post" method="POST" action="" target="gs_ghost" style="display:none">
+    <input type="hidden" name="email" />
+    <input type="hidden" name="userId" />
+    <input type="hidden" name="score" />
+  </form>
+
   <script>
-    /* =========================
-       設定（GAS WebアプリURL）
-       ========================= */
+    // ===== 設定（GAS WebアプリURL） =====
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwFJvLe1uZqscN3WpeF_61BSxqpBW0l5q_voJbgb4n5-92JkVQApvPelSoTe7tgh0hl/exec";
 
-    /* ===== ユーティリティ ===== */
+    // ===== ユーティリティ =====
     function clampScore(n){ n = Number(n)||0; return Math.max(0, Math.min(100, n)); }
     function getUserId(){
       const k = "aid_user_id";
       let id = localStorage.getItem(k);
-      if(!id){
-        id = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
-        localStorage.setItem(k, id);
-      }
+      if(!id){ id = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()); localStorage.setItem(k, id); }
       return id;
     }
     function toast(msg, ok=true){
@@ -117,51 +121,32 @@
       el.classList.add(ok ? "ok" : "ng");
     }
 
-    /* ===== 送信（プリフライト回避：form-urlencoded） ===== */
-    async function sendDetail(email, userId, score){
-      const body = new URLSearchParams({
-        email: email,
-        userId: userId,
-        score: String(score)
-      }).toString();
-
-      const res = await fetch(GAS_URL, {
-        method: "POST",
-        headers: { "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" },
-        body
-      });
-      return await res.json(); // GAS は {ok:true/false} を返す
+    // ===== 送信（隠しフォームでGASに直POST） =====
+    function postViaHiddenForm(email, userId, score){
+      const f = document.getElementById('fallback-post');
+      f.action = GAS_URL;
+      f.querySelector('input[name="email"]').value  = email;
+      f.querySelector('input[name="userId"]').value = userId;
+      f.querySelector('input[name="score"]').value  = String(score);
+      f.submit();  // ← CORS無視で確実に届く
     }
 
-    /* ===== クリック処理 ===== */
-    document.getElementById("btn-register").addEventListener("click", async () => {
+    // ===== クリック処理 =====
+    document.getElementById("btn-register").addEventListener("click", () => {
       const emailEl = document.getElementById("email");
       const email = emailEl.value.trim();
       if(!email){ toast("メールアドレスを入力してください。", false); emailEl.focus(); return; }
 
-      const score  = clampScore(new URLSearchParams(location.search).get("score")); // 未回答なら 0
+      const score  = clampScore(new URLSearchParams(location.search).get("score")); // 未回答なら0
       const userId = getUserId();
 
-      const btn = document.getElementById("btn-register");
-      btn.disabled = true; btn.textContent = "送信中…";
-
-      try{
-        const json = await sendDetail(email, userId, score);
-        if(json && json.ok){
-          toast("詳細レポートの案内メールを送信しました。受信箱（迷惑メール/プロモーション含む）をご確認ください。", true);
-          gtag('event', 'send_detail_mail', { method:'GAS', score: score });
-        }else{
-          throw new Error(json && json.error || "送信に失敗しました");
-        }
-      }catch(err){
-        console.error(err);
-        toast("送信に失敗しました：" + String(err.message || err), false);
-      }finally{
-        btn.disabled = false; btn.textContent = "登録する";
-      }
+      // 送信
+      postViaHiddenForm(email, userId, score);
+      toast("詳細レポートの案内メールを送信しました。受信箱（迷惑メール/プロモーションも）をご確認ください。", true);
+      gtag('event', 'send_detail_mail', { method:'form', score: score });
     });
 
-    /* ===== 診断後のコースCTA（?score= があれば表示） ===== */
+    // ===== 診断後のコースCTA（?score= があれば表示） =====
     (function () {
       const params = new URLSearchParams(location.search);
       const score = params.get('score');
@@ -172,15 +157,6 @@
         cta.classList.remove('hidden');
       }
     })();
-
-    /* ===== Googleフォーム内のテキスト置換（任意） ===== */
-    document.addEventListener('DOMContentLoaded', function () {
-      document.querySelectorAll('a[href*="exo_courses.html"]').forEach(a => {
-        if (a.textContent.trim() === '診断結果の詳細を見る') {
-          a.textContent = 'おすすめコースを見る';
-        }
-      });
-    });
   </script>
 </body>
 </html>
