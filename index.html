@@ -11,10 +11,10 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
-    gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type:'beacon', debug_mode: true });
+    gtag('config', 'G-QFQZF4F1QW', { send_page_view: true });
   </script>
 
-  <!-- ★GAS WebアプリURL / 秘密キー（GAS側と一致させる） -->
+  <!-- ★GAS WebアプリURL / 秘密キー（GAS側と必ず一致） -->
   <script>
     window.GAS_URL    = "https://script.google.com/macros/s/AKfycbzLvAEpvLfVGN3V2f9i8ykXC_AqANomEHKQ5jnhP04FUa7oui5nYk6BGSEzsHNJHbvq/exec";
     window.RESULT_KEY = "RG8rK7vQ3bX1pY2z";
@@ -81,17 +81,16 @@
         <div></div><div class="choice">全くない</div><div class="choice">少し</div><div class="choice">普通</div><div class="choice">かなり</div><div class="choice">とてもある</div>
       </div>
 
-      <!-- 1〜10（元の文面で復元） -->
+      <!-- 1〜10 -->
       <fieldset><legend>1. ChatGPTなどのAIツールを業務で使ったことがある</legend>
         <div class="qgrid"><div></div>
-          <label class="choice"><input type="radio" name="q1" value="1"></label>
+          <label class="choice"><input type="radio" name="q1" value="1"><!--1--></label>
           <label class="choice"><input type="radio" name="q1" value="2"></label>
           <label class="choice"><input type="radio" name="q1" value="3" checked></label>
           <label class="choice"><input type="radio" name="q1" value="4"></label>
           <label class="choice"><input type="radio" name="q1" value="5"></label>
         </div>
       </fieldset>
-
       <fieldset><legend>2. プロンプトを工夫して出力を改善している</legend>
         <div class="qgrid"><div></div>
           <label class="choice"><input type="radio" name="q2" value="1"></label>
@@ -101,7 +100,6 @@
           <label class="choice"><input type="radio" name="q2" value="5"></label>
         </div>
       </fieldset>
-
       <fieldset><legend>3. AI成果物の品質基準（レビュー）を運用している</legend>
         <div class="qgrid"><div></div>
           <label class="choice"><input type="radio" name="q3" value="1"></label>
@@ -111,7 +109,6 @@
           <label class="choice"><input type="radio" name="q3" value="5"></label>
         </div>
       </fieldset>
-
       <fieldset><legend>4. 成功手順をテンプレ化し再利用している</legend>
         <div class="qgrid"><div></div>
           <label class="choice"><input type="radio" name="q4" value="1"></label>
@@ -121,7 +118,6 @@
           <label class="choice"><input type="radio" name="q4" value="5"></label>
         </div>
       </fieldset>
-
       <fieldset><legend>5. ツール連携×AIで業務効率化が進んでいる</legend>
         <div class="qgrid"><div></div>
           <label class="choice"><input type="radio" name="q5" value="1"></label>
@@ -131,7 +127,6 @@
           <label class="choice"><input type="radio" name="q5" value="5"></label>
         </div>
       </fieldset>
-
       <fieldset><legend>6. セキュリティ／利用ルールが整備されている</legend>
         <div class="qgrid"><div></div>
           <label class="choice"><input type="radio" name="q6" value="1"></label>
@@ -141,7 +136,6 @@
           <label class="choice"><input type="radio" name="q6" value="5"></label>
         </div>
       </fieldset>
-
       <fieldset><legend>7. ガイドラインや成功事例を共有している</legend>
         <div class="qgrid"><div></div>
           <label class="choice"><input type="radio" name="q7" value="1"></label>
@@ -151,7 +145,6 @@
           <label class="choice"><input type="radio" name="q7" value="5"></label>
         </div>
       </fieldset>
-
       <fieldset><legend>8. 評価・検証（A/B・指標化）に取り組んでいる</legend>
         <div class="qgrid"><div></div>
           <label class="choice"><input type="radio" name="q8" value="1"></label>
@@ -161,7 +154,6 @@
           <label class="choice"><input type="radio" name="q8" value="5"></label>
         </div>
       </fieldset>
-
       <fieldset><legend>9. 自動化／RAG／エージェント運用を始めている</legend>
         <div class="qgrid"><div></div>
           <label class="choice"><input type="radio" name="q9" value="1"></label>
@@ -171,7 +163,6 @@
           <label class="choice"><input type="radio" name="q9" value="5"></label>
         </div>
       </fieldset>
-
       <fieldset><legend>10. 新しいAI機能を定期的に試し、評価している</legend>
         <div class="qgrid"><div></div>
           <label class="choice"><input type="radio" name="q10" value="1"></label>
@@ -183,7 +174,8 @@
       </fieldset>
 
       <div style="text-align:right;margin-top:10px">
-        <button id="btn-diagnose" class="btn primary" type="button">診断する</button>
+        <!-- 二重保険：onclick と JS で両方バインド -->
+        <button id="btn-diagnose" class="btn primary" type="button" onclick="diagnose()">診断する</button>
       </div>
     </section>
 
@@ -202,6 +194,7 @@
   </main>
 
   <script>
+  // ====== アプリ本体 ======
   (function(){
     const $ = s => document.querySelector(s);
     const emailEl = $('#email'), btnReg = $('#btn-register'), btnSkip = $('#btn-skip'), btnDiag = $('#btn-diagnose'), toastEl = $('#toast');
@@ -227,3 +220,63 @@
               bullets:['基本リテラシー整備','テンプレ導入','日次実践→改善'] },
       middle:{ heading:'売上直結の活用へ。テンプレ×自動化で仕組み化。',
                lead:'商談フォローやコピー作成など、定型業務をAIテンプレに落とし込みKPIで改善。',
+               bullets:['商談後フォロー自動化','コピーABテスト','テンプレ共有'] },
+      practical:{ heading:'戦略にAIを統合し、半自動で回る収益化へ。',
+                  lead:'KPI設計→自動化→PoC検証まで網羅。RAG/エージェントも視野に。',
+                  bullets:['KPIとダッシュボード','GAS/連携の実装','PoC→スケール判断'] }
+    };
+
+    function render(){
+      scoreOut.textContent = state.score ?? '--';
+      const lv = levelFrom(state.score || 0);
+      state.levelKey = lv.key;
+      lvLabel.textContent = lv.label;
+
+      const c = COPY[lv.key];
+      heading.textContent = c.heading;
+      lead.textContent = c.lead;
+      bullets.innerHTML = c.bullets.map(x=>`<li>${x}</li>`).join('');
+    }
+
+    // STEP1: 登録（保存だけ・メール送信はしない）
+    btnReg.addEventListener('click', ()=>{
+      const v=(emailEl.value||'').trim();
+      if(!isEmail(v)){ alert('正しいメールを入力してください'); emailEl.focus(); return; }
+      state.email=v;
+      toastEl.textContent='メールを登録しました。診断後に結果メールが届きます。';
+    });
+    btnSkip.addEventListener('click', ()=>{ document.getElementById('sec-questions').scrollIntoView({behavior:'smooth'}); });
+
+    // 診断関数（onclick保険用）
+    window.diagnose = async function(){
+      state.score = calcScore();
+      render();
+
+      if(state.email){
+        const payload = { type:'result', email:state.email, score:state.score, key:window.RESULT_KEY, t:Date.now() };
+        try{
+          const res = await fetch(window.GAS_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+          const txt = await res.text();
+          if (txt.includes('"ok":true')) {
+            alert('結果メールを送信しました。受信箱（迷惑メールも）をご確認ください。');
+          } else {
+            alert('送信できませんでした（GAS応答）:\n' + txt);
+          }
+        }catch(e){
+          alert('送信エラー: ' + String(e));
+        }
+      }else{
+        // メール未登録時は送らない
+      }
+      document.getElementById('result-card').scrollIntoView({behavior:'smooth'});
+    };
+
+    // さらに addEventListener でもバインド（保険二重化）
+    btnDiag.addEventListener('click', window.diagnose);
+
+    // 初期描画
+    render();
+  })();
+  </script>
+</body>
+</html>
