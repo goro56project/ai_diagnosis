@@ -58,17 +58,19 @@
   </header>
 
   <main class="wrap">
-    <!-- STEP1: メール登録（任意） -->
+    <!-- STEP1: メール登録 / 結果メール -->
     <section class="card stack" aria-labelledby="step1">
       <h2 id="step1">STEP 1｜診断結果をメールで受け取る（任意）</h2>
-      <p class="lead">登録すると、詳細レポート（解説・おすすめコース・特典PDFリンク）が表示できるようになります。未登録でも簡易結果は見られますが、<strong>詳細を見るには登録が必要</strong>です。</p>
+      <p id="step1-lead" class="lead">
+        登録すると、詳細レポート（解説・おすすめコース・特典PDFリンク）が表示できるようになります。未登録でも簡易結果は見られますが、<strong>詳細を見るには登録が必要</strong>です。
+      </p>
       <div class="flex">
         <input id="email" class="grow" type="email" inputmode="email" autocomplete="email" placeholder="メールアドレスを入力" />
         <button id="btn-register" type="button">登録する</button>
         <a id="btn-skip" class="btn secondary" href="#form">登録せずに診断へ</a>
       </div>
-      <div id="toast" class="toast hidden"></div>
-      <p class="note">送信先の管理：Googleスプレッドシート（自動作成）／用途は診断に関するご連絡のみ。不要時はいつでも停止できます。</p>
+      <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+      <p class="note">送信先の管理：Googleスプレッドシート（自動作成）／用途は診断に関するご連絡のみ。不要時はいつでも停止できます（メール最下部の案内より）。</p>
     </section>
 
     <!-- STEP2: フォーム -->
@@ -100,7 +102,10 @@
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwFJvLe1uZqscN3WpeF_61BSxqpBW0l5q_voJbgb4n5-92JkVQApvPelSoTe7tgh0hl/exec";
 
     /* ===== ユーティリティ ===== */
-    function clampScore(n){ n = Number(n)||0; return Math.max(0, Math.min(100, n)); }
+    const qs = new URLSearchParams(location.search);
+    const hasScoreParam = qs.has("score");
+    function clampScore(n){ n = Number(n); return Number.isFinite(n) ? Math.max(0, Math.min(100, n)) : null; }
+    function getScoreFromURL(){ return clampScore(qs.get("score")); }
     function getUserId(){
       const k = "aid_user_id";
       let id = localStorage.getItem(k);
@@ -110,68 +115,137 @@
       }
       return id;
     }
+    function getSavedEmail(){
+      return (localStorage.getItem("aid_last_email") || "").trim();
+    }
+    function saveEmail(email){
+      if(email) localStorage.setItem("aid_last_email", email.trim());
+    }
+    function getSentScores(){
+      try { return JSON.parse(localStorage.getItem("aid_sent_scores") || "[]"); } catch(_){ return []; }
+    }
+    function addSentScore(score){
+      const list = getSentScores();
+      if(!list.includes(score)) list.push(score);
+      localStorage.setItem("aid_sent_scores", JSON.stringify(list));
+    }
     function toast(msg, ok=true){
       const el = document.getElementById("toast");
       el.textContent = msg;
       el.classList.remove("hidden","ok","ng");
       el.classList.add(ok ? "ok" : "ng");
     }
+    function setRegisterUIForResultMode(){
+      // 結果モードの文言に差し替え
+      const h2 = document.getElementById("step1");
+      const p = document.getElementById("step1-lead");
+      const btn = document.getElementById("btn-register");
+      if(h2) h2.textContent = "STEP 1｜結果をメールで受け取る（推奨）";
+      if(p)  p.innerHTML = "診断結果に基づく<strong>詳細レポートURL</strong>と<strong>90日ロードマップ</strong>をメールでご案内します。既に登録済みの方は、メール入力後すぐに届きます。";
+      if(btn) btn.textContent = "結果をメールで受け取る";
+    }
 
     /* ===== 送信本体（プリフライト回避：form-urlencoded） ===== */
-    async function sendDetail(email, userId, score){
-      const body = new URLSearchParams({
-        email: email,
-        userId: userId,
-        score: String(score)
-      }).toString();
+    async function sendDetail({ email, userId, score }) {
+      const form = new URLSearchParams();
+      form.append("email", email);
+      form.append("userId", userId);
+
+      // score が「URLにあるとき」だけ付与（未回答登録は登録メール、回答後は結果メール）
+      if (hasScoreParam && typeof score === "number" && Number.isFinite(score)) {
+        form.append("score", String(score));
+      }
 
       const res = await fetch(GAS_URL, {
         method: "POST",
         headers: { "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8" },
-        body
+        body: form.toString()
       });
-      // GAS は JSON({ok:true/false}) を返す
-      return await res.json();
+
+      // GAS は JSON({ok:true/false}) を返す想定
+      let json = {};
+      try { json = await res.json(); } catch(_){}
+      return { ok: !!json.ok, data: json, status: res.status };
     }
 
     /* ===== イベント ===== */
     document.getElementById("btn-register").addEventListener("click", async () => {
       const emailEl = document.getElementById("email");
       const email = emailEl.value.trim();
-      if(!email){ toast("メールアドレスを入力してください。", false); emailEl.focus(); return; }
+      if(!email){
+        toast("メールアドレスを入力してください。", false); emailEl.focus(); return;
+      }
+      // 簡易バリデーション
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        toast("メールアドレスの形式が正しくありません。", false); emailEl.focus(); return;
+      }
 
-      // URL の ?score= を拾う（未回答なら 0）
-      const score = clampScore(new URLSearchParams(location.search).get("score"));
       const userId = getUserId();
+      const score = getScoreFromURL();
 
       const btn = document.getElementById("btn-register");
       btn.disabled = true; btn.textContent = "送信中…";
 
       try{
-        const json = await sendDetail(email, userId, score);
-        if(json && json.ok){
-          toast("詳細レポートの案内メールを送信しました。受信箱をご確認ください。", true);
-          gtag('event', 'send_detail_mail', { method:'GAS', score: score });
+        const { ok, data } = await sendDetail({ email, userId, score });
+        if(ok){
+          saveEmail(email);
+          if (hasScoreParam && score !== null) addSentScore(score);
+          toast(hasScoreParam ? "結果メールを送信しました。受信箱をご確認ください。" : "登録メールを送信しました。続けて診断へお進みください。", true);
+          gtag('event', hasScoreParam ? 'send_result_mail' : 'send_register_mail', { method:'GAS', score: score ?? -1 });
         }else{
-          throw new Error((json && json.error) || "送信に失敗しました");
+          throw new Error((data && data.error) || "送信に失敗しました");
         }
       }catch(err){
         console.error(err);
         toast("送信に失敗しました：" + String(err.message || err), false);
       }finally{
-        btn.disabled = false; btn.textContent = "登録する";
+        btn.disabled = false; btn.textContent = hasScoreParam ? "結果をメールで受け取る" : "登録する";
       }
     });
 
-    /* ===== 診断後のコースCTA（?score= があれば表示） ===== */
+    // Enter キーで送信
+    document.getElementById("email").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") document.getElementById("btn-register").click();
+    });
+
+    /* ===== 診断後のUI／CTA（?score= があれば表示） ===== */
     (function () {
-      const params = new URLSearchParams(location.search);
-      const score = params.get('score');
       const cta = document.getElementById('result-cta');
       const btn = document.getElementById('coursesBtn');
-      if (cta && btn && score) {
+      const score = getScoreFromURL();
+
+      if (hasScoreParam) {
+        setRegisterUIForResultMode();
+      }
+
+      if (cta && btn && score !== null) {
         btn.href = 'exo_courses.html?score=' + encodeURIComponent(score);
         cta.classList.remove('hidden');
+      }
+    })();
+
+    /* ===== 自動送信（診断後：過去に登録済みなら自動で“結果メール”送信） ===== */
+    (async function autoSendIfNeeded(){
+      if (!hasScoreParam) return;                     // 診断後のみ
+      const score = getScoreFromURL();
+      if (score === null) return;
+
+      const lastEmail = getSavedEmail();
+      if (!lastEmail) return;                         // 未登録なら手動で
+
+      const sentScores = getSentScores();
+      if (sentScores.includes(score)) return;         // 同スコアは一度だけ自動送信
+
+      try{
+        const { ok } = await sendDetail({ email: lastEmail, userId: getUserId(), score });
+        if(ok){
+          addSentScore(score);
+          toast("過去の登録メール宛に、今回の結果メールを自動送信しました。", true);
+          gtag('event', 'auto_send_result_mail', { score });
+        }
+      }catch(e){
+        console.warn("autoSend failed:", e);
       }
     })();
 
