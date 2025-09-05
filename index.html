@@ -11,160 +11,220 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
-    gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type: 'beacon', debug_mode: true });
+    gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type:'beacon', debug_mode: true });
   </script>
 
-  <!-- ★ 本番GAS URL（あなたの最新 /exec） -->
+  <!-- ★GAS Webアプリ（exec）のURLをここに入れる -->
   <script>
-    window.GAS_URL = "https://script.google.com/macros/s/AKfycbzwyapWYDOHfPbh0LJwc92Kp1IrRM2ZmAfNHsM3ub5j4UCSzfusmIvha1lv4olh1BuB/exec";
+    // 例）https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxx/exec
+    window.GAS_URL = "https://script.google.com/macros/s/AKfycbwFJvLe1uZqscN3WpeF_61BSxqpBW0l5q_voJbgb4n5-92JkVQApvPelSoTe7tgh0hl/exec";
   </script>
 
   <style>
-    :root { --brand:#7356b6; --ink:#222; --card:#fff; --bg:#f5f3ff; --muted:#666; --warn:#b45309; }
-    *{ box-sizing:border-box; }
-    body{ font-family:system-ui,-apple-system,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; margin:0; color:var(--ink); background:var(--bg); }
-    .toplinks{ text-align:center; font-size:14px; padding:10px 8px 0; }
-    .toplinks a{ color:#0a58ca; text-decoration:none; }
-    .toplinks a + a{ margin-left:12px; }
-
-    header{ background:#fff; border-bottom:1px solid #eee; padding:18px; text-align:center; }
-    header .wrap{max-width:980px;margin:0 auto;}
-    header .title-lg{ font-size:clamp(28px, 4vw, 40px); line-height:1.2; font-weight:800; letter-spacing:.02em; margin:4px 0 6px; }
-    .sublead{ color:#475569; font-size:clamp(14px, 1.6vw, 16px); margin:6px 0 0; }
-
-    main{ max-width:980px; margin:24px auto; padding:0 16px 60px; }
-    .card{ background:var(--card); border-radius:14px; box-shadow:0 6px 20px rgba(0,0,0,.06); padding:22px; margin:16px 0; }
-    h1{ font-size:22px; margin:0;}
-    h2{ font-size:18px; margin:8px 0 12px;}
-    .muted{ color:var(--muted); }
-    .lead{ line-height:1.7; }
-    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
-    input[type="email"], .btn{ font:inherit; padding:12px 14px; border-radius:10px; border:1px solid #ddd; }
-    .btn{ cursor:pointer; background:#fff; color:var(--ink); }
-    .btn.primary{ background:var(--brand); border-color:var(--brand); color:#fff; }
-    .btn.block{ width:100%; text-align:center; }
-    .btn[aria-disabled="true"]{ opacity:.6; cursor:not-allowed; pointer-events:none; }
-    .pill{ display:inline-block; background:#eee; padding:.25em .6em; border-radius:999px; font-size:.9em;}
-    .right{ text-align:right; }
-    .hint{ font-size:12px; color:#777; }
-    .warn{ font-size:12px; color:var(--warn); background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; border-radius:10px; }
-    fieldset{ border:1px solid #eee; border-radius:12px; padding:14px; margin:10px 0; }
-
-    .qgrid{
-      display:grid;
-      grid-template-columns: minmax(140px,1fr) repeat(5, minmax(48px,72px));
-      gap: 8px 12px; align-items:center;
-    }
-    .qgrid .choice{ display:flex; align-items:center; justify-content:center; height:40px; }
-    .qgrid .choice input{ width:20px; height:20px; }
-    .qgrid-head > div:first-child{ visibility:hidden; }
-
-    @media (max-width: 760px){
-      .qgrid{ grid-template-columns: repeat(5, 1fr); }
-      .qgrid > div:first-child{ display:none; }
-    }
-
-    .result{ display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
-    .score{ font-size:28px; color:#4338ca; font-weight:800; }
-    ul.bullets{ margin:8px 0 0 20px; }
-
-    .cta-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; }
-    .btn.ghost{ background:#fff; color:#4338ca; border:1px solid #c7c8ff; }
-
-    footer{ text-align:center; font-size:14px; margin-top:40px; padding:20px; border-top:1px solid #ddd; }
-    footer a{ color:#0a58ca; text-decoration:none; }
-    footer a + a{ margin-left:12px; }
+    :root { --brand:#635bff; --ink:#111827; --card:#fff; --bg:#f8fafc; --muted:#6b7280; --line:#e5e7eb; }
+    *{ box-sizing:border-box }
+    body{ margin:0; color:var(--ink); background:var(--bg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif }
+    header{ background:#fff; border-bottom:1px solid var(--line) }
+    .wrap{ max-width:1000px; margin:0 auto; padding:20px 16px }
+    h1{ font-size:clamp(26px,3.5vw,32px); margin:6px 0 8px }
+    p.lead{ color:var(--muted); margin:0 0 12px }
+    main{ max-width:1000px; margin:0 auto; padding:20px 16px 60px }
+    .card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; margin:16px 0 }
+    .row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap }
+    input[type="email"]{ flex:1 1 260px; min-width:240px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font:inherit }
+    .btn{ padding:12px 16px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer; font:inherit }
+    .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand) }
+    .btn[disabled]{ opacity:.6; pointer-events:none }
+    .muted{ color:var(--muted) }
+    .hint{ font-size:12px; color:var(--muted) }
+    .warn{ font-size:13px; color:#92400e; background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; border-radius:10px; margin-top:10px }
+    .pill{ display:inline-block; padding:4px 10px; border:1px solid var(--line); border-radius:999px; background:#fff }
+    .result{ display:flex; gap:12px; align-items:center; flex-wrap:wrap }
+    .score{ font-size:28px; font-weight:800; color:#111827 }
+    ul.bullets{ margin:8px 0 0 20px }
+    footer{ text-align:center; font-size:14px; border-top:1px solid var(--line); background:#fff; padding:20px; margin-top:40px }
+    footer a{ color:var(--ink); text-decoration:none }
+    footer a + a{ margin-left:12px }
+    .qgrid{ display:grid; grid-template-columns:minmax(140px,1fr) repeat(5,minmax(48px,70px)); gap:8px 10px; align-items:center }
+    .qgrid .choice{ display:flex; justify-content:center; align-items:center; height:40px }
+    .qgrid .choice input{ width:18px; height:18px }
+    .qgrid-head>div:first-child{ visibility:hidden }
+    @media (max-width:760px){ .qgrid{ grid-template-columns:repeat(5,1fr) } .qgrid>div:first-child{ display:none } }
   </style>
 </head>
 <body>
-  <!-- 画面上部の3リンク（絶対URL） -->
-  <div class="toplinks">
-    <a href="https://goro56project.github.io/ai_diagnosis/terms.html" target="_blank" rel="noopener">利用規約</a>
-    <a href="https://goro56project.github.io/ai_diagnosis/privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>
-    <a href="https://goro56project.github.io/ai_diagnosis/law.html" target="_blank" rel="noopener">特定商取引法に基づく表記</a>
-  </div>
-
   <header>
     <div class="wrap">
-      <h1 class="title-lg">AI偏差値診断</h1>
-      <p class="sublead">AIの基礎知識・活用経験と、ChatGPT／GASなどを使った<b>業務改善スキル</b>を、10問でかんたんに測定します。</p>
+      <h1>AI偏差値診断</h1>
+      <p class="lead">メール登録 → 10問に回答 → スコアとおすすめコース、詳細レポートをご案内します。</p>
     </div>
   </header>
 
-  <main>
-    <!-- STEP 1: メール登録（任意） -->
+  <main class="wrap">
+    <!-- STEP 1 -->
     <section class="card" id="sec-register">
       <h2>STEP 1｜診断結果をメールで受け取る（任意）</h2>
-      <p class="lead muted">
-        登録すると、<b>診断の詳細（解説・おすすめコース）</b>が表示できるようになります。<br>
-        未登録でも簡易結果は見られますが、<b>詳細を見るには登録が必要</b>です。
-      </p>
+      <p class="muted">登録すると、詳細レポート（解説・おすすめコース・特典PDFリンク）が表示できます。未登録でも簡易結果は見られますが、<b>詳細を見るには登録が必要</b>です。</p>
       <div class="row">
-        <input id="email" type="email" inputmode="email" placeholder="メールアドレスを入力" style="flex:1;min-width:240px;" autocomplete="email" />
+        <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="メールアドレスを入力" />
         <button id="btn-register" class="btn primary" type="button">登録する</button>
         <button id="btn-skip" class="btn" type="button">登録せずに診断へ</button>
       </div>
-      <div class="hint">送信先の管理：Google スプレッドシート（自動作成）／ 用途は診断に関するご連絡のみ。不要時はいつでも停止できます。</div>
+      <p class="hint">送信先の管理：Google スプレッドシート（自動作成）／用途は診断に関するご連絡のみ。不要時はいつでも停止できます。</p>
+      <div id="toast" class="muted" role="status" aria-live="polite" style="margin-top:6px"></div>
     </section>
 
-    <!-- STEP 2: 設問 -->
+    <!-- STEP 2：設問（静的描画で“文字列が出る”事故を防止） -->
     <section class="card" id="sec-questions">
       <h2>STEP 2｜10問の自己評価に回答</h2>
 
-      <!-- 凡例 -->
-      <div class="qgrid qgrid-head muted" style="font-size:12px; margin-bottom:6px;">
-        <div></div>
-        <div class="choice">全くない</div>
-        <div class="choice">少し</div>
-        <div class="choice">普通</div>
-        <div class="choice">かなり</div>
-        <div class="choice">とてもある</div>
+      <div class="qgrid qgrid-head muted" style="font-size:12px;margin-bottom:6px">
+        <div></div><div class="choice">全くない</div><div class="choice">少し</div><div class="choice">普通</div><div class="choice">かなり</div><div class="choice">とてもある</div>
       </div>
 
-      <div id="questions" aria-live="polite">
-        <!-- 1〜10（既定は真ん中=3にチェック） -->
-        ${[...Array(10)].map((_,i)=>`
+      <!-- 1〜10 を“静的HTML”で用意（JSテンプレが生の文字で出る問題を根治） -->
+      <div id="questions">
+        <!-- 1 -->
         <fieldset>
-          <legend>${i+1}. （設問 ${i+1} の文言を入れる）</legend>
+          <legend>1. ChatGPTなどのAIツールを業務で使ったことはありますか？</legend>
           <div class="qgrid">
             <div></div>
-            <label class="choice"><input type="radio" name="q${i+1}" value="1"></label>
-            <label class="choice"><input type="radio" name="q${i+1}" value="2"></label>
-            <label class="choice"><input type="radio" name="q${i+1}" value="3" checked></label>
-            <label class="choice"><input type="radio" name="q${i+1}" value="4"></label>
-            <label class="choice"><input type="radio" name="q${i+1}" value="5"></label>
+            <label class="choice"><input type="radio" name="q1" value="1"></label>
+            <label class="choice"><input type="radio" name="q1" value="2"></label>
+            <label class="choice"><input type="radio" name="q1" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q1" value="4"></label>
+            <label class="choice"><input type="radio" name="q1" value="5"></label>
           </div>
-        </fieldset>`).join('')}
+        </fieldset>
+        <!-- 2 -->
+        <fieldset>
+          <legend>2. プロンプトを工夫して出力を改善した経験はありますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q2" value="1"></label>
+            <label class="choice"><input type="radio" name="q2" value="2"></label>
+            <label class="choice"><input type="radio" name="q2" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q2" value="4"></label>
+            <label class="choice"><input type="radio" name="q2" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 3 -->
+        <fieldset>
+          <legend>3. AI成果物の品質基準（レビュー）がありますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q3" value="1"></label>
+            <label class="choice"><input type="radio" name="q3" value="2"></label>
+            <label class="choice"><input type="radio" name="q3" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q3" value="4"></label>
+            <label class="choice"><input type="radio" name="q3" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 4 -->
+        <fieldset>
+          <legend>4. 成功した手順をテンプレ化し再利用していますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q4" value="1"></label>
+            <label class="choice"><input type="radio" name="q4" value="2"></label>
+            <label class="choice"><input type="radio" name="q4" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q4" value="4"></label>
+            <label class="choice"><input type="radio" name="q4" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 5 -->
+        <fieldset>
+          <legend>5. 複数ツールとAIの連携で効率化できていますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q5" value="1"></label>
+            <label class="choice"><input type="radio" name="q5" value="2"></label>
+            <label class="choice"><input type="radio" name="q5" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q5" value="4"></label>
+            <label class="choice"><input type="radio" name="q5" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 6 -->
+        <fieldset>
+          <legend>6. セキュリティ／利用ルールが整備されていますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q6" value="1"></label>
+            <label class="choice"><input type="radio" name="q6" value="2"></label>
+            <label class="choice"><input type="radio" name="q6" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q6" value="4"></label>
+            <label class="choice"><input type="radio" name="q6" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 7 -->
+        <fieldset>
+          <legend>7. ガイドラインや成功事例を共有していますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q7" value="1"></label>
+            <label class="choice"><input type="radio" name="q7" value="2"></label>
+            <label class="choice"><input type="radio" name="q7" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q7" value="4"></label>
+            <label class="choice"><input type="radio" name="q7" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 8 -->
+        <fieldset>
+          <legend>8. 評価・検証（A/B・指標化）を行えていますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q8" value="1"></label>
+            <label class="choice"><input type="radio" name="q8" value="2"></label>
+            <label class="choice"><input type="radio" name="q8" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q8" value="4"></label>
+            <label class="choice"><input type="radio" name="q8" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 9 -->
+        <fieldset>
+          <legend>9. 自動化／RAG／エージェント運用に着手していますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q9" value="1"></label>
+            <label class="choice"><input type="radio" name="q9" value="2"></label>
+            <label class="choice"><input type="radio" name="q9" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q9" value="4"></label>
+            <label class="choice"><input type="radio" name="q9" value="5"></label>
+          </div>
+        </fieldset>
+        <!-- 10 -->
+        <fieldset>
+          <legend>10. 新しいAI機能を定期的に試し、評価していますか？</legend>
+          <div class="qgrid"><div></div>
+            <label class="choice"><input type="radio" name="q10" value="1"></label>
+            <label class="choice"><input type="radio" name="q10" value="2"></label>
+            <label class="choice"><input type="radio" name="q10" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q10" value="4"></label>
+            <label class="choice"><input type="radio" name="q10" value="5"></label>
+          </div>
+        </fieldset>
       </div>
 
-      <div class="right" style="margin-top:14px;">
+      <div style="text-align:right;margin-top:10px">
         <button id="btn-diagnose" class="btn primary" type="button">診断する</button>
       </div>
     </section>
 
-    <!-- STEP 3: 結果 -->
+    <!-- STEP 3：結果 -->
     <section class="card" id="result-card">
       <h2>STEP 3｜診断結果</h2>
       <p class="result">
         <span>AI偏差値：</span>
-        <span class="score"><span id="score-out">--</span></span>
+        <span class="score" id="score-out">--</span>
         <span class="pill">レベル：<span id="lv-label">--</span></span>
       </p>
-
       <h3 id="cta-heading" style="margin:.3rem 0 .4rem"></h3>
-      <p id="result-lead" class="lead muted" style="margin-top:0;"></p>
+      <p id="result-lead" class="muted" style="margin-top:0"></p>
       <ul id="result-bullets" class="bullets"></ul>
 
-      <div id="detail-lock-msg" class="warn" style="display:none; margin-top:10px;">
-        ※ <b>メール登録が必要です。</b>登録後に「<u>おすすめコースを見る</u>」から、解説とおすすめコースをご確認ください。
+      <div class="warn" id="detail-lock" style="display:none">
+        ※ <b>メール登録が必要です。</b>登録後に「おすすめコースを見る」から解説をご確認ください。
       </div>
 
-      <div class="cta-row">
-        <a id="lp-link" class="btn ghost" href="#" aria-disabled="true" title="メール登録すると詳細を表示できます" rel="noopener">おすすめコースを見る</a>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <a id="lp-link" class="btn" href="#" rel="noopener">おすすめコースを見る</a>
         <a id="apply-link" class="btn primary" href="#" rel="noopener">この講座に申し込む</a>
       </div>
 
-      <div class="hint" style="margin-top:10px;">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</div>
+      <p class="hint" style="margin-top:8px">メール未登録の場合、結果メール送信と詳細表示はスキップされます。</p>
     </section>
   </main>
 
@@ -176,177 +236,130 @@
     </p>
   </footer>
 
-  <!-- ▼▼ GASへ確実にPOSTする隠しフォーム（新規タブで応答を開いて到達確認） ▼▼ -->
-  <form id="post-gas" method="POST" action="" target="_blank" style="display:none">
-    <input type="hidden" name="email" />
-    <input type="hidden" name="userId" />
-    <input type="hidden" name="score" />
-    <input type="hidden" name="type" />
+  <!-- 遷移させない“隠しiframe＋フォーム”でGASにPOST -->
+  <iframe name="gs_ghost" style="display:none;width:0;height:0;border:0"></iframe>
+  <form id="ghostForm" target="gs_ghost" method="POST" action="" style="display:none">
+    <input type="hidden" name="type"   value="">
+    <input type="hidden" name="email"  value="">
+    <input type="hidden" name="score"  value="">
+    <input type="hidden" name="t"      value="">
   </form>
-  <!-- ▲▲ -->
 
   <script>
   (function(){
-    const QUESTIONS_COUNT = 10;
-    const GAS_URL = window.GAS_URL;
+    const $email   = document.getElementById('email');
+    const $btnReg  = document.getElementById('btn-register');
+    const $btnSkip = document.getElementById('btn-skip');
+    const $btnDiag = document.getElementById('btn-diagnose');
+    const $toast   = document.getElementById('toast');
 
-    // 要素
-    const $email   = document.getElementById("email");
-    const $btnReg  = document.getElementById("btn-register");
-    const $btnSkip = document.getElementById("btn-skip");
-    const $btnDiag = document.getElementById("btn-diagnose");
-    const $lpLink  = document.getElementById("lp-link");
-    const $apply   = document.getElementById("apply-link");
+    const $scoreOut= document.getElementById('score-out');
+    const $lvLabel = document.getElementById('lv-label');
+    const $heading = document.getElementById('cta-heading');
+    const $lead    = document.getElementById('result-lead');
+    const $bullets = document.getElementById('result-bullets');
+    const $detailLock = document.getElementById('detail-lock');
+    const $lp = document.getElementById('lp-link');
+    const $apply = document.getElementById('apply-link');
 
-    const $scoreOut = document.getElementById("score-out");
-    const $lvLabel  = document.getElementById("lv-label");
-    const $heading  = document.getElementById("cta-heading");
-    const $lead     = document.getElementById("result-lead");
-    const $bullets  = document.getElementById("result-bullets");
-    const $lockMsg  = document.getElementById("detail-lock-msg");
+    const state = { email:"", score: null, levelKey:"entry" };
 
-    // 状態
-    const state = { email:"", score:null, levelLabel:"--", lvKey:"", answers:{} };
+    const isEmail = v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
-    // util
-    const isEmail = (v)=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
-    function uid(){
-      const k = "aid_user_id";
-      let id = localStorage.getItem(k);
-      if(!id){ id = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()); localStorage.setItem(k, id); }
-      return id;
+    function postToGAS(fields){
+      const f = document.getElementById('ghostForm');
+      f.action = window.GAS_URL;
+      f.elements.type.value  = fields.type || '';
+      f.elements.email.value = fields.email || '';
+      f.elements.score.value = String(fields.score ?? '');
+      f.elements.t.value     = String(Date.now());
+      f.submit(); // ← 画面遷移せずに確実にPOST
     }
+
     function gatherAnswers(){
-      const a = {};
-      for (let i=1;i<=QUESTIONS_COUNT;i++){
-        let sel = document.querySelector(`input[name="q${i}"]:checked`);
-        if (!sel){ sel = document.querySelector(`input[name="q${i}"][value="3"]`); if(sel) sel.checked = true; }
-        a["q"+i] = sel ? Number(sel.value) : 3;
+      let sum = 0;
+      for(let i=1;i<=10;i++){
+        const r = document.querySelector(`input[name="q${i}"]:checked`);
+        sum += r ? Number(r.value) : 3;
       }
-      return a;
+      return sum;
     }
-    function calcScore(answers){
-      const sum = Object.values(answers).reduce((s,v)=>s + Number(v||0), 0);
-      return Math.max(0, Math.min(100, Math.round(sum * 2))); // 10〜50 → 20〜100
+
+    function calcScore(){
+      const total = gatherAnswers(); // 10〜50
+      return Math.max(0, Math.min(100, Math.round(total*2))); // 20〜100
     }
+
     function levelFrom(score){
-      if (score >= 81) return {label:"先進層（81–100）", key:"practical"};
-      if (score >= 61) return {label:"上級層（61–80）",   key:"practical"};
-      if (score >= 41) return {label:"中級層（41–60）",   key:"middle"};
-      if (score >= 21) return {label:"入門層（21–40）",   key:"entry"};
-      return {label:"初心者層（0–20）", key:"entry"};
+      if(score >= 81) return {key:'practical', label:'先進層'};
+      if(score >= 61) return {key:'practical', label:'上級層'};
+      if(score >= 41) return {key:'middle',    label:'中級層（41–60）'};
+      if(score >= 21) return {key:'entry',     label:'入門層（21–40）'};
+      return {key:'entry', label:'初心者層（0–20）'};
     }
+
     const COPY = {
-      entry: {
-        heading: "AIを“安全に業務へ導入する”第一歩。2週間で成果を実感。",
-        lead: "まずは安全な使い方と良いプロンプトの型を整え、資料・メール・要約などで時短と品質向上を得ます。",
-        bullets: [
-          "基本リテラシーと安全ルールを整備",
-          "資料／メール／要約のテンプレを獲得",
-          "成功プロンプトをテンプレ化して再利用"
-        ]
-      },
-      middle: {
-        heading: "テンプレ＋GASで“勝手に回るAI業務フロー”を構築。",
-        lead: "差し込み型テンプレとGASで定型業務を半自動化。KPIで成果を可視化し改善を定着。",
-        bullets: [
-          "議事録／FAQ／メール対応をテンプレ化",
-          "フォーム→自動返信→記録→レポートの自動化",
-          "KPIとA/Bで改善サイクルを回す"
-        ]
-      },
-      practical: {
-        heading: "要件定義〜実装まで行い、業務改善を仕組み化。",
-        lead: "RAGやエージェント等も含め、本格導入の設計と運用ルールまでを構築します。",
-        bullets: [
-          "導入ロードマップと要件定義",
-          "運用ルールと失敗時ハンドリング設計",
-          "PoCを社内展開しスケール判断"
-        ]
-      }
+      entry:{ heading:'まずは安全に毎日AIに触れる習慣化から。',
+              lead:'資料・メール・要約をAIで型化。成功プロンプトをテンプレ化して再利用を進めます。',
+              bullets:['基本リテラシー整備','テンプレ導入','日次実践→改善'] },
+      middle:{ heading:'売上直結の活用へ。テンプレ×自動化で仕組み化。',
+               lead:'商談フォローやコピー作成など、定型業務をAIテンプレに落とし込みKPIで改善。',
+               bullets:['商談後フォロー自動化','コピーABテスト','テンプレ共有'] },
+      practical:{ heading:'戦略にAIを統合し、半自動で回る収益化へ。',
+                  lead:'KPI設計→自動化→PoC検証まで網羅。RAG/エージェントも視野に。', 
+                  bullets:['KPIとダッシュボード','GAS/連携の実装','PoC→スケール判断'] }
     };
 
-    function updateLockUI(){
-      const locked = !state.email;
-      $lpLink.setAttribute("aria-disabled", locked ? "true" : "false");
-      $lockMsg.style.display = locked ? "block" : "none";
-      $lpLink.title = locked ? "メール登録すると詳細を表示できます" : "おすすめコースを見る";
+    function render(){
+      $scoreOut.textContent = state.score ?? '--';
+      const lv = levelFrom(state.score || 0);
+      state.levelKey = lv.key;
+      $lvLabel.textContent = lv.label;
+
+      const c = COPY[lv.key];
+      $heading.textContent = c.heading;
+      $lead.textContent = c.lead;
+      $bullets.innerHTML = c.bullets.map(x=>`<li>${x}</li>`).join('');
+
+      // リンク
+      const qs = `score=${encodeURIComponent(state.score||0)}`;
+      $lp.href    = `./exo_courses.html?${qs}`;
+      $apply.href = `./exo_course_detail.html?plan=${lv.key}&${qs}`;
+
+      // ロック表示（未登録のとき）
+      $detailLock.style.display = state.email ? 'none' : 'block';
     }
 
-    function renderResult(){
-      $scoreOut.textContent = (state.score ?? "--");
-      const lv = levelFrom(state.score);
-      state.levelLabel = lv.label; state.lvKey = lv.key;
-      $lvLabel.textContent = state.levelLabel;
+    // クリック抑止（未登録時は見るだけに）
+    $lp.addEventListener('click', (e)=>{ if(!state.email){ e.preventDefault(); alert('詳細を見るにはメール登録が必要です。'); }});
 
-      const cp = COPY[state.lvKey] || COPY.entry;
-      $heading.textContent = cp.heading;
-      $lead.textContent = cp.lead;
-      $bullets.innerHTML = (cp.bullets||[]).map(t=>`<li>${t}</li>`).join("");
-
-      $lpLink.href = `./exo_courses.html?score=${state.score}`;
-      $apply.textContent = "この講座に申し込む";
-      $apply.href = `./exo_course_detail.html?plan=${state.lvKey}&score=${state.score}&level=${encodeURIComponent(state.levelLabel)}`;
-
-      updateLockUI();
-      document.getElementById("result-card")?.scrollIntoView({behavior:"smooth", block:"start"});
-    }
-
-    // GASへ form POST（新規タブで応答を開く＝到達確認）
-    function postToGAS({email="", userId="", score="", type=""}, openNewTab=true){
-      if(!GAS_URL){ alert("GAS_URL が未設定です。"); return; }
-      const f = document.getElementById("post-gas");
-      f.action = GAS_URL;
-      f.target = openNewTab ? "_blank" : "gs_ghost";
-      f.querySelector('input[name="email"]').value  = email;
-      f.querySelector('input[name="userId"]').value = userId;
-      f.querySelector('input[name="score"]').value  = String(score||"");
-      f.querySelector('input[name="type"]').value   = type || "";
-      f.submit();
-    }
-
-    // クリック抑止
-    $lpLink.addEventListener('click', (e) => {
-      if ($lpLink.getAttribute('aria-disabled') === 'true') e.preventDefault();
-    });
-
-    // 診断する
-    $btnDiag.addEventListener("click", () => {
-      state.answers = gatherAnswers();
-      state.score   = calcScore(state.answers);
-      renderResult();
-
-      // 登録済みならメール送信（GASの doPost に到達 → 詳細レポートメール）
-      if (state.email){
-        postToGAS({ email: state.email, userId: uid(), score: state.score, type: "send" }, true);
-        gtag('event', 'send_detail_mail', { method:'form_post', score: state.score });
-      }
+    // 登録
+    $btnReg.addEventListener('click', ()=>{
+      const v = ($email.value||'').trim();
+      if(!isEmail(v)){ alert('メールアドレスを正しく入力してください。'); $email.focus(); return; }
+      $btnReg.disabled = true;
+      postToGAS({ type:'register', email:v });
+      state.email = v;
+      $toast.textContent = '詳細レポート案内メールを送信しました。受信箱（迷惑メール含む）をご確認ください。';
+      setTimeout(()=>{ $btnReg.disabled = false; }, 600);
     });
 
     // 登録せずに診断へ
-    $btnSkip.addEventListener("click", () => {
-      state.email = "";
-      updateLockUI();
-      document.getElementById('sec-questions')?.scrollIntoView({behavior:"smooth"});
+    $btnSkip.addEventListener('click', ()=>{
+      document.getElementById('sec-questions').scrollIntoView({behavior:'smooth'});
     });
 
-    // 登録
-    $btnReg.addEventListener("click", () => {
-      const v = ($email.value||"").trim();
-      if (!isEmail(v)){ alert("メールアドレスを正しく入力してください。"); $email.focus(); return; }
-      $btnReg.setAttribute("aria-disabled","true");
-
-      // ログ用（任意）：type=register をGASへ（新規タブは開かない）
-      postToGAS({ email:v, userId: uid(), type:"register" }, false);
-
-      state.email = v;
-      updateLockUI();
-      alert("登録が完了しました。診断後に詳細メールをお送りします。");
-      $btnReg.setAttribute("aria-disabled","false");
+    // 診断する
+    $btnDiag.addEventListener('click', ()=>{
+      state.score = calcScore();
+      render();
+      // 結果もGASへ（遷移なし）
+      postToGAS({ type:'result', email:(state.email||''), score:state.score });
+      document.getElementById('result-card').scrollIntoView({behavior:'smooth'});
     });
 
-    // 初期UI
-    updateLockUI();
+    // 初期
+    render();
   })();
   </script>
 </body>
