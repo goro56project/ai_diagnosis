@@ -16,7 +16,7 @@
 
   <!-- ★GAS WebアプリURL と 秘密キー（GAS側と一致させる） -->
   <script>
-    window.GAS_URL    = "https://script.google.com/macros/s/AKfycbzLvAEpvLfVGN3V2f9i8ykXC_AqANomEHKQ5jnhP04FUa7oui5nYk6BGSEzsHNJHbvq/exec";
+    window.GAS_URL    = "https://script.google.com/macros/s/AKfycbxqHSYJ6bv8KGQFUYhZl5ygJaVXQEllP4S2dSEqAI7dWliErpoFKW-Uiq7aLU1-j29F/exec";
     window.RESULT_KEY = "RG8rK7vQ3bX1pY2z";
   </script>
 
@@ -45,7 +45,7 @@
   <main>
     <h1>AI偏差値診断</h1>
 
-    <!-- STEP 1: メール登録（ここでは送信しない） -->
+    <!-- STEP 1: メール登録 -->
     <section class="card">
       <h2>STEP1｜診断結果をメールで受け取る（任意）</h2>
       <div class="row">
@@ -60,105 +60,35 @@
     <section class="card" id="sec-questions">
       <h2>STEP2｜10問に回答</h2>
 
-      <!-- 1-10 -->
       <fieldset><legend>1. ChatGPTなどのAIツールを業務で使ったことがある</legend>
-        <div class="opts">
-          <label><input type="radio" name="q1" value="1">1</label>
-          <label><input type="radio" name="q1" value="2">2</label>
-          <label><input type="radio" name="q1" value="3" checked>3</label>
-          <label><input type="radio" name="q1" value="4">4</label>
-          <label><input type="radio" name="q1" value="5">5</label>
-        </div>
+        <div class="opts"><label><input type="radio" name="q1" value="1">1</label><label><input type="radio" name="q1" value="2">2</label><label><input type="radio" name="q1" value="3" checked>3</label><label><input type="radio" name="q1" value="4">4</label><label><input type="radio" name="q1" value="5">5</label></div>
       </fieldset>
-
       <fieldset><legend>2. プロンプトを工夫して出力を改善している</legend>
-        <div class="opts">
-          <label><input type="radio" name="q2" value="1">1</label>
-          <label><input type="radio" name="q2" value="2">2</label>
-          <label><input type="radio" name="q2" value="3" checked>3</label>
-          <label><input type="radio" name="q2" value="4">4</label>
-          <label><input type="radio" name="q2" value="5">5</label>
-        </div>
+        <div class="opts"><label><input type="radio" name="q2" value="1">1</label><label><input type="radio" name="q2" value="2">2</label><label><input type="radio" name="q2" value="3" checked>3</label><label><input type="radio" name="q2" value="4">4</label><label><input type="radio" name="q2" value="5">5</label></div>
       </fieldset>
-
       <fieldset><legend>3. AI成果物の品質基準（レビュー）を運用している</legend>
-        <div class="opts">
-          <label><input type="radio" name="q3" value="1">1</label>
-          <label><input type="radio" name="q3" value="2">2</label>
-          <label><input type="radio" name="q3" value="3" checked>3</label>
-          <label><input type="radio" name="q3" value="4">4</label>
-          <label><input type="radio" name="q3" value="5">5</label>
-        </div>
+        <div class="opts"><label><input type="radio" name="q3" value="1">1</label><label><input type="radio" name="q3" value="2">2</label><label><input type="radio" name="q3" value="3" checked>3</label><label><input type="radio" name="q3" value="4">4</label><label><input type="radio" name="q3" value="5">5</label></div>
       </fieldset>
-
       <fieldset><legend>4. 成功手順をテンプレ化し再利用している</legend>
-        <div class="opts">
-          <label><input type="radio" name="q4" value="1">1</label>
-          <label><input type="radio" name="q4" value="2">2</label>
-          <label><input type="radio" name="q4" value="3" checked>3</label>
-          <label><input type="radio" name="q4" value="4">4</label>
-          <label><input type="radio" name="q4" value="5">5</label>
-        </div>
+        <div class="opts"><label><input type="radio" name="q4" value="1">1</label><label><input type="radio" name="q4" value="2">2</label><label><input type="radio" name="q4" value="3" checked>3</label><label><input type="radio" name="q4" value="4">4</label><label><input type="radio" name="q4" value="5">5</label></div>
       </fieldset>
-
       <fieldset><legend>5. ツール連携×AIで業務効率化が進んでいる</legend>
-        <div class="opts">
-          <label><input type="radio" name="q5" value="1">1</label>
-          <label><input type="radio" name="q5" value="2">2</label>
-          <label><input type="radio" name="q5" value="3" checked>3</label>
-          <label><input type="radio" name="q5" value="4">4</label>
-          <label><input type="radio" name="q5" value="5">5</label>
-        </div>
+        <div class="opts"><label><input type="radio" name="q5" value="1">1</label><label><input type="radio" name="q5" value="2">2</label><label><input type="radio" name="q5" value="3" checked>3</label><label><input type="radio" name="q5" value="4">4</label><label><input type="radio" name="q5" value="5">5</label></div>
       </fieldset>
-
       <fieldset><legend>6. セキュリティ／利用ルールが整備されている</legend>
-        <div class="opts">
-          <label><input type="radio" name="q6" value="1">1</label>
-          <label><input type="radio" name="q6" value="2">2</label>
-          <label><input type="radio" name="q6" value="3" checked>3</label>
-          <label><input type="radio" name="q6" value="4">4</label>
-          <label><input type="radio" name="q6" value="5">5</label>
-        </div>
+        <div class="opts"><label><input type="radio" name="q6" value="1">1</label><label><input type="radio" name="q6" value="2">2</label><label><input type="radio" name="q6" value="3" checked>3</label><label><input type="radio" name="q6" value="4">4</label><label><input type="radio" name="q6" value="5">5</label></div>
       </fieldset>
-
       <fieldset><legend>7. ガイドラインや成功事例を共有している</legend>
-        <div class="opts">
-          <label><input type="radio" name="q7" value="1">1</label>
-          <label><input type="radio" name="q7" value="2">2</label>
-          <label><input type="radio" name="q7" value="3" checked>3</label>
-          <label><input type="radio" name="q7" value="4">4</label>
-          <label><input type="radio" name="q7" value="5">5</label>
-        </div>
+        <div class="opts"><label><input type="radio" name="q7" value="1">1</label><label><input type="radio" name="q7" value="2">2</label><label><input type="radio" name="q7" value="3" checked>3</label><label><input type="radio" name="q7" value="4">4</label><label><input type="radio" name="q7" value="5">5</label></div>
       </fieldset>
-
       <fieldset><legend>8. 評価・検証（A/B・指標化）に取り組んでいる</legend>
-        <div class="opts">
-          <label><input type="radio" name="q8" value="1">1</label>
-          <label><input type="radio" name="q8" value="2">2</label>
-          <label><input type="radio" name="q8" value="3" checked>3</label>
-          <label><input type="radio" name="q8" value="4">4</label>
-          <label><input type="radio" name="q8" value="5">5</label>
-        </div>
+        <div class="opts"><label><input type="radio" name="q8" value="1">1</label><label><input type="radio" name="q8" value="2">2</label><label><input type="radio" name="q8" value="3" checked>3</label><label><input type="radio" name="q8" value="4">4</label><label><input type="radio" name="q8" value="5">5</label></div>
       </fieldset>
-
       <fieldset><legend>9. 自動化／RAG／エージェント運用を始めている</legend>
-        <div class="opts">
-          <label><input type="radio" name="q9" value="1">1</label>
-          <label><input type="radio" name="q9" value="2">2</label>
-          <label><input type="radio" name="q9" value="3" checked>3</label>
-          <label><input type="radio" name="q9" value="4">4</label>
-          <label><input type="radio" name="q9" value="5">5</label>
-        </div>
+        <div class="opts"><label><input type="radio" name="q9" value="1">1</label><label><input type="radio" name="q9" value="2">2</label><label><input type="radio" name="q9" value="3" checked>3</label><label><input type="radio" name="q9" value="4">4</label><label><input type="radio" name="q9" value="5">5</label></div>
       </fieldset>
-
       <fieldset><legend>10. 新しいAI機能を定期的に試し、評価している</legend>
-        <div class="opts">
-          <label><input type="radio" name="q10" value="1">1</label>
-          <label><input type="radio" name="q10" value="2">2</label>
-          <label><input type="radio" name="q10" value="3" checked>3</label>
-          <label><input type="radio" name="q10" value="4">4</label>
-          <label><input type="radio" name="q10" value="5">5</label>
-        </div>
+        <div class="opts"><label><input type="radio" name="q10" value="1">1</label><label><input type="radio" name="q10" value="2">2</label><label><input type="radio" name="q10" value="3" checked>3</label><label><input type="radio" name="q10" value="4">4</label><label><input type="radio" name="q10" value="5">5</label></div>
       </fieldset>
 
       <div style="text-align:right;margin-top:10px">
@@ -214,7 +144,6 @@
       return {label:'初心者層（0–20）', advice:'まずは安全に触れる場を増やす'};
     }
 
-    // ←これがCORS回避の本丸
     function postToGAS(fields){
       const f = document.getElementById('ghostForm');
       f.action = window.GAS_URL;
@@ -245,7 +174,6 @@
       adviceEl.textContent = lv.advice;
 
       if(state.email){
-        // fetch は使わない！ → 代わりにフォームでPOST
         postToGAS({ type:'result', email:state.email, score:state.score });
         alert('結果メールの送信を受け付けました。受信箱（迷惑メール含む）をご確認ください。');
       }
