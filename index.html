@@ -14,16 +14,18 @@
     gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type:'beacon', debug_mode: true });
   </script>
 
-  <!-- ★GAS WebアプリURL（exec） -->
+  <!-- ★GAS WebアプリURL＆秘密キー -->
   <script>
     window.GAS_URL = "https://script.google.com/macros/s/AKfycbzLvAEpvLfVGN3V2f9i8ykXC_AqANomEHKQ5jnhP04FUa7oui5nYk6BGSEzsHNJHbvq/exec";
+    window.RESULT_KEY = "RG8rK7vQ3bX1pY2z"; // ← GASのRESULT_KEYと同じ値に必ずする！
   </script>
 
   <style>
-    /* （CSSはそのまま、変更なし） */
+    /* CSSはそのまま */
     :root { --brand:#635bff; --ink:#111827; --card:#fff; --bg:#f8fafc; --muted:#6b7280; --line:#e5e7eb; }
     *{ box-sizing:border-box }
-    body{ margin:0; color:var(--ink); background:var(--bg); font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif }
+    body{ margin:0; color:var(--ink); background:var(--bg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif }
     header{ background:#fff; border-bottom:1px solid var(--line) }
     .wrap{ max-width:1000px; margin:0 auto; padding:20px 16px }
     h1{ font-size:clamp(26px,3.5vw,32px); margin:6px 0 8px }
@@ -53,7 +55,7 @@
   </style>
 </head>
 <body>
-  <!-- （HTML本体はそのまま省略：質問や結果表示UIは変えない） -->
+  <!-- （質問や結果表示のUI部分は省略） -->
 
   <!-- 隠しiframe＋フォーム -->
   <iframe name="gs_ghost" style="display:none;width:0;height:0;border:0"></iframe>
@@ -61,6 +63,7 @@
     <input type="hidden" name="type"   value="">
     <input type="hidden" name="email"  value="">
     <input type="hidden" name="score"  value="">
+    <input type="hidden" name="key"    value="">
     <input type="hidden" name="t"      value="">
   </form>
 
@@ -84,12 +87,14 @@
     const state = { email:"", score: null, levelKey:"entry" };
     const isEmail = v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
+    // 🚀 GASへ送信
     function postToGAS(fields){
       const f = document.getElementById('ghostForm');
       f.action = window.GAS_URL;
       f.elements.type.value  = fields.type || '';
       f.elements.email.value = fields.email || '';
       f.elements.score.value = String(fields.score ?? '');
+      f.elements.key.value   = fields.key || '';
       f.elements.t.value     = String(Date.now());
       f.submit();
     }
@@ -144,7 +149,7 @@
 
     $lp.addEventListener('click', (e)=>{ if(!state.email){ e.preventDefault(); alert('詳細を見るにはメール登録が必要です。'); }});
 
-    // ✅ 修正ポイント：登録時は保存だけ（メール送らない）
+    // ✅ 登録時は保存だけ
     $btnReg.addEventListener('click', ()=>{
       const v = ($email.value||'').trim();
       if(!isEmail(v)){ alert('メールアドレスを正しく入力してください。'); $email.focus(); return; }
@@ -156,12 +161,17 @@
       document.getElementById('sec-questions').scrollIntoView({behavior:'smooth'});
     });
 
-    // ✅ 修正ポイント：診断時にだけ GAS へ送信
+    // ✅ 診断時だけメール送信
     $btnDiag.addEventListener('click', ()=>{
       state.score = calcScore();
       render();
       if(state.email){
-        postToGAS({ type:'result', email:state.email, score:state.score });
+        postToGAS({
+          type:'result',
+          email: state.email,
+          score: state.score,
+          key: window.RESULT_KEY
+        });
       }
       document.getElementById('result-card').scrollIntoView({behavior:'smooth'});
     });
