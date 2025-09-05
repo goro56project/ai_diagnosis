@@ -22,7 +22,8 @@
 
   <style>
     :root { --brand:#635bff; --ink:#111827; --card:#fff; --bg:#f8fafc; --muted:#6b7280; --line:#e5e7eb; }
-    *{ box-sizing:border-box } body{ margin:0; color:var(--ink); background:var(--bg);
+    *{ box-sizing:border-box }
+    body{ margin:0; color:var(--ink); background:var(--bg);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif }
     main{ max-width:980px; margin:0 auto; padding:20px 16px }
     h1{ font-size:clamp(26px,3.5vw,32px); margin:10px 0 16px }
@@ -144,6 +145,7 @@
       return {label:'初心者層（0–20）', advice:'まずは安全に触れる場を増やす'};
     }
 
+    // 送信用（iframe＋フォームでCORS回避）
     function postToGAS(fields){
       const f = document.getElementById('ghostForm');
       f.action = window.GAS_URL;
@@ -155,17 +157,21 @@
       f.submit();
     }
 
+    // ★登録時：ログ用にGASへ register をPOST（メール送信はGAS側でしない）
     $('#btn-register').addEventListener('click', ()=>{
       const v=(emailEl.value||'').trim();
       if(!isEmail(v)){ alert('正しいメールを入力してください'); emailEl.focus(); return; }
       state.email=v;
       toastEl.textContent='メールを登録しました。診断後に結果メールが届きます。';
+      postToGAS({ type:'register', email: state.email }); // ← これが追加点
     });
+
     $('#btn-skip').addEventListener('click', ()=>{
       state.email=""; toastEl.textContent='登録をスキップしました（メールは送信されません）';
       document.getElementById('sec-questions').scrollIntoView({behavior:'smooth'});
     });
 
+    // 診断 → スコア表示 ＋（登録ありなら）GASへ result POST
     $('#btn-diagnose').addEventListener('click', ()=>{
       state.score = calcScore();
       const lv = levelFrom(state.score);
