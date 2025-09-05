@@ -161,9 +161,9 @@
     $('#btn-register').addEventListener('click', ()=>{
       const v=(emailEl.value||'').trim();
       if(!isEmail(v)){ alert('正しいメールを入力してください'); emailEl.focus(); return; }
-      state.email=v;
-      toastEl.textContent='メールを登録しました。診断後に結果メールが届きます。';
-      postToGAS({ type:'register', email: state.email }); // ← これが追加点
+      state.email = v;
+      postToGAS({ type:'register', email: v });   // ← 追加
+      toastEl.textContent = 'メールを登録しました。診断後に結果メールが届きます。';
     });
 
     $('#btn-skip').addEventListener('click', ()=>{
