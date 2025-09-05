@@ -17,11 +17,10 @@
   <!-- ★GAS WebアプリURL＆秘密キー -->
   <script>
     window.GAS_URL = "https://script.google.com/macros/s/AKfycbzLvAEpvLfVGN3V2f9i8ykXC_AqANomEHKQ5jnhP04FUa7oui5nYk6BGSEzsHNJHbvq/exec";
-    window.RESULT_KEY = "RG8rK7vQ3bX1pY2z"; // ← GASのRESULT_KEYと同じ値に必ずする！
+    window.RESULT_KEY = "RG8rK7vQ3bX1pY2z"; // ← GASのRESULT_KEYと必ず一致させる！
   </script>
 
   <style>
-    /* CSSはそのまま */
     :root { --brand:#635bff; --ink:#111827; --card:#fff; --bg:#f8fafc; --muted:#6b7280; --line:#e5e7eb; }
     *{ box-sizing:border-box }
     body{ margin:0; color:var(--ink); background:var(--bg);
@@ -55,7 +54,55 @@
   </style>
 </head>
 <body>
-  <!-- （質問や結果表示のUI部分は省略） -->
+  <header>
+    <div class="wrap">
+      <h1>AI偏差値診断</h1>
+      <p class="lead">メール登録 → 10問に回答 → スコアと詳細レポートが届きます。</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- STEP 1 -->
+    <section class="card" id="sec-register">
+      <h2>STEP 1｜診断結果をメールで受け取る</h2>
+      <div class="row">
+        <input id="email" type="email" placeholder="メールアドレスを入力" />
+        <button id="btn-register" class="btn primary" type="button">登録する</button>
+        <button id="btn-skip" class="btn" type="button">登録せず診断へ</button>
+      </div>
+      <p id="toast" class="hint"></p>
+    </section>
+
+    <!-- STEP 2（設問10問：省略せず入れてください。ゴローさんが持ってる質問セットでOK） -->
+    <section class="card" id="sec-questions">
+      <h2>STEP 2｜10問に回答</h2>
+      <!-- …設問ここ… -->
+      <button id="btn-diagnose" class="btn primary" type="button">診断する</button>
+    </section>
+
+    <!-- STEP 3（結果表示） -->
+    <section class="card" id="result-card">
+      <h2>STEP 3｜診断結果</h2>
+      <p>AI偏差値：<span id="score-out">--</span></p>
+      <p>レベル：<span id="lv-label">--</span></p>
+      <h3 id="cta-heading"></h3>
+      <p id="result-lead"></p>
+      <ul id="result-bullets"></ul>
+      <div class="warn" id="detail-lock" style="display:none">
+        ※ 詳細レポートを見るにはメール登録が必要です。
+      </div>
+      <a id="lp-link" href="#" class="btn">おすすめコースを見る</a>
+      <a id="apply-link" href="#" class="btn primary">この講座に申し込む</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      <a href="terms.html" target="_blank">利用規約</a>
+      <a href="privacy.html" target="_blank">プライバシーポリシー</a>
+      <a href="law.html" target="_blank">特商法表記</a>
+    </p>
+  </footer>
 
   <!-- 隠しiframe＋フォーム -->
   <iframe name="gs_ghost" style="display:none;width:0;height:0;border:0"></iframe>
@@ -84,10 +131,9 @@
     const $lp = document.getElementById('lp-link');
     const $apply = document.getElementById('apply-link');
 
-    const state = { email:"", score: null, levelKey:"entry" };
+    const state = { email:"", score:null, levelKey:"entry" };
     const isEmail = v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
-    // 🚀 GASへ送信
     function postToGAS(fields){
       const f = document.getElementById('ghostForm');
       f.action = window.GAS_URL;
@@ -100,78 +146,60 @@
     }
 
     function gatherAnswers(){
-      let sum = 0;
+      let sum=0;
       for(let i=1;i<=10;i++){
-        const r = document.querySelector(`input[name="q${i}"]:checked`);
-        sum += r ? Number(r.value) : 3;
+        const r=document.querySelector(`input[name="q${i}"]:checked`);
+        sum+=r?Number(r.value):3;
       }
       return sum;
     }
-    function calcScore(){ return Math.max(0, Math.min(100, Math.round(gatherAnswers()*2))); }
+    function calcScore(){ return Math.max(0,Math.min(100,Math.round(gatherAnswers()*2))); }
 
     function levelFrom(score){
-      if(score >= 81) return {key:'practical', label:'先進層'};
-      if(score >= 61) return {key:'practical', label:'上級層'};
-      if(score >= 41) return {key:'middle',    label:'中級層（41–60）'};
-      if(score >= 21) return {key:'entry',     label:'入門層（21–40）'};
-      return {key:'entry', label:'初心者層（0–20）'};
+      if(score>=81) return {key:'practical',label:'先進層'};
+      if(score>=61) return {key:'practical',label:'上級層'};
+      if(score>=41) return {key:'middle',label:'中級層'};
+      if(score>=21) return {key:'entry',label:'入門層'};
+      return {key:'entry',label:'初心者層'};
     }
 
-    const COPY = {
-      entry:{ heading:'まずは安全に毎日AIに触れる習慣化から。',
-              lead:'資料・メール・要約をAIで型化。成功プロンプトをテンプレ化して再利用を進めます。',
-              bullets:['基本リテラシー整備','テンプレ導入','日次実践→改善'] },
-      middle:{ heading:'売上直結の活用へ。テンプレ×自動化で仕組み化。',
-               lead:'商談フォローやコピー作成など、定型業務をAIテンプレに落とし込みKPIで改善。',
-               bullets:['商談後フォロー自動化','コピーABテスト','テンプレ共有'] },
-      practical:{ heading:'戦略にAIを統合し、半自動で回る収益化へ。',
-                  lead:'KPI設計→自動化→PoC検証まで網羅。RAG/エージェントも視野に。',
-                  bullets:['KPIとダッシュボード','GAS/連携の実装','PoC→スケール判断'] }
+    const COPY={
+      entry:{heading:'まずは習慣化から',lead:'AIを毎日触って型化するところから',bullets:['基本リテラシー','テンプレ導入','日次実践']},
+      middle:{heading:'売上直結の活用へ',lead:'商談フォローやコピー改善',bullets:['商談自動化','コピーABテスト','テンプレ共有']},
+      practical:{heading:'戦略にAIを統合',lead:'KPI設計からRAG/エージェントまで',bullets:['KPI設計','GAS連携','PoC→スケール']}
     };
 
     function render(){
-      $scoreOut.textContent = state.score ?? '--';
-      const lv = levelFrom(state.score || 0);
-      state.levelKey = lv.key;
-      $lvLabel.textContent = lv.label;
-
-      const c = COPY[lv.key];
-      $heading.textContent = c.heading;
-      $lead.textContent = c.lead;
-      $bullets.innerHTML = c.bullets.map(x=>`<li>${x}</li>`).join('');
-
-      const qs = `score=${encodeURIComponent(state.score||0)}`;
-      $lp.href    = `./exo_courses.html?${qs}`;
-      $apply.href = `./exo_course_detail.html?plan=${lv.key}&${qs}`;
-
-      $detailLock.style.display = state.email ? 'none' : 'block';
+      $scoreOut.textContent=state.score??'--';
+      const lv=levelFrom(state.score||0);
+      state.levelKey=lv.key;
+      $lvLabel.textContent=lv.label;
+      const c=COPY[lv.key];
+      $heading.textContent=c.heading;
+      $lead.textContent=c.lead;
+      $bullets.innerHTML=c.bullets.map(x=>`<li>${x}</li>`).join('');
+      const qs=`score=${encodeURIComponent(state.score||0)}`;
+      $lp.href=`exo_courses.html?${qs}`;
+      $apply.href=`exo_course_detail.html?plan=${lv.key}&${qs}`;
+      $detailLock.style.display=state.email?'none':'block';
     }
 
-    $lp.addEventListener('click', (e)=>{ if(!state.email){ e.preventDefault(); alert('詳細を見るにはメール登録が必要です。'); }});
-
-    // ✅ 登録時は保存だけ
-    $btnReg.addEventListener('click', ()=>{
-      const v = ($email.value||'').trim();
-      if(!isEmail(v)){ alert('メールアドレスを正しく入力してください。'); $email.focus(); return; }
-      state.email = v;
-      $toast.textContent = 'メールを登録しました。診断後に詳細レポートが届きます。';
+    $btnReg.addEventListener('click',()=>{
+      const v=($email.value||'').trim();
+      if(!isEmail(v)){alert('正しいメールを入力して');$email.focus();return;}
+      state.email=v;
+      $toast.textContent='メールを登録しました。診断後に詳細が届きます。';
     });
 
-    $btnSkip.addEventListener('click', ()=>{
+    $btnSkip.addEventListener('click',()=>{
       document.getElementById('sec-questions').scrollIntoView({behavior:'smooth'});
     });
 
-    // ✅ 診断時だけメール送信
-    $btnDiag.addEventListener('click', ()=>{
-      state.score = calcScore();
+    $btnDiag.addEventListener('click',()=>{
+      state.score=calcScore();
       render();
       if(state.email){
-        postToGAS({
-          type:'result',
-          email: state.email,
-          score: state.score,
-          key: window.RESULT_KEY
-        });
+        postToGAS({type:'result',email:state.email,score:state.score,key:window.RESULT_KEY});
       }
       document.getElementById('result-card').scrollIntoView({behavior:'smooth'});
     });
