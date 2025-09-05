@@ -95,7 +95,7 @@
   </footer>
 
   <!-- ここから：確実に届く「隠しiframe＋フォーム」方式 -->
-  <iframe name="gs_ghost" style="display:none;width:0;height:0;border:0"></iframe>
+  <iframe name="gs_ghost" id="gs_ghost" style="display:none;width:0;height:0;border:0"></iframe>
   <form id="fallback-post" method="POST" action="" target="gs_ghost" style="display:none">
     <input type="hidden" name="email" />
     <input type="hidden" name="userId" />
@@ -128,8 +128,17 @@
       f.querySelector('input[name="email"]').value  = email;
       f.querySelector('input[name="userId"]').value = userId;
       f.querySelector('input[name="score"]').value  = String(score);
-      f.submit();  // ← CORS無視で確実に届く
+      window._pending = true;
+      f.submit();  // ← CORSに影響されず確実に届く
     }
+
+    // ===== 応答受信（iframe の load で確認メッセージ） =====
+    document.getElementById('gs_ghost').addEventListener('load', () => {
+      if (window._pending){
+        window._pending = false;
+        toast("サーバーの応答を受信しました。数秒後にメールが届きます。", true);
+      }
+    });
 
     // ===== クリック処理 =====
     document.getElementById("btn-register").addEventListener("click", () => {
@@ -140,10 +149,8 @@
       const score  = clampScore(new URLSearchParams(location.search).get("score")); // 未回答なら0
       const userId = getUserId();
 
-      // 送信
       postViaHiddenForm(email, userId, score);
-      toast("詳細レポートの案内メールを送信しました。受信箱（迷惑メール/プロモーションも）をご確認ください。", true);
-      gtag('event', 'send_detail_mail', { method:'form', score: score });
+      gtag('event', 'send_detail_mail', { method:'iframe_form', score: score });
     });
 
     // ===== 診断後のコースCTA（?score= があれば表示） =====
