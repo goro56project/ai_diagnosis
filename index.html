@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>AI偏差値診断｜メール登録→診断→結果メール</title>
 
-  <!-- GA4 -->
+  <!-- GA4（そのままでOK） -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -14,10 +14,10 @@
     gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type:'beacon', debug_mode: true });
   </script>
 
-  <!-- GAS URL & 秘密キー -->
+  <!-- ★GAS WebアプリURL＆秘密キー（RESULT_KEYはGASと一致させる） -->
   <script>
     window.GAS_URL = "https://script.google.com/macros/s/AKfycbzLvAEpvLfVGN3V2f9i8ykXC_AqANomEHKQ5jnhP04FUa7oui5nYk6BGSEzsHNJHbvq/exec";
-    window.RESULT_KEY = "RG8rK7vQ3bX1pY2z"; // GAS側と一致させる
+    window.RESULT_KEY = "RG8rK7vQ3bX1pY2z";  /* ← ここをGASのRESULT_KEYに合わせる */
   </script>
 
   <style>
@@ -43,14 +43,14 @@
     .result{ display:flex; gap:12px; align-items:center; flex-wrap:wrap }
     .score{ font-size:28px; font-weight:800; color:#111827 }
     ul.bullets{ margin:8px 0 0 20px }
-    footer{ text-align:center; font-size:14px; border-top:1px solid var(--line); background:#fff; padding:20px; margin-top:40px }
-    footer a{ color:var(--ink); text-decoration:none }
-    footer a + a{ margin-left:12px }
     .qgrid{ display:grid; grid-template-columns:minmax(140px,1fr) repeat(5,minmax(48px,70px)); gap:8px 10px; align-items:center }
     .qgrid .choice{ display:flex; justify-content:center; align-items:center; height:40px }
     .qgrid .choice input{ width:18px; height:18px }
     .qgrid-head>div:first-child{ visibility:hidden }
     @media (max-width:760px){ .qgrid{ grid-template-columns:repeat(5,1fr) } .qgrid>div:first-child{ display:none } }
+    footer{ text-align:center; font-size:14px; border-top:1px solid var(--line); background:#fff; padding:20px; margin-top:40px }
+    footer a{ color:var(--ink); text-decoration:none }
+    footer a + a{ margin-left:12px }
   </style>
 </head>
 <body>
@@ -73,12 +73,17 @@
       <p id="toast" class="hint"></p>
     </section>
 
-    <!-- STEP 2：設問（例として2問だけ、実際は10問入れてください） -->
+    <!-- STEP 2：10問 -->
     <section class="card" id="sec-questions">
       <h2>STEP 2｜10問に回答</h2>
-      <fieldset>
-        <legend>1. ChatGPTを業務で使ったことがありますか？</legend>
-        <div class="qgrid">
+
+      <div class="qgrid qgrid-head muted" style="font-size:12px;margin-bottom:6px">
+        <div></div><div class="choice">全くない</div><div class="choice">少し</div><div class="choice">普通</div><div class="choice">かなり</div><div class="choice">とてもある</div>
+      </div>
+
+      <!-- 1〜10 -->
+      <fieldset><legend>1. 業務でAIツールを使ったことがある</legend>
+        <div class="qgrid"><div></div>
           <label class="choice"><input type="radio" name="q1" value="1"></label>
           <label class="choice"><input type="radio" name="q1" value="2"></label>
           <label class="choice"><input type="radio" name="q1" value="3" checked></label>
@@ -86,9 +91,8 @@
           <label class="choice"><input type="radio" name="q1" value="5"></label>
         </div>
       </fieldset>
-      <fieldset>
-        <legend>2. プロンプトを工夫して出力改善した経験はありますか？</legend>
-        <div class="qgrid">
+      <fieldset><legend>2. プロンプトを工夫して出力改善できる</legend>
+        <div class="qgrid"><div></div>
           <label class="choice"><input type="radio" name="q2" value="1"></label>
           <label class="choice"><input type="radio" name="q2" value="2"></label>
           <label class="choice"><input type="radio" name="q2" value="3" checked></label>
@@ -96,8 +100,79 @@
           <label class="choice"><input type="radio" name="q2" value="5"></label>
         </div>
       </fieldset>
+      <fieldset><legend>3. AI成果物の品質基準（レビュー）がある</legend>
+        <div class="qgrid"><div></div>
+          <label class="choice"><input type="radio" name="q3" value="1"></label>
+          <label class="choice"><input type="radio" name="q3" value="2"></label>
+          <label class="choice"><input type="radio" name="q3" value="3" checked></label>
+          <label class="choice"><input type="radio" name="q3" value="4"></label>
+          <label class="choice"><input type="radio" name="q3" value="5"></label>
+        </div>
+      </fieldset>
+      <fieldset><legend>4. 成功手順をテンプレ化し再利用している</legend>
+        <div class="qgrid"><div></div>
+          <label class="choice"><input type="radio" name="q4" value="1"></label>
+          <label class="choice"><input type="radio" name="q4" value="2"></label>
+          <label class="choice"><input type="radio" name="q4" value="3" checked></label>
+          <label class="choice"><input type="radio" name="q4" value="4"></label>
+          <label class="choice"><input type="radio" name="q4" value="5"></label>
+        </div>
+      </fieldset>
+      <fieldset><legend>5. 複数ツール×AI連携で効率化している</legend>
+        <div class="qgrid"><div></div>
+          <label class="choice"><input type="radio" name="q5" value="1"></label>
+          <label class="choice"><input type="radio" name="q5" value="2"></label>
+          <label class="choice"><input type="radio" name="q5" value="3" checked></label>
+          <label class="choice"><input type="radio" name="q5" value="4"></label>
+          <label class="choice"><input type="radio" name="q5" value="5"></label>
+        </div>
+      </fieldset>
+      <fieldset><legend>6. セキュリティ／利用ルールが整備されている</legend>
+        <div class="qgrid"><div></div>
+          <label class="choice"><input type="radio" name="q6" value="1"></label>
+          <label class="choice"><input type="radio" name="q6" value="2"></label>
+          <label class="choice"><input type="radio" name="q6" value="3" checked></label>
+          <label class="choice"><input type="radio" name="q6" value="4"></label>
+          <label class="choice"><input type="radio" name="q6" value="5"></label>
+        </div>
+      </fieldset>
+      <fieldset><legend>7. ガイドラインや成功事例を共有している</legend>
+        <div class="qgrid"><div></div>
+          <label class="choice"><input type="radio" name="q7" value="1"></label>
+          <label class="choice"><input type="radio" name="q7" value="2"></label>
+          <label class="choice"><input type="radio" name="q7" value="3" checked></label>
+          <label class="choice"><input type="radio" name="q7" value="4"></label>
+          <label class="choice"><input type="radio" name="q7" value="5"></label>
+        </div>
+      </fieldset>
+      <fieldset><legend>8. 評価・検証（A/B・指標化）を行えている</legend>
+        <div class="qgrid"><div></div>
+          <label class="choice"><input type="radio" name="q8" value="1"></label>
+          <label class="choice"><input type="radio" name="q8" value="2"></label>
+          <label class="choice"><input type="radio" name="q8" value="3" checked></label>
+          <label class="choice"><input type="radio" name="q8" value="4"></label>
+          <label class="choice"><input type="radio" name="q8" value="5"></label>
+        </div>
+      </fieldset>
+      <fieldset><legend>9. 自動化／RAG／エージェント運用に着手している</legend>
+        <div class="qgrid"><div></div>
+          <label class="choice"><input type="radio" name="q9" value="1"></label>
+          <label class="choice"><input type="radio" name="q9" value="2"></label>
+          <label class="choice"><input type="radio" name="q9" value="3" checked></label>
+          <label class="choice"><input type="radio" name="q9" value="4"></label>
+          <label class="choice"><input type="radio" name="q9" value="5"></label>
+        </div>
+      </fieldset>
+      <fieldset><legend>10. 新しいAI機能を定期的に試し、評価している</legend>
+        <div class="qgrid"><div></div>
+          <label class="choice"><input type="radio" name="q10" value="1"></label>
+          <label class="choice"><input type="radio" name="q10" value="2"></label>
+          <label class="choice"><input type="radio" name="q10" value="3" checked></label>
+          <label class="choice"><input type="radio" name="q10" value="4"></label>
+          <label class="choice"><input type="radio" name="q10" value="5"></label>
+        </div>
+      </fieldset>
 
-      <!-- ここに残り8問を入れて完成 -->
       <div style="text-align:right;margin-top:10px">
         <button id="btn-diagnose" class="btn primary" type="button">診断する</button>
       </div>
@@ -127,56 +202,58 @@
     </p>
   </footer>
 
-  <!-- 隠しiframe＋フォーム -->
-  <iframe name="gs_ghost" style="display:none;width:0;height:0;border:0"></iframe>
-  <form id="ghostForm" target="gs_ghost" method="POST" action="" style="display:none">
-    <input type="hidden" name="type"   value="">
-    <input type="hidden" name="email"  value="">
-    <input type="hidden" name="score"  value="">
-    <input type="hidden" name="key"    value="">
-    <input type="hidden" name="t"      value="">
-  </form>
-
   <script>
-  (function(){
-    const $email   = document.getElementById('email');
-    const $btnReg  = document.getElementById('btn-register');
-    const $btnSkip = document.getElementById('btn-skip');
-    const $btnDiag = document.getElementById('btn-diagnose');
-    const $toast   = document.getElementById('toast');
+  document.addEventListener('DOMContentLoaded', () => {
+    const $ = sel => document.querySelector(sel);
+    const emailEl  = $('#email');
+    const btnReg   = $('#btn-register');
+    const btnSkip  = $('#btn-skip');
+    const btnDiag  = $('#btn-diagnose');
+    const toastEl  = $('#toast');
 
-    const $scoreOut= document.getElementById('score-out');
-    const $lvLabel = document.getElementById('lv-label');
-    const $heading = document.getElementById('cta-heading');
-    const $lead    = document.getElementById('result-lead');
-    const $bullets = document.getElementById('result-bullets');
-    const $detailLock = document.getElementById('detail-lock');
-    const $lp = document.getElementById('lp-link');
-    const $apply = document.getElementById('apply-link');
+    const scoreOut = $('#score-out');
+    const lvLabel  = $('#lv-label');
+    const heading  = $('#cta-heading');
+    const lead     = $('#result-lead');
+    const bullets  = $('#result-bullets');
+    const detailLock = $('#detail-lock');
+    const lpLink   = $('#lp-link');
+    const applyLink= $('#apply-link');
 
     const state = { email:"", score:null, levelKey:"entry" };
     const isEmail = v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
-    function postToGAS(fields){
-      const f = document.getElementById('ghostForm');
-      f.action = window.GAS_URL;
-      f.elements.type.value  = fields.type || '';
-      f.elements.email.value = fields.email || '';
-      f.elements.score.value = String(fields.score ?? '');
-      f.elements.key.value   = fields.key || '';
-      f.elements.t.value     = String(Date.now());
-      f.submit();
+    // --- GASに送信（診断後のみ） ---
+    async function sendResultToGAS(){
+      try{
+        const payload = {
+          type: "result",
+          email: state.email,
+          score: state.score,
+          key: window.RESULT_KEY,
+          t: Date.now()
+        };
+        const res = await fetch(window.GAS_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        // レスポンスは使わない（送信できなくても表示は続行）
+        await res.text().catch(()=>{});
+      }catch(err){
+        console.error("GAS送信失敗", err);
+      }
     }
 
     function gatherAnswers(){
-      let sum=0;
+      let sum = 0;
       for(let i=1;i<=10;i++){
-        const r=document.querySelector(`input[name="q${i}"]:checked`);
-        sum+=r?Number(r.value):3;
+        const r = document.querySelector(`input[name="q${i}"]:checked`);
+        sum += r ? Number(r.value) : 3; // 未選択は中間値でカウント
       }
       return sum;
     }
-    function calcScore(){ return Math.max(0,Math.min(100,Math.round(gatherAnswers()*2))); }
+    function calcScore(){ return Math.max(0, Math.min(100, Math.round(gatherAnswers()*2))); }
 
     function levelFrom(score){
       if(score>=81) return {key:'practical',label:'先進層'};
@@ -193,42 +270,44 @@
     };
 
     function render(){
-      $scoreOut.textContent=state.score??'--';
-      const lv=levelFrom(state.score||0);
-      state.levelKey=lv.key;
-      $lvLabel.textContent=lv.label;
-      const c=COPY[lv.key];
-      $heading.textContent=c.heading;
-      $lead.textContent=c.lead;
-      $bullets.innerHTML=c.bullets.map(x=>`<li>${x}</li>`).join('');
-      const qs=`score=${encodeURIComponent(state.score||0)}`;
-      $lp.href=`exo_courses.html?${qs}`;
-      $apply.href=`exo_course_detail.html?plan=${lv.key}&${qs}`;
-      $detailLock.style.display=state.email?'none':'block';
+      scoreOut.textContent = state.score ?? '--';
+      const lv = levelFrom(state.score || 0);
+      state.levelKey = lv.key;
+      lvLabel.textContent = lv.label;
+
+      const c = COPY[lv.key];
+      heading.textContent = c.heading;
+      lead.textContent = c.lead;
+      bullets.innerHTML = c.bullets.map(x=>`<li>${x}</li>`).join('');
+
+      const qs = `score=${encodeURIComponent(state.score||0)}`;
+      lpLink.href    = `exo_courses.html?${qs}`;
+      applyLink.href = `exo_course_detail.html?plan=${lv.key}&${qs}`;
+
+      detailLock.style.display = state.email ? 'none' : 'block';
     }
 
-    $btnReg.addEventListener('click',()=>{
-      const v=($email.value||'').trim();
-      if(!isEmail(v)){alert('正しいメールを入力して');$email.focus();return;}
-      state.email=v;
-      $toast.textContent='メールを登録しました。診断後に詳細が届きます。';
+    // --- イベント ---
+    btnReg.addEventListener('click', ()=>{
+      const v = (emailEl.value||'').trim();
+      if(!isEmail(v)){ alert('正しいメールを入力してください'); emailEl.focus(); return; }
+      state.email = v;
+      toastEl.textContent = 'メールを登録しました。診断後に詳細レポートが届きます。';
     });
 
-    $btnSkip.addEventListener('click',()=>{
+    btnSkip.addEventListener('click', ()=>{
       document.getElementById('sec-questions').scrollIntoView({behavior:'smooth'});
     });
 
-    $btnDiag.addEventListener('click',()=>{
-      state.score=calcScore();
+    btnDiag.addEventListener('click', async ()=>{
+      state.score = calcScore();
       render();
-      if(state.email){
-        postToGAS({type:'result',email:state.email,score:state.score,key:window.RESULT_KEY});
-      }
+      if(state.email){ await sendResultToGAS(); }
       document.getElementById('result-card').scrollIntoView({behavior:'smooth'});
     });
 
     render();
-  })();
+  });
   </script>
 </body>
 </html>
