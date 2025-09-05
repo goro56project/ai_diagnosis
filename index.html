@@ -14,7 +14,7 @@
     gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type: 'beacon', debug_mode: true });
   </script>
 
-  <!-- ★ 本番GAS URL（変更可） -->
+  <!-- ★ 本番GAS URL（あなたの最新 /exec） -->
   <script>
     window.GAS_URL = "https://script.google.com/macros/s/AKfycbzwyapWYDOHfPbh0LJwc92Kp1IrRM2ZmAfNHsM3ub5j4UCSzfusmIvha1lv4olh1BuB/exec";
   </script>
@@ -50,7 +50,6 @@
     .warn{ font-size:12px; color:var(--warn); background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; border-radius:10px; }
     fieldset{ border:1px solid #eee; border-radius:12px; padding:14px; margin:10px 0; }
 
-    /* 設問UI */
     .qgrid{
       display:grid;
       grid-template-columns: minmax(140px,1fr) repeat(5, minmax(48px,72px));
@@ -65,7 +64,6 @@
       .qgrid > div:first-child{ display:none; }
     }
 
-    /* 結果表示 */
     .result{ display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
     .score{ font-size:28px; color:#4338ca; font-weight:800; }
     ul.bullets{ margin:8px 0 0 20px; }
@@ -124,126 +122,19 @@
       </div>
 
       <div id="questions" aria-live="polite">
-        <!-- 1 -->
+        <!-- 1〜10（既定は真ん中=3にチェック） -->
+        ${[...Array(10)].map((_,i)=>`
         <fieldset>
-          <legend>1. ChatGPTなどのAIツールを業務で使ったことはありますか？</legend>
+          <legend>${i+1}. （設問 ${i+1} の文言を入れる）</legend>
           <div class="qgrid">
             <div></div>
-            <label class="choice"><input type="radio" name="q1" value="1"></label>
-            <label class="choice"><input type="radio" name="q1" value="2"></label>
-            <label class="choice"><input type="radio" name="q1" value="3" checked></label>
-            <label class="choice"><input type="radio" name="q1" value="4"></label>
-            <label class="choice"><input type="radio" name="q1" value="5"></label>
+            <label class="choice"><input type="radio" name="q${i+1}" value="1"></label>
+            <label class="choice"><input type="radio" name="q${i+1}" value="2"></label>
+            <label class="choice"><input type="radio" name="q${i+1}" value="3" checked></label>
+            <label class="choice"><input type="radio" name="q${i+1}" value="4"></label>
+            <label class="choice"><input type="radio" name="q${i+1}" value="5"></label>
           </div>
-        </fieldset>
-        <!-- 2 -->
-        <fieldset>
-          <legend>2. プロンプト（AIへの指示文）を工夫して出力を改善した経験はありますか？</legend>
-          <div class="qgrid">
-            <div></div>
-            <label class="choice"><input type="radio" name="q2" value="1"></label>
-            <label class="choice"><input type="radio" name="q2" value="2"></label>
-            <label class="choice"><input type="radio" name="q2" value="3" checked></label>
-            <label class="choice"><input type="radio" name="q2" value="4"></label>
-            <label class="choice"><input type="radio" name="q2" value="5"></label>
-          </div>
-        </fieldset>
-        <!-- 3 -->
-        <fieldset>
-          <legend>3. AIで作った成果物の品質レビュー（基準）が社内にありますか？</legend>
-          <div class="qgrid">
-            <div></div>
-            <label class="choice"><input type="radio" name="q3" value="1"></label>
-            <label class="choice"><input type="radio" name="q3" value="2"></label>
-            <label class="choice"><input type="radio" name="q3" value="3" checked></label>
-            <label class="choice"><input type="radio" name="q3" value="4"></label>
-            <label class="choice"><input type="radio" name="q3" value="5"></label>
-          </div>
-        </fieldset>
-        <!-- 4 -->
-        <fieldset>
-          <legend>4. 得られた成果をテンプレ／型として蓄積し再利用していますか？</legend>
-          <div class="qgrid">
-            <div></div>
-            <label class="choice"><input type="radio" name="q4" value="1"></label>
-            <label class="choice"><input type="radio" name="q4" value="2"></label>
-            <label class="choice"><input type="radio" name="q4" value="3" checked></label>
-            <label class="choice"><input type="radio" name="q4" value="4"></label>
-            <label class="choice"><input type="radio" name="q4" value="5"></label>
-          </div>
-        </fieldset>
-        <!-- 5 -->
-        <fieldset>
-          <legend>5. 複数の業務ツールとAIを組み合わせて効率化できていますか？</legend>
-          <div class="qgrid">
-            <div></div>
-            <label class="choice"><input type="radio" name="q5" value="1"></label>
-            <label class="choice"><input type="radio" name="q5" value="2"></label>
-            <label class="choice"><input type="radio" name="q5" value="3" checked></label>
-            <label class="choice"><input type="radio" name="q5" value="4"></label>
-            <label class="choice"><input type="radio" name="q5" value="5"></label>
-          </div>
-        </fieldset>
-        <!-- 6 -->
-        <fieldset>
-          <legend>6. AIの出力に関するセキュリティ・ルールが整備されていますか？</legend>
-          <div class="qgrid">
-            <div></div>
-            <label class="choice"><input type="radio" name="q6" value="1"></label>
-            <label class="choice"><input type="radio" name="q6" value="2"></label>
-            <label class="choice"><input type="radio" name="q6" value="3" checked></label>
-            <label class="choice"><input type="radio" name="q6" value="4"></label>
-            <label class="choice"><input type="radio" name="q6" value="5"></label>
-          </div>
-        </fieldset>
-        <!-- 7 -->
-        <fieldset>
-          <legend>7. 部門横断でAI活用のガイドラインや成功事例を共有していますか？</legend>
-          <div class="qgrid">
-            <div></div>
-            <label class="choice"><input type="radio" name="q7" value="1"></label>
-            <label class="choice"><input type="radio" name="q7" value="2"></label>
-            <label class="choice"><input type="radio" name="q7" value="3" checked></label>
-            <label class="choice"><input type="radio" name="q7" value="4"></label>
-            <label class="choice"><input type="radio" name="q7" value="5"></label>
-          </div>
-        </fieldset>
-        <!-- 8 -->
-        <fieldset>
-          <legend>8. AIを用いた評価・検証（A/Bや指標化）を行えていますか？</legend>
-          <div class="qgrid">
-            <div></div>
-            <label class="choice"><input type="radio" name="q8" value="1"></label>
-            <label class="choice"><input type="radio" name="q8" value="2"></label>
-            <label class="choice"><input type="radio" name="q8" value="3" checked></label>
-            <label class="choice"><input type="radio" name="q8" value="4"></label>
-            <label class="choice"><input type="radio" name="q8" value="5"></label>
-          </div>
-        </fieldset>
-        <!-- 9 -->
-        <fieldset>
-          <legend>9. 自動化・RAG・エージェント等の本格運用に着手していますか？</legend>
-          <div class="qgrid">
-            <div></div>
-            <label class="choice"><input type="radio" name="q9" value="1"></label>
-            <label class="choice"><input type="radio" name="q9" value="2"></label>
-            <label class="choice"><input type="radio" name="q9" value="3" checked></label>
-            <label class="choice"><input type="radio" name="q9" value="4"></label>
-            <label class="choice"><input type="radio" name="q9" value="5"></label>
-          </div>
-        </fieldset>
-        <!-- 10 -->
-        <fieldset>
-          <legend>10. 新しいAI機能・ツールを定期的に試し、評価していますか？</legend>
-          <div class="qgrid">
-            <div></div>
-            <label class="choice"><input type="radio" name="q10" value="1"></label>
-            <label class="choice"><input type="radio" name="q10" value="2"></label>
-            <label class="choice"><input type="radio" name="q10" value="3" checked></label>
-            <label class="choice"><input type="radio" name="q10" value="4"></label>
-            <label class="choice"><input type="radio" name="q10" value="5"></label>
-          </div>
-        </fieldset>
+        </fieldset>`).join('')}
       </div>
 
       <div class="right" style="margin-top:14px;">
@@ -285,12 +176,21 @@
     </p>
   </footer>
 
-  <!-- ===== JS（エラー解消・動作版） ===== -->
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const QUESTIONS_COUNT = 10;
+  <!-- ▼▼ GASへ確実にPOSTする隠しフォーム（新規タブで応答を開いて到達確認） ▼▼ -->
+  <form id="post-gas" method="POST" action="" target="_blank" style="display:none">
+    <input type="hidden" name="email" />
+    <input type="hidden" name="userId" />
+    <input type="hidden" name="score" />
+    <input type="hidden" name="type" />
+  </form>
+  <!-- ▲▲ -->
 
-    // 要素取得
+  <script>
+  (function(){
+    const QUESTIONS_COUNT = 10;
+    const GAS_URL = window.GAS_URL;
+
+    // 要素
     const $email   = document.getElementById("email");
     const $btnReg  = document.getElementById("btn-register");
     const $btnSkip = document.getElementById("btn-skip");
@@ -310,17 +210,12 @@
 
     // util
     const isEmail = (v)=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
-
-    function sendToGAS(paramsObj){
-      try{
-        const qs = new URLSearchParams(paramsObj);
-        if(!qs.has('origin')) qs.set('origin', location.origin);
-        const url = `${window.GAS_URL}?${qs.toString()}`;
-        fetch(url, { method:"GET", mode:"no-cors", cache:"no-store" }).catch(()=>{});
-        const img = new Image(); img.src = `${url}&t=${Date.now()}`;
-      }catch(e){ console.warn('GAS送信で例外:', e); }
+    function uid(){
+      const k = "aid_user_id";
+      let id = localStorage.getItem(k);
+      if(!id){ id = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()); localStorage.setItem(k, id); }
+      return id;
     }
-
     function gatherAnswers(){
       const a = {};
       for (let i=1;i<=QUESTIONS_COUNT;i++){
@@ -330,117 +225,129 @@
       }
       return a;
     }
-
     function calcScore(answers){
       const sum = Object.values(answers).reduce((s,v)=>s + Number(v||0), 0);
-      return Math.max(0, Math.min(100, Math.round(sum * 2))); // 10〜50点 → 20〜100
+      return Math.max(0, Math.min(100, Math.round(sum * 2))); // 10〜50 → 20〜100
     }
-
     function levelFrom(score){
-      if (score >= 70) return {label:"先進層",   key:"practical"};
-      if (score >= 55) return {label:"実践層",   key:"middle"};
-      if (score >= 40) return {label:"初級〜中級", key:"middle"};
-      return {label:"入門層", key:"entry"};
+      if (score >= 81) return {label:"先進層（81–100）", key:"practical"};
+      if (score >= 61) return {label:"上級層（61–80）",   key:"practical"};
+      if (score >= 41) return {label:"中級層（41–60）",   key:"middle"};
+      if (score >= 21) return {label:"入門層（21–40）",   key:"entry"};
+      return {label:"初心者層（0–20）", key:"entry"};
     }
-
     const COPY = {
       entry: {
-        heading: "AIを“安全に業務へ導入する”第一歩。2週間で成果を実感して次の改善へ。",
-        lead: "今はまだAI活用の入り口。まずは安全な使い方と良いプロンプトの型を整えれば、資料・メール・要約などの業務ですぐに時短と品質向上が得られます。これがAI業務改善の土台になります。",
+        heading: "AIを“安全に業務へ導入する”第一歩。2週間で成果を実感。",
+        lead: "まずは安全な使い方と良いプロンプトの型を整え、資料・メール・要約などで時短と品質向上を得ます。",
         bullets: [
-          "基本リテラシーと安全ルールを整備（業務に安心してAIを導入）",
-          "勝ちやすい3領域（資料・メール・要約）のAIテンプレを獲得",
-          "成功したプロンプトをテンプレ化し、再利用で業務改善を加速"
+          "基本リテラシーと安全ルールを整備",
+          "資料／メール／要約のテンプレを獲得",
+          "成功プロンプトをテンプレ化して再利用"
         ]
       },
       middle: {
-        heading: "テンプレ＋GASで“勝手に回るAI業務フロー”を構築しましょう。",
-        lead: "AIと人の役割を切り分け、差し込み型テンプレとGASを組み合わせれば、定型業務は半自動化できます。KPIで成果を可視化することで、業務改善を仕組みとして定着させます。",
+        heading: "テンプレ＋GASで“勝手に回るAI業務フロー”を構築。",
+        lead: "差し込み型テンプレとGASで定型業務を半自動化。KPIで成果を可視化し改善を定着。",
         bullets: [
-          "議事録／FAQ／メール対応をAIテンプレ化し再利用",
-          "フォーム→自動返信→記録→レポートの小さな自動化",
-          "KPIとA/Bテストで改善サイクルを回し続ける"
+          "議事録／FAQ／メール対応をテンプレ化",
+          "フォーム→自動返信→記録→レポートの自動化",
+          "KPIとA/Bで改善サイクルを回す"
         ]
       },
       practical: {
-        heading: "AIを組織に“本格導入”。要件定義〜実装まで行い、業務改善を仕組み化。",
-        lead: "要件整理から設計・実装・SOP作成までを一気通貫で体験。実案件に近い流れで、RAGやAIエージェントを使った高度な業務改善の仕組みを社内に持ち込めます。",
+        heading: "要件定義〜実装まで行い、業務改善を仕組み化。",
+        lead: "RAGやエージェント等も含め、本格導入の設計と運用ルールまでを構築します。",
         bullets: [
-          "AI導入ロードマップと業務要件を定義",
-          "運用ルールと失敗時ハンドリングを含めたガバナンス設計",
-          "RAG/エージェントによる業務改善PoCを社内展開"
+          "導入ロードマップと要件定義",
+          "運用ルールと失敗時ハンドリング設計",
+          "PoCを社内展開しスケール判断"
         ]
       }
     };
 
     function updateLockUI(){
       const locked = !state.email;
-      if ($lpLink){ $lpLink.setAttribute("aria-disabled", locked ? "true" : "false"); }
-      if ($lockMsg){ $lockMsg.style.display = locked ? "block" : "none"; }
-      if ($lpLink){ $lpLink.title = locked ? "メール登録すると詳細を表示できます" : "おすすめコースを見る"; }
+      $lpLink.setAttribute("aria-disabled", locked ? "true" : "false");
+      $lockMsg.style.display = locked ? "block" : "none";
+      $lpLink.title = locked ? "メール登録すると詳細を表示できます" : "おすすめコースを見る";
     }
 
     function renderResult(){
-      if ($scoreOut) $scoreOut.textContent = (state.score ?? "--");
+      $scoreOut.textContent = (state.score ?? "--");
       const lv = levelFrom(state.score);
       state.levelLabel = lv.label; state.lvKey = lv.key;
-      if ($lvLabel) $lvLabel.textContent = state.levelLabel;
+      $lvLabel.textContent = state.levelLabel;
 
       const cp = COPY[state.lvKey] || COPY.entry;
-      if ($heading) $heading.textContent = cp.heading;
-      if ($lead) $lead.textContent = cp.lead;
-      if ($bullets) $bullets.innerHTML = (cp.bullets||[]).map(t=>`<li>${t}</li>`).join("");
+      $heading.textContent = cp.heading;
+      $lead.textContent = cp.lead;
+      $bullets.innerHTML = (cp.bullets||[]).map(t=>`<li>${t}</li>`).join("");
 
-      if ($lpLink) $lpLink.href = `./exo_courses.html?score=${state.score}`;
-      if ($apply){
-        $apply.textContent = "この講座に申し込む";
-        $apply.href = `./exo_course_detail.html?plan=${state.lvKey}&score=${state.score}&level=${encodeURIComponent(state.levelLabel)}`;
-      }
+      $lpLink.href = `./exo_courses.html?score=${state.score}`;
+      $apply.textContent = "この講座に申し込む";
+      $apply.href = `./exo_course_detail.html?plan=${state.lvKey}&score=${state.score}&level=${encodeURIComponent(state.levelLabel)}`;
 
       updateLockUI();
       document.getElementById("result-card")?.scrollIntoView({behavior:"smooth", block:"start"});
     }
 
+    // GASへ form POST（新規タブで応答を開く＝到達確認）
+    function postToGAS({email="", userId="", score="", type=""}, openNewTab=true){
+      if(!GAS_URL){ alert("GAS_URL が未設定です。"); return; }
+      const f = document.getElementById("post-gas");
+      f.action = GAS_URL;
+      f.target = openNewTab ? "_blank" : "gs_ghost";
+      f.querySelector('input[name="email"]').value  = email;
+      f.querySelector('input[name="userId"]').value = userId;
+      f.querySelector('input[name="score"]').value  = String(score||"");
+      f.querySelector('input[name="type"]').value   = type || "";
+      f.submit();
+    }
+
     // クリック抑止
-    $lpLink?.addEventListener('click', (e) => {
+    $lpLink.addEventListener('click', (e) => {
       if ($lpLink.getAttribute('aria-disabled') === 'true') e.preventDefault();
     });
 
     // 診断する
-    $btnDiag?.addEventListener("click", () => {
+    $btnDiag.addEventListener("click", () => {
       state.answers = gatherAnswers();
       state.score   = calcScore(state.answers);
-      const payload = { type:"result", email: state.email || "(noemail)", score: state.score, timestamp: Date.now() };
-      for(let i=1;i<=QUESTIONS_COUNT;i++) payload["q"+i] = state.answers["q"+i];
-      sendToGAS(payload);
       renderResult();
+
+      // 登録済みならメール送信（GASの doPost に到達 → 詳細レポートメール）
+      if (state.email){
+        postToGAS({ email: state.email, userId: uid(), score: state.score, type: "send" }, true);
+        gtag('event', 'send_detail_mail', { method:'form_post', score: state.score });
+      }
     });
 
     // 登録せずに診断へ
-    $btnSkip?.addEventListener("click", () => {
+    $btnSkip.addEventListener("click", () => {
       state.email = "";
       updateLockUI();
       document.getElementById('sec-questions')?.scrollIntoView({behavior:"smooth"});
     });
 
     // 登録
-    $btnReg?.addEventListener("click", () => {
-      const v = ($email?.value||"").trim();
-      if (!isEmail(v)){ alert("メールアドレスを正しく入力してください。"); $email?.focus(); return; }
+    $btnReg.addEventListener("click", () => {
+      const v = ($email.value||"").trim();
+      if (!isEmail(v)){ alert("メールアドレスを正しく入力してください。"); $email.focus(); return; }
       $btnReg.setAttribute("aria-disabled","true");
 
-      const payload = { type:"register", email:v, timestamp: Date.now() };
-      sendToGAS(payload);
+      // ログ用（任意）：type=register をGASへ（新規タブは開かない）
+      postToGAS({ email:v, userId: uid(), type:"register" }, false);
 
       state.email = v;
       updateLockUI();
-      alert("登録が完了しました。詳細表示が有効になりました。");
+      alert("登録が完了しました。診断後に詳細メールをお送りします。");
       $btnReg.setAttribute("aria-disabled","false");
     });
 
     // 初期UI
     updateLockUI();
-  });
+  })();
   </script>
 </body>
 </html>
