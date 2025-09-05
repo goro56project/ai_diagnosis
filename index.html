@@ -14,10 +14,10 @@
     gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type:'beacon', debug_mode: true });
   </script>
 
-  <!-- ★GAS WebアプリURLと秘密キー（必ずGAS側と一致させる） -->
+  <!-- ★GAS WebアプリURLと秘密キー -->
   <script>
     window.GAS_URL = "https://script.google.com/macros/s/AKfycbzLvAEpvLfVGN3V2f9i8ykXC_AqANomEHKQ5jnhP04FUa7oui5nYk6BGSEzsHNJHbvq/exec";
-    window.RESULT_KEY = "RG8rK7vQ3bX1pY2z";  /* GASのRESULT_KEYと同じにすること */
+    window.RESULT_KEY = "RG8rK7vQ3bX1pY2z";  /* GASのRESULT_KEYと同じ */
   </script>
 
   <style>
@@ -37,20 +37,9 @@
     .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand) }
     .btn[disabled]{ opacity:.6; pointer-events:none }
     .muted{ color:var(--muted) }
-    .hint{ font-size:12px; color:var(--muted) }
-    .warn{ font-size:13px; color:#92400e; background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; border-radius:10px; margin-top:10px }
-    .pill{ display:inline-block; padding:4px 10px; border:1px solid var(--line); border-radius:999px; background:#fff }
     .result{ display:flex; gap:12px; align-items:center; flex-wrap:wrap }
     .score{ font-size:28px; font-weight:800; color:#111827 }
     ul.bullets{ margin:8px 0 0 20px }
-    footer{ text-align:center; font-size:14px; border-top:1px solid var(--line); background:#fff; padding:20px; margin-top:40px }
-    footer a{ color:var(--ink); text-decoration:none }
-    footer a + a{ margin-left:12px }
-    .qgrid{ display:grid; grid-template-columns:minmax(140px,1fr) repeat(5,minmax(48px,70px)); gap:8px 10px; align-items:center }
-    .qgrid .choice{ display:flex; justify-content:center; align-items:center; height:40px }
-    .qgrid .choice input{ width:18px; height:18px }
-    .qgrid-head>div:first-child{ visibility:hidden }
-    @media (max-width:760px){ .qgrid{ grid-template-columns:repeat(5,1fr) } .qgrid>div:first-child{ display:none } }
   </style>
 </head>
 <body>
@@ -63,38 +52,44 @@
 
   <main class="wrap">
     <!-- STEP 1 -->
-    <section class="card" id="sec-register">
+    <section class="card">
       <h2>STEP 1｜診断結果をメールで受け取る（任意）</h2>
       <div class="row">
         <input id="email" type="email" placeholder="メールアドレスを入力" />
-        <button id="btn-register" class="btn primary" type="button">登録する</button>
-        <button id="btn-skip" class="btn" type="button">登録せずに診断へ</button>
+        <button id="btn-register" class="btn primary">登録する</button>
+        <button id="btn-skip" class="btn">登録せずに診断へ</button>
       </div>
-      <div id="toast" class="muted" style="margin-top:6px"></div>
+      <div id="toast" class="muted"></div>
     </section>
 
-    <!-- STEP 2：設問（省略可：本来の10問ラジオボタン入れる場所） -->
-    <section class="card" id="sec-questions">
+    <!-- STEP 2 -->
+    <section class="card">
       <h2>STEP 2｜10問に回答</h2>
-      <!-- 実際の質問は省略 -->
-      <button id="btn-diagnose" class="btn primary" type="button">診断する</button>
+      <div id="questions">
+        <p>1. ChatGPTを業務で使ったことがある</p>
+        <input type="radio" name="q1" value="1">1
+        <input type="radio" name="q1" value="2">2
+        <input type="radio" name="q1" value="3" checked>3
+        <input type="radio" name="q1" value="4">4
+        <input type="radio" name="q1" value="5">5
+        <!-- ここにq2〜q10同様の質問を並べる -->
+      </div>
+      <button id="btn-diagnose" class="btn primary">診断する</button>
     </section>
 
-    <!-- STEP 3：結果 -->
-    <section class="card" id="result-card">
+    <!-- STEP 3 -->
+    <section class="card">
       <h2>STEP 3｜診断結果</h2>
       <p class="result">
-        <span>AI偏差値：</span>
-        <span class="score" id="score-out">--</span>
-        <span class="pill">レベル：<span id="lv-label">--</span></span>
+        AI偏差値：<span id="score-out">--</span>
+        ／ レベル：<span id="lv-label">--</span>
       </p>
       <h3 id="cta-heading"></h3>
       <p id="result-lead" class="muted"></p>
-      <ul id="result-bullets" class="bullets"></ul>
+      <ul id="result-bullets"></ul>
     </section>
   </main>
 
-  <!-- スクリプト -->
   <script>
   (function(){
     const $email = document.getElementById('email');
@@ -102,7 +97,6 @@
     const $btnSkip = document.getElementById('btn-skip');
     const $btnDiag = document.getElementById('btn-diagnose');
     const $toast = document.getElementById('toast');
-
     const $scoreOut= document.getElementById('score-out');
     const $lvLabel = document.getElementById('lv-label');
     const $heading = document.getElementById('cta-heading');
@@ -111,14 +105,21 @@
 
     const state = { email:"", score:0 };
 
-    function gatherAnswers(){ return 50; } // ★仮: 実際は10問集計
-    function calcScore(){ return Math.max(0, Math.min(100, gatherAnswers())); }
+    function gatherAnswers(){
+      let sum=0;
+      for(let i=1;i<=10;i++){
+        const r=document.querySelector(`input[name="q${i}"]:checked`);
+        sum += r?Number(r.value):3;
+      }
+      return sum;
+    }
+    function calcScore(){ return Math.max(0, Math.min(100, Math.round(gatherAnswers()*2))); }
     function levelFrom(score){
-      if(score>=81) return {label:'先進層'};
-      if(score>=61) return {label:'上級層'};
-      if(score>=41) return {label:'中級層'};
-      if(score>=21) return {label:'入門層'};
-      return {label:'初心者層'};
+      if(score>=81) return {label:'先進層',key:'practical'};
+      if(score>=61) return {label:'上級層',key:'practical'};
+      if(score>=41) return {label:'中級層',key:'middle'};
+      if(score>=21) return {label:'入門層',key:'entry'};
+      return {label:'初心者層',key:'entry'};
     }
 
     const COPY = {
@@ -129,39 +130,33 @@
 
     function render(){
       $scoreOut.textContent = state.score;
-      const lv = levelFrom(state.score);
-      $lvLabel.textContent = lv.label;
-      $heading.textContent = COPY.entry.heading;
-      $lead.textContent = COPY.entry.lead;
-      $bullets.innerHTML = COPY.entry.bullets.map(x=>`<li>${x}</li>`).join('');
+      const lv=levelFrom(state.score);
+      $lvLabel.textContent=lv.label;
+      const c=COPY[lv.key];
+      $heading.textContent=c.heading;
+      $lead.textContent=c.lead;
+      $bullets.innerHTML=c.bullets.map(x=>`<li>${x}</li>`).join('');
     }
 
-    $btnReg.addEventListener('click', ()=>{
-      const v = ($email.value||'').trim();
+    $btnReg.addEventListener('click',()=>{
+      const v=($email.value||'').trim();
       if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){ alert('メールを正しく入力してください'); return; }
-      state.email = v;
-      $toast.textContent = 'メールを登録しました。診断後にレポートが送られます。';
+      state.email=v;
+      $toast.textContent='メールを登録しました。診断後にレポートが届きます。';
     });
 
-    $btnSkip.addEventListener('click', ()=>{ document.getElementById('sec-questions').scrollIntoView(); });
+    $btnSkip.addEventListener('click',()=>{ document.getElementById('btn-diagnose').scrollIntoView(); });
 
-    $btnDiag.addEventListener('click', async ()=>{
-      state.score = calcScore();
+    $btnDiag.addEventListener('click',async()=>{
+      state.score=calcScore();
       render();
       if(state.email){
-        const payload = { type:'result', email:state.email, score:state.score, key:window.RESULT_KEY, t:Date.now() };
+        const payload={ type:'result', email:state.email, score:state.score, key:window.RESULT_KEY, t:Date.now() };
         try{
-          const res = await fetch(window.GAS_URL, {
-            method:'POST',
-            headers:{ 'Content-Type':'application/json' },
-            body: JSON.stringify(payload)
-          });
-          const txt = await res.text();
-          console.log('GAS応答:', txt);
+          const res=await fetch(window.GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+          console.log('GAS応答:',await res.text());
           alert('診断結果をメール送信しました。');
-        }catch(err){
-          alert('送信エラー:'+err);
-        }
+        }catch(err){ alert('送信エラー:'+err); }
       }
     });
 
