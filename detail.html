@@ -1,305 +1,237 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI偏差値診断｜詳細レポート</title>
-<style>
-  :root{--ink:#0f172a;--muted:#475569;--line:#e5e7eb;--brand:#111827;--bg:#f8fafc}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-  .wrap{max-width:900px;margin:24px auto;padding:24px;background:#fff;border:1px solid var(--line);border-radius:16px}
-  h1{font-size:28px;margin:0 0 8px}
-  h2{font-size:20px;margin:24px 0 8px}
-  p,li{line-height:1.9}
-  .muted{color:var(--muted)}
-  .pill{display:inline-block;padding:6px 10px;border:1px solid var(--line);border-radius:999px;font-size:12px;background:#fff}
-  .score{font-size:32px;font-weight:700}
-  .grid{display:grid;gap:16px}
-  .grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-  .card{padding:16px;border:1px solid var(--line);border-radius:12px;background:#fff}
-  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
-  .btn{padding:12px 16px;border-radius:10px;border:1px solid var(--line);text-decoration:none;color:#fff;background:#111827}
-  .btn.secondary{background:#fff;color:#111827}
-  .hr{height:1px;background:var(--line);margin:24px 0}
-  .small{font-size:12px}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI偏差値診断｜詳細レポート</title>
+
+  <!-- （任意）GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QFQZF4F1QW', { send_page_view:true });
+  </script>
+
+  <style>
+    :root{
+      --ink:#0f172a; --muted:#475569; --line:#e5e7eb; --bg:#f8fafc; --card:#fff;
+      --brand:#6366f1; --good:#16a34a; --chip:#eef2ff;
+    }
+    *{ box-sizing:border-box }
+    body{ margin:0; color:var(--ink); background:var(--bg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,
+                   "Hiragino Kaku Gothic ProN",Meiryo,sans-serif;}
+    header{ background:#fff; border-bottom:1px solid var(--line); }
+    .wrap{ max-width:1100px; margin:0 auto; padding:18px 16px; }
+    h1{ font-size:clamp(22px,3.2vw,28px); margin:.2rem 0 .4rem }
+    main{ max-width:1100px; margin:0 auto; padding:24px 16px 64px; }
+    .card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px; }
+    .grid{ display:grid; gap:12px; }
+    .row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+
+    .scorebox{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; }
+    .kpi{ border:1px solid var(--line); border-radius:14px; padding:16px; background:#fff; }
+    .kpi h3{ margin:0 0 6px; font-size:14px; color:var(--muted); font-weight:600 }
+    .num{ font-size:clamp(28px,4.5vw,36px); font-weight:800; letter-spacing:.02em }
+    .chip{ display:inline-block; background:var(--chip); color:#3730a3; padding:.25em .6em; border-radius:999px; font-weight:700; }
+
+    .btn{ display:inline-block; padding:12px 18px; border-radius:12px; text-decoration:none; cursor:pointer;
+          border:1px solid var(--line); background:#fff; color:var(--ink); font-weight:600 }
+    .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand) }
+    .btn.ghost{ background:#fff; }
+    .btn:active{ transform:translateY(1px) }
+
+    h2{ font-size:clamp(18px,2.6vw,22px); margin:22px 0 10px }
+    h3{ font-size:16px; margin:14px 0 8px }
+    p.lead{ color:var(--muted); margin:6px 0 12px; line-height:1.7 }
+    ul.bullets{ margin:8px 0 0 20px }
+    .cols3{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
+    .pill{ display:inline-block; padding:.35em .8em; border:1px solid var(--line); border-radius:999px; background:#fff; }
+
+    footer{ border-top:1px solid var(--line); background:#fff; text-align:center; padding:20px; margin-top:36px; font-size:14px }
+    footer a{ color:var(--ink); text-decoration:none; }
+    footer a + a{ margin-left:12px }
+
+    @media (max-width:860px){
+      .scorebox{ grid-template-columns: 1fr; }
+      .cols3{ grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <div>
-      <span class="pill">AI偏差値診断｜詳細レポート</span>
-      <h1><span id="name">あなた</span>さんの結果</h1>
-      <p class="muted">メールの要約版よりも詳しい解説と、90日ロードマップ、コース案内、特典をご案内します。</p>
+  <header>
+    <div class="wrap">
+      <h1>AI偏差値診断｜詳細レポート</h1>
+      <p class="lead">スコアに基づくレベル判定・おすすめコース・90日ロードマップ・特典をご案内します。</p>
     </div>
+  </header>
 
-    <div class="card">
-      <div class="grid cols-3">
-        <div>
-          <div class="muted">スコア</div>
-          <div class="score" id="score">--</div>
+  <main class="grid">
+    <!-- ===== 見出し（固定文言） ===== -->
+    <section class="card">
+      <h2 id="report-heading">AI偏差値診断の結果</h2>
+
+      <div class="scorebox">
+        <div class="kpi">
+          <h3>スコア</h3>
+          <div class="num" id="score-num">--</div>
         </div>
-        <div>
-          <div class="muted">レベル</div>
-          <div id="level">--</div>
+        <div class="kpi">
+          <h3>レベル</h3>
+          <div class="row">
+            <span class="num" id="level-label">--</span>
+          </div>
         </div>
-        <div>
-          <div class="muted">おすすめ</div>
-          <div id="recommend">--</div>
+        <div class="kpi">
+          <h3>おすすめ</h3>
+          <div class="row">
+            <span class="chip" id="plan-badge">--</span>
+          </div>
         </div>
       </div>
-      <div class="cta" id="cta-courses"></div>
-    </div>
 
-    <div id="block"></div>
+      <div class="row" style="margin-top:14px">
+        <a id="apply-btn" class="btn primary" href="#">コースに申し込む</a>
+        <a id="courses-btn" class="btn ghost" href="#">おすすめコースを見る</a>
+      </div>
+    </section>
 
-    <div class="hr"></div>
+    <!-- ===== 解説 ===== -->
+    <section class="card">
+      <h3>🧠 診断結果の解説</h3>
+      <p id="explain" class="lead"></p>
 
-    <h2>📅 90日ロードマップ</h2>
-    <div id="roadmap" class="grid cols-3"></div>
+      <h3 style="margin-top:16px">🛠 今日からの3ステップ</h3>
+      <ul id="steps" class="bullets"></ul>
+    </section>
 
-    <div class="hr"></div>
+    <!-- ===== 事例イメージ ===== -->
+    <section class="card">
+      <h3>📈 事例と効果イメージ</h3>
+      <div class="cols3">
+        <div class="kpi">
+          <strong>BtoB営業</strong><br>
+          フォロー即時化で商談化率↑
+        </div>
+        <div class="kpi">
+          <strong>EC</strong><br>
+          商品説明の量産でSEO流入増
+        </div>
+        <div class="kpi">
+          <strong>セミナー</strong><br>
+          告知→アンケ→見込み育成を自動ループ
+        </div>
+      </div>
+    </section>
 
-    <h2>📈 事例と効果イメージ</h2>
-    <div id="cases" class="grid cols-3"></div>
+    <!-- ===== EVH 特典 ===== -->
+    <section class="card">
+      <h3>👥 ExoVisionary Hub（EVH）特典</h3>
+      <p class="lead">
+        いずれかの有料コースにお申込みの希望者先着10名は、追加料金なしでコミュニティ
+        <b>ExoVisionary Hub（EVH）</b>に参加いただけます（実践共有・テンプレ配布・壁打ち）。
+      </p>
+      <div class="row">
+        <a class="btn" href="https://note.com/" target="_blank" rel="noopener">EVHの案内を見る（note）</a>
+        <a class="btn" href="https://note.com/" target="_blank" rel="noopener">特典PDF「AI業務改善50選」を入手</a>
+      </div>
+    </section>
 
-    <div class="hr"></div>
+    <!-- ===== 相談導線 ===== -->
+    <section class="card">
+      <h3>💬 無料相談のご案内</h3>
+      <p class="lead">MY GPT School 公式LINE にご登録後、チャットで「無料相談」とお送りください。スタッフよりご連絡いたします。</p>
+      <a class="btn" href="https://line.me/" target="_blank" rel="noopener">LINE を開く</a>
+    </section>
+  </main>
 
-    <h2>👥 ExoVisionary Hub（EVH）特典</h2>
-    <p>いずれかの有料コースにお申込みの<strong>希望者先着10名</strong>は、追加料金なしでコミュニティ
-      <strong>ExoVisionary Hub（EVH）</strong> に参加いただけます。実践共有・壁打ち・テンプレ配布で、
-      学びを売上に直結させる場です。</p>
+  <footer>
+    <a href="./terms.html"   target="_blank" rel="noopener">利用規約</a>
+    <a href="./privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>
+    <a href="./law.html"     target="_blank" rel="noopener">特定商取引法に基づく表記</a>
+  </footer>
 
-    <div class="cta">
-      <a class="btn" id="link-evh" href="#" target="_blank" rel="noopener">EVHの案内を見る（note）</a>
-      <a class="btn secondary" id="link-pdf" href="#" target="_blank" rel="noopener">特典PDF「業務改善50選」を入手</a>
-    </div>
-
-    <div class="hr"></div>
-
-    <h2>💬 無料相談のご案内</h2>
-    <p>まずは <strong>MY GPT School公式LINE</strong> にご登録ください。<br>
-    登録後に「無料相談」と投稿いただければ、後日スタッフからご返信いたします。</p>
-    <div class="cta">
-      <a class="btn" id="link-line" href="https://lin.ee/bfwlLGi" target="_blank" rel="noopener">公式LINEに登録する</a>
-    </div>
-
-    <div class="hr"></div>
-
-    <h2>FAQ</h2>
-    <details class="card"><summary>スコアはどう算出されていますか？</summary>
-      <p>設問の自己申告と行動指標の重み付けで算出。継続入力で推移を追えます。</p></details>
-    <details class="card"><summary>どのコースを選べばいいですか？</summary>
-      <p>本ページ上部の「おすすめ」に従うのが最短です。迷ったらENTRY→MIDDLEの順で問題ありません。</p></details>
-    <details class="card"><summary>メールの内容と違うのはなぜ？</summary>
-      <p>メールは要点と導線、詳細ページは納得感と実装支援を目的に設計しています。</p></details>
-
-    <p class="small muted" style="margin-top:24px;">© 56project / ExoVisionary Hub（EVH） / MY GPTスクール運営事務局</p>
-  </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // ======== 設定（リンク差し替え） ========
-    const LINKS = {
-      entry: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=entry#contact',
-      middle: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=middle#contact',
-      practical: 'https://goro56project.github.io/ai_diagnosis/exo_course_detail.html?course=practical#contact',
-      evh: 'https://note.com/56projectai/n/nb6e552d4fa3c',
-      pdf: 'https://drive.google.com/file/d/1LTB1cT_YA0Y1ixTv3SG0p3qBLnhde3g2/view?usp=sharing'
-    };
-
-    // ======== ユーティリティ ========
+  <script>
+    // --- URL から score を取得（id は使わない）
     const params = new URLSearchParams(location.search);
-    const score = Number(params.get('score') || 0);
-    const name = params.get('name') || 'あなた';
+    const score  = clamp(Number(params.get('score')) || 0, 0, 100);
 
-    const nameEl = document.getElementById('name');
-    const scoreEl = document.getElementById('score');
-    const levelEl = document.getElementById('level');
-    const recEl = document.getElementById('recommend');
+    // --- 表示に反映
+    document.getElementById('score-num').textContent = String(score);
 
-    nameEl.textContent = name;
-    scoreEl.textContent = Number.isFinite(score) ? score : '--';
-    document.getElementById('link-evh').href = LINKS.evh;
-    document.getElementById('link-pdf').href = LINKS.pdf;
+    const info = levelInfo(score);
+    document.getElementById('level-label').textContent = info.levelLabel;
+    document.getElementById('plan-badge').textContent = info.planBadge;
 
-    // スコア帯 → レベル/おすすめ/ボディ/ロードマップ/事例
-    function decide(sc){
-      if (sc <= 20) return {
-        level:'初心者層（0–20）',
-        recommend:'ENTRY',
-        ctas:[{label:'ENTRYに申し込む', href:LINKS.entry}],
-        body: `
-          <h2>🧠 診断結果の解説</h2>
-          <p>AIはこれから。まずは「毎日触る」習慣づくりが最短距離です。</p>
-          <h2>🔧 今日からの3ステップ</h2>
-          <ol>
-            <li>議事録/要約を毎回AIで作る</li>
-            <li>定型文メールの下書きをAIに任せる</li>
-            <li>毎日5分のプロンプト練習を継続</li>
-          </ol>
-        `,
-        roadmap:[
-          {t:'Week 1–2',d:'基本操作＋日報/議事録テンプレ導入'},
-          {t:'Week 3–6',d:'定型業務の自動化（メール/表作成）'},
-          {t:'Week 7–12',d:'効果測定→テンプレ改善→ENTRY修了'}
-        ],
-        cases:[
-          {t:'経理補助',d:'領収書整理→仕訳メモの半自動化で月3h削減'},
-          {t:'営業事務',d:'商談メモ→フォロー案内の即時作成'},
-          {t:'総務',d:'社内周知文の品質均一化'}
-        ]
-      };
-      if (sc <= 40) return {
-        level:'入門層（21–40）',
-        recommend:'ENTRY または MIDDLE',
-        ctas:[
-          {label:'ENTRYに申し込む', href:LINKS.entry},
-          {label:'MIDDLEに挑戦する', href:LINKS.middle}
-        ],
-        body: `
-          <h2>🧠 診断結果の解説</h2>
-          <p>一部で試し始めた段階。小さな成功体験を増やし、業務フローに埋め込みましょう。</p>
-          <h2>🔧 今日からの3ステップ</h2>
-          <ol>
-            <li>繰り返し業務の洗い出し→AIテンプレ化</li>
-            <li>社内共有テンプレを作り、再現性を上げる</li>
-            <li>KPI（時間削減/件数）を毎週記録</li>
-          </ol>
-        `,
-        roadmap:[
-          {t:'Week 1–2',d:'業務棚卸し→AIで置換できる作業を抽出'},
-          {t:'Week 3–6',d:'テンプレ整備→部署内で試行'},
-          {t:'Week 7–12',d:'評価→MIDDLE移行で売上直結へ'}
-        ],
-        cases:[
-          {t:'人事',d:'求人票作成の標準化で作成時間▲60%'},
-          {t:'CS',d:'問い合わせ分類→一次回答の自動草案'},
-          {t:'広報',d:'お知らせ文の量産＆品質安定'}
-        ]
-      };
-      if (sc <= 60) return {
-        level:'中級層（41–60）',
-        recommend:'MIDDLE（売上直結）',
-        ctas:[{label:'MIDDLEに申し込む', href:LINKS.middle}],
-        body: `
-          <h2>🧠 診断結果の解説</h2>
-          <p>基礎はOK。次は「売上直結」への転換。集客〜商談〜成約の各所にAIを組み込みましょう。</p>
-          <h2>🔧 今日からの3ステップ</h2>
-          <ol>
-            <li>LP/SNSコピーの一次稿をAI→人が仕上げる</li>
-            <li>商談議事録→要点→フォローDM/メール即送付</li>
-            <li>日次KPIと連動したToDoをAIに自動生成</li>
-          </ol>
-        `,
-        roadmap:[
-          {t:'Week 1–2',d:'集客コピーと訴求角度のABテスト開始'},
-          {t:'Week 3–6',d:'商談後フォロー完全テンプレ化'},
-          {t:'Week 7–12',d:'CVR改善とLTV向上施策を回す'}
-        ],
-        cases:[
-          {t:'BtoB営業',d:'フォロー即時化で商談化率+18%'},
-          {t:'EC',d:'商品説明の量産でSEO流入増'},
-          {t:'セミナー',d:'告知→アンケ→見込み育成を自動ループ'}
-        ]
-      };
-      if (sc <= 80) return {
-        level:'上級層（61–80）',
-        recommend:'PRACTICAL（事業戦略に統合）',
-        ctas:[{label:'PRACTICALに申し込む', href:LINKS.practical}],
-        body: `
-          <h2>🧠 診断結果の解説</h2>
-          <p>運用は成熟。外部脳化して戦略（商品/価格/導線）に組み込み、半自動収益化を狙う段階。</p>
-          <h2>🔧 今日からの3ステップ</h2>
-          <ol>
-            <li>チャネル別KPIモデルを設計（AARRR）</li>
-            <li>自動化（予約投稿/CRM連携/スコアリング）</li>
-            <li>新規事業PoCを月1本で検証</li>
-          </ol>
-        `,
-        roadmap:[
-          {t:'Week 1–2',d:'KPI設計とダッシュボード連携'},
-          {t:'Week 3–6',d:'オペ自動化・GAS/連携の実装'},
-          {t:'Week 7–12',d:'新規事業の検証→スケール判断'}
-        ],
-        cases:[
-          {t:'プロ講座',d:'入会導線最適化で月売上+28%'},
-          {t:'代理店',d:'見込みスコアで追客効率2倍'},
-          {t:'SaaS',d:'オンボ強化で有料化率UP'}
-        ]
-      };
+    // CTA
+    const apply = document.getElementById('apply-btn');
+    const courses = document.getElementById('courses-btn');
+    apply.textContent = `${info.planCode} に申し込む`;
+    apply.href   = `./exo_course_detail.html?plan=${encodeURIComponent(info.planCode)}&score=${score}`;
+    courses.href = `./exo_courses.html?score=${score}`;
+
+    // 解説
+    document.getElementById('explain').textContent = info.explain;
+    document.getElementById('steps').innerHTML = info.steps.map(s => `<li>${s}</li>`).join('');
+
+    // ---- helpers
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function levelInfo(s){
+      // しきい値と文言はここで一括管理
+      if (s >= 61){
+        return {
+          levelLabel: '上級層（61–100）',
+          planCode  : 'PRACTICAL',
+          planBadge : 'PRACTICAL（仕組み化）',
+          explain   : '実務でAIが回っています。テンプレと自動化を接続し、仕組み化まで一気通貫で進めましょう。',
+          steps     : [
+            '稼働中のテンプレをKPI化し、改善を自動計測',
+            'GAS／外部ツール連携で半自動フロー化',
+            'RAG・エージェントのPoC→社内展開'
+          ]
+        };
+      }
+      if (s >= 41){
+        return {
+          levelLabel: '中級層（41–60）',
+          planCode  : 'MIDDLE',
+          planBadge : 'MIDDLE（売上直結）',
+          explain   : '基礎はOK。売上直結の領域へ転換し、集客〜商談〜成約の各所にAIを組み込みましょう。',
+          steps     : [
+            'LP/SNS/メールの一次案をAIで量産→人が仕上げ',
+            '商談フォロー／FAQ対応をテンプレ化して再利用',
+            '小さな自動化（フォーム→返信→記録→レポート）'
+          ]
+        };
+      }
+      if (s >= 21){
+        return {
+          levelLabel: '入門層（21–40）',
+          planCode  : 'ENTRY',
+          planBadge : 'ENTRY',
+          explain   : 'まずは安全な使い方と良いプロンプトの型を整え、資料・メール・要約で日次の成果を出しましょう。',
+          steps     : [
+            '基本リテラシーと社内ルールの整備',
+            '勝ちやすい3領域のテンプレ取得（資料・メール・要約）',
+            '成功プロンプトをテンプレ化して共有'
+          ]
+        };
+      }
       return {
-        level:'先進層（81–100）',
-        recommend:'PRACTICAL＋EVH（共同開発/発信）',
-        ctas:[
-          {label:'PRACTICALに申し込む', href:LINKS.practical},
-          {label:'EVHの案内を見る', href:LINKS.evh}
-        ],
-        body: `
-          <h2>🧠 診断結果の解説</h2>
-          <p>あなたはリーダー層。社内外の成功事例を体系化し、コミュニティと共に“広げる側”へ。</p>
-          <h2>🔧 今日からの3ステップ</h2>
-          <ol>
-            <li>プレイブック化（社内手順を外販可能に）</li>
-            <li>共同検証（EVHでテンプレ検証と配布）</li>
-            <li>収益化（講座/テンプレ/エージェント）</li>
-          </ol>
-        `,
-        roadmap:[
-          {t:'Week 1–2',d:'成功プロセスの形式知化'},
-          {t:'Week 3–6',d:'EVHで共同実験＆ナレッジ共有'},
-          {t:'Week 7–12',d:'販売モデル確立・外部発信'}
-        ],
-        cases:[
-          {t:'コミュ設計',d:'共同テンプレで導入期間1/2'},
-          {t:'講座化',d:'事例→教材→収益化ライン構築'},
-          {t:'外販',d:'テンプレ提供で新規売上の柱に'}
+        levelLabel: '初心者層（0–20）',
+        planCode  : 'ENTRY',
+        planBadge : 'ENTRY',
+        explain   : '今はAI活用の入り口です。まずは毎日触れる習慣化と、型化で再現性を作ることから始めましょう。',
+        steps     : [
+          '安全に使うための基本リテラシー習得',
+          '日次業務（要約・下書き）をAIテンプレで実践',
+          '良い手順をテンプレに保存し、再利用'
         ]
       };
     }
-
-    function render(){
-      const d = decide(score);
-
-      levelEl.textContent = d.level;
-      recEl.textContent = d.recommend;
-
-      // コースCTA
-      const cta = document.getElementById('cta-courses');
-      cta.innerHTML = '';
-      d.ctas.forEach(x=>{
-        const a = document.createElement('a');
-        a.className = 'btn';
-        a.href = x.href; a.target = '_blank'; a.rel = 'noopener';
-        a.textContent = x.label;
-        cta.appendChild(a);
-      });
-
-      // 本文
-      document.getElementById('block').innerHTML = d.body;
-
-      // ロードマップ
-      const rm = document.getElementById('roadmap');
-      rm.innerHTML = '';
-      d.roadmap.forEach(x=>{
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `<div class="muted">${x.t}</div><div>${x.d}</div>`;
-        rm.appendChild(div);
-      });
-
-      // 事例
-      const cs = document.getElementById('cases');
-      cs.innerHTML = '';
-      d.cases.forEach(x=>{
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `<div class="muted">${x.t}</div><div>${x.d}</div>`;
-        cs.appendChild(div);
-      });
-    }
-
-    render();
-  });
-</script>
+  </script>
 </body>
 </html>
