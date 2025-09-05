@@ -14,9 +14,8 @@
     gtag('config', 'G-QFQZF4F1QW', { send_page_view: true, transport_type:'beacon', debug_mode: true });
   </script>
 
-  <!-- ★GAS Webアプリ（exec）のURLをここに入れる -->
+  <!-- ★GAS Webアプリ（exec）のURL -->
   <script>
-    // 例）https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxx/exec
     window.GAS_URL = "https://script.google.com/macros/s/AKfycbwFJvLe1uZqscN3WpeF_61BSxqpBW0l5q_voJbgb4n5-92JkVQApvPelSoTe7tgh0hl/exec";
   </script>
 
@@ -35,7 +34,7 @@
     input[type="email"]{ flex:1 1 260px; min-width:240px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font:inherit }
     .btn{ padding:12px 16px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer; font:inherit }
     .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand) }
-    .btn[disabled]{ opacity:.6; pointer-events:none }
+    .btn[disabled], .btn[aria-disabled="true"]{ opacity:.6; pointer-events:none }
     .muted{ color:var(--muted) }
     .hint{ font-size:12px; color:var(--muted) }
     .warn{ font-size:13px; color:#92400e; background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; border-radius:10px; margin-top:10px }
@@ -75,7 +74,7 @@
       <div id="toast" class="muted" role="status" aria-live="polite" style="margin-top:6px"></div>
     </section>
 
-    <!-- STEP 2：設問（静的描画で“文字列が出る”事故を防止） -->
+    <!-- STEP 2：設問（静的描画） -->
     <section class="card" id="sec-questions">
       <h2>STEP 2｜10問の自己評価に回答</h2>
 
@@ -83,7 +82,6 @@
         <div></div><div class="choice">全くない</div><div class="choice">少し</div><div class="choice">普通</div><div class="choice">かなり</div><div class="choice">とてもある</div>
       </div>
 
-      <!-- 1〜10 を“静的HTML”で用意（JSテンプレが生の文字で出る問題を根治） -->
       <div id="questions">
         <!-- 1 -->
         <fieldset>
@@ -236,7 +234,7 @@
     </p>
   </footer>
 
-  <!-- 遷移させない“隠しiframe＋フォーム”でGASにPOST -->
+  <!-- 画面遷移させない“隠しiframe＋フォーム”でGASにPOST -->
   <iframe name="gs_ghost" style="display:none;width:0;height:0;border:0"></iframe>
   <form id="ghostForm" target="gs_ghost" method="POST" action="" style="display:none">
     <input type="hidden" name="type"   value="">
@@ -262,10 +260,10 @@
     const $lp = document.getElementById('lp-link');
     const $apply = document.getElementById('apply-link');
 
-    const state = { email:"", score: null, levelKey:"entry" };
-
+    const state = { email:"", score:null, levelKey:"entry" };
     const isEmail = v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
+    // 隠しフォームで確実にPOST
     function postToGAS(fields){
       const f = document.getElementById('ghostForm');
       f.action = window.GAS_URL;
@@ -273,7 +271,7 @@
       f.elements.email.value = fields.email || '';
       f.elements.score.value = String(fields.score ?? '');
       f.elements.t.value     = String(Date.now());
-      f.submit(); // ← 画面遷移せずに確実にPOST
+      f.submit();
     }
 
     function gatherAnswers(){
@@ -282,17 +280,13 @@
         const r = document.querySelector(`input[name="q${i}"]:checked`);
         sum += r ? Number(r.value) : 3;
       }
-      return sum;
+      return sum; // 10〜50
     }
-
-    function calcScore(){
-      const total = gatherAnswers(); // 10〜50
-      return Math.max(0, Math.min(100, Math.round(total*2))); // 20〜100
-    }
+    function calcScore(){ return Math.max(0, Math.min(100, Math.round(gatherAnswers()*2))); }
 
     function levelFrom(score){
-      if(score >= 81) return {key:'practical', label:'先進層'};
-      if(score >= 61) return {key:'practical', label:'上級層'};
+      if(score >= 81) return {key:'practical', label:'先進層（81–100）'};
+      if(score >= 61) return {key:'practical', label:'上級層（61–80）'};
       if(score >= 41) return {key:'middle',    label:'中級層（41–60）'};
       if(score >= 21) return {key:'entry',     label:'入門層（21–40）'};
       return {key:'entry', label:'初心者層（0–20）'};
@@ -321,27 +315,26 @@
       $lead.textContent = c.lead;
       $bullets.innerHTML = c.bullets.map(x=>`<li>${x}</li>`).join('');
 
-      // リンク
       const qs = `score=${encodeURIComponent(state.score||0)}`;
       $lp.href    = `./exo_courses.html?${qs}`;
       $apply.href = `./exo_course_detail.html?plan=${lv.key}&${qs}`;
 
-      // ロック表示（未登録のとき）
       $detailLock.style.display = state.email ? 'none' : 'block';
     }
 
-    // クリック抑止（未登録時は見るだけに）
+    // 詳細リンクは未登録だと抑止
     $lp.addEventListener('click', (e)=>{ if(!state.email){ e.preventDefault(); alert('詳細を見るにはメール登録が必要です。'); }});
 
-    // 登録
+    // ★登録：メールは送らない（保存だけ）。結果メールは「診断する」で1通だけ送信。
     $btnReg.addEventListener('click', ()=>{
       const v = ($email.value||'').trim();
       if(!isEmail(v)){ alert('メールアドレスを正しく入力してください。'); $email.focus(); return; }
-      $btnReg.disabled = true;
-      postToGAS({ type:'register', email:v });
       state.email = v;
-      $toast.textContent = '詳細レポート案内メールを送信しました。受信箱（迷惑メール含む）をご確認ください。';
-      setTimeout(()=>{ $btnReg.disabled = false; }, 600);
+      $btnReg.setAttribute('aria-disabled','true');
+      $btnReg.textContent = '登録済み';
+      $toast.textContent = '登録完了。診断後に結果メールを1通だけお送りします。';
+      document.getElementById('sec-questions').scrollIntoView({behavior:'smooth'});
+      render();
     });
 
     // 登録せずに診断へ
@@ -349,16 +342,16 @@
       document.getElementById('sec-questions').scrollIntoView({behavior:'smooth'});
     });
 
-    // 診断する
+    // 診断する（この時だけ、登録済みならメール送信）
     $btnDiag.addEventListener('click', ()=>{
       state.score = calcScore();
       render();
-      // 結果もGASへ（遷移なし）
-      postToGAS({ type:'result', email:(state.email||''), score:state.score });
+      if (state.email) {
+        postToGAS({ type:'result', email: state.email, score: state.score });
+      }
       document.getElementById('result-card').scrollIntoView({behavior:'smooth'});
     });
 
-    // 初期
     render();
   })();
   </script>
