@@ -115,6 +115,17 @@
     <input type="hidden" name="type"  value="">
     <input type="hidden" name="email" value="">
     <input type="hidden" name="score" value="">
+    <!-- q1〜q10 を明示的に送る（列ずれ防止） -->
+    <input type="hidden" name="q1" value="">
+    <input type="hidden" name="q2" value="">
+    <input type="hidden" name="q3" value="">
+    <input type="hidden" name="q4" value="">
+    <input type="hidden" name="q5" value="">
+    <input type="hidden" name="q6" value="">
+    <input type="hidden" name="q7" value="">
+    <input type="hidden" name="q8" value="">
+    <input type="hidden" name="q9" value="">
+    <input type="hidden" name="q10" value="">
     <input type="hidden" name="key"   value="">
     <input type="hidden" name="t"     value="">
   </form>
@@ -128,15 +139,19 @@
     const state = { email:"", score:0 };
     const isEmail = v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
-    function gatherAnswers(){
-      let sum=0;
-      for(let i=1;i<=10;i++){
-        const r = document.querySelector(`input[name="q${i}"]:checked`);
-        sum += r ? Number(r.value) : 3;
-      }
-      return sum;
+    function getAnswer(i){
+      const r = document.querySelector(`input[name="q${i}"]:checked`);
+      return r ? Number(r.value) : 3;
     }
-    function calcScore(){ return Math.max(0, Math.min(100, Math.round(gatherAnswers()*2))); }
+    function gatherAnswersArr(){
+      const a = [];
+      for(let i=1;i<=10;i++) a.push(getAnswer(i));
+      return a;
+    }
+    function gatherAnswersSum(arr){ return arr.reduce((s,n)=>s+Number(n||0),0); }
+    function clamp100(n){ n=Number(n)||0; return Math.max(0, Math.min(100, Math.round(n))); }
+    function calcScoreFrom(arr){ return clamp100(gatherAnswersSum(arr)*2); }
+
     function levelFrom(score){
       if(score>=81) return {label:'先進層', advice:'戦略レベルでAIを統合しましょう'};
       if(score>=61) return {label:'上級層', advice:'自動化・PoCへ進みましょう'};
@@ -149,20 +164,29 @@
     function postToGAS(fields){
       const f = document.getElementById('ghostForm');
       f.action = window.GAS_URL;
+
+      // ベース
       f.elements.type.value  = fields.type  || '';
       f.elements.email.value = fields.email || '';
-      f.elements.score.value = String(fields.score ?? '');
+      f.elements.score.value = fields.score !== undefined ? String(fields.score) : '';
+
+      // q1〜q10 を必ず埋める（未送信時は空）
+      for(let i=1;i<=10;i++){
+        const name = `q${i}`;
+        f.elements[name].value = (fields[name] !== undefined ? String(fields[name]) : '');
+      }
+
       f.elements.key.value   = window.RESULT_KEY;
       f.elements.t.value     = String(Date.now());
       f.submit();
     }
 
-    // ★登録時：ログ用にGASへ register をPOST（メール送信はGAS側でしない）
+    // ★登録：register をPOST（score/q1〜q10は空）
     $('#btn-register').addEventListener('click', ()=>{
       const v=(emailEl.value||'').trim();
       if(!isEmail(v)){ alert('正しいメールを入力してください'); emailEl.focus(); return; }
       state.email = v;
-      postToGAS({ type:'register', email: v });   // ← 追加
+      postToGAS({ type:'register', email: state.email });
       toastEl.textContent = 'メールを登録しました。診断後に結果メールが届きます。';
     });
 
@@ -171,16 +195,19 @@
       document.getElementById('sec-questions').scrollIntoView({behavior:'smooth'});
     });
 
-    // 診断 → スコア表示 ＋（登録ありなら）GASへ result POST
+    // 診断 → スコア表示 ＋（登録ありなら）result をPOST（score と q1〜q10 同送）
     $('#btn-diagnose').addEventListener('click', ()=>{
-      state.score = calcScore();
+      const answers = gatherAnswersArr();
+      state.score = calcScoreFrom(answers);
       const lv = levelFrom(state.score);
       scoreOut.textContent = state.score;
       lvLabel.textContent  = lv.label;
       adviceEl.textContent = lv.advice;
 
       if(state.email){
-        postToGAS({ type:'result', email:state.email, score:state.score });
+        const payload = { type:'result', email:state.email, score:state.score };
+        answers.forEach((v,i)=> payload[`q${i+1}`] = v);
+        postToGAS(payload);
         alert('結果メールの送信を受け付けました。受信箱（迷惑メール含む）をご確認ください。');
       }
       document.getElementById('result-card').scrollIntoView({behavior:'smooth'});
