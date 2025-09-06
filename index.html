@@ -48,11 +48,10 @@
 
     <!-- STEP 1: メール登録 -->
     <section class="card">
-      <h2>STEP1｜診断結果をメールで受け取る（任意）</h2>
+      <h2>STEP1｜診断結果をメールで受け取る</h2>
       <div class="row">
         <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="メールアドレスを入力" />
         <button id="btn-register" class="btn primary" type="button">登録する</button>
-        <button id="btn-skip" class="btn" type="button">登録せずに診断へ</button>
       </div>
       <p id="toast" class="muted" style="margin-top:6px"></p>
     </section>
@@ -188,11 +187,6 @@
       state.email = v;
       postToGAS({ type:'register', email: state.email });
       toastEl.textContent = 'メールを登録しました。診断後に結果メールが届きます。';
-    });
-
-    $('#btn-skip').addEventListener('click', ()=>{
-      state.email=""; toastEl.textContent='登録をスキップしました（メールは送信されません）';
-      document.getElementById('sec-questions').scrollIntoView({behavior:'smooth'});
     });
 
     // 診断 → スコア表示 ＋（登録ありなら）result をPOST（score と q1〜q10 同送）
