@@ -23,13 +23,29 @@
   <style>
     :root { --brand:#635bff; --ink:#111827; --card:#fff; --bg:#f8fafc; --muted:#6b7280; --line:#e5e7eb; }
     *{ box-sizing:border-box }
-    body{ margin:0; color:var(--ink); background:var(--bg);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif }
+    body{
+      margin:0; color:var(--ink); background:var(--bg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif
+    }
     main{ max-width:980px; margin:0 auto; padding:20px 16px }
-    h1{ font-size:clamp(26px,3.5vw,32px); margin:10px 0 16px }
+    h1{
+      font-size:clamp(26px,3.5vw,32px);
+      margin:10px 0 8px;
+      text-align:center; /* 中央寄せ */
+    }
+    .subtitle{
+      text-align:center; color:#777; margin:0 0 10px; font-size:14px;
+    }
+    .intro{
+      text-align:center; max-width:760px; margin:0 auto 10px; color:#444; line-height:1.6;
+    }
     .card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; margin:16px 0 }
+    .card h2{ font-size:20px; font-weight:700; margin:0 0 10px }
+    .card ul{ padding-left:1.2em; margin:8px 0 }
     .row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap }
-    input[type="email"]{ flex:1 1 280px; min-width:240px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font:inherit }
+    input[type="email"]{
+      flex:1 1 280px; min-width:240px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font:inherit
+    }
     .btn{ padding:12px 16px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer; font:inherit }
     .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand) }
     .btn[disabled]{ opacity:.6; pointer-events:none }
@@ -44,21 +60,29 @@
 </head>
 <body>
   <main>
+    <!-- タイトル＋バージョン＋説明 -->
     <h1>AI偏差値診断</h1>
-<!-- 🎁 特典情報 -->
-<section class="card" style="background:#fffbe6">
-  <h2>🎁 特典付き！AI偏差値診断で実務に効くアイデア50選をゲット</h2>
-  <p>
-    本診断にご参加いただいた方には、特典として
-    <strong>「AIを活用した業務改善アイデア50選」</strong> をプレゼントいたします。
-  </p>
-  <ul>
-    <li>診断後、ご登録いただいたメールに「AI偏差値詳細レポート」のリンクが届きます。</li>
-    <li>詳細レポートページから、特典PDFをダウンロードできます。</li>
-    <li>営業・企画・バックオフィスなど幅広い分野で使える具体的なAI活用アイデアを収録。</li>
-  </ul>
-  <p class="muted">※メールアドレスをご登録いただいた方のみご案内可能です。</p>
-</section>
+    <p class="subtitle">Ver.1.1｜最終更新：2025年9月7日</p>
+    <p class="intro">
+      「AI偏差値」とは、経営や業務においてAIをどれだけ効果的に活用できているかを示す指標です。<br>
+      本診断では10の質問に答えるだけで、<strong>貴社・ご自身のAI活用レベル</strong>を数値化。結果に応じて
+      <strong>改善の方向性・実践アドバイス・特典資料</strong>をお届けします。DX推進や生産性向上の第一歩にご活用ください。
+    </p>
+
+    <!-- 🎁 特典情報（黄色で強調） -->
+    <section class="card" style="background:#fffbe6">
+      <h2>🎁 特典付き！AI偏差値診断で実務に効くアイデア50選をゲット</h2>
+      <p>
+        本診断にご参加いただいた方には、特典として
+        <strong>「AIを活用した業務改善アイデア50選」</strong> をプレゼントいたします。
+      </p>
+      <ul>
+        <li>診断後、ご登録のメールに「AI偏差値詳細レポート」のリンクが届きます。</li>
+        <li>詳細レポートページから、特典PDFをダウンロードできます。</li>
+        <li>営業・企画・バックオフィスなど幅広い分野で使える具体的なAI活用アイデアを収録。</li>
+      </ul>
+      <p class="muted">※メールアドレスをご登録いただいた方のみご案内可能です。</p>
+    </section>
 
     <!-- STEP 1: メール登録 -->
     <section class="card">
@@ -201,6 +225,8 @@
       state.email = v;
       postToGAS({ type:'register', email: state.email });
       toastEl.textContent = 'メールを登録しました。診断後に結果メールが届きます。';
+      // お好みで：STEP2へスクロール
+      // document.getElementById('sec-questions').scrollIntoView({behavior:'smooth'});
     });
 
     // 診断 → スコア表示 ＋（登録ありなら）result をPOST（score と q1〜q10 同送）
