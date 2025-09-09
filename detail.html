@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AI偏差値診断｜詳細レポート</title>
 
-  <!-- （任意）GA4 -->
+  <!-- GA4（任意） -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -49,6 +49,13 @@
     ul.bullets{ margin:8px 0 0 20px }
     .cols3{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
     .pill{ display:inline-block; padding:.35em .8em; border:1px solid var(--line); border-radius:999px; background:#fff; }
+
+    .case{ border:1px solid var(--line); border-radius:14px; padding:16px; background:#fff; }
+    .case h4{ margin:0 0 8px; font-size:15px }
+    .case p{ margin:.4rem 0; line-height:1.75; color:#1f2937 }
+    .muted{ color:var(--muted); }
+
+    .cta-note{ margin-left:8px; color:#334155; font-size:14px }
 
     footer{ border-top:1px solid var(--line); background:#fff; text-align:center; padding:20px; margin-top:36px; font-size:14px }
     footer a{ color:var(--ink); text-decoration:none; }
@@ -95,6 +102,7 @@
       <div class="row" style="margin-top:14px">
         <a id="apply-btn" class="btn primary" href="#">コースに申し込む</a>
         <a id="courses-btn" class="btn ghost" href="#">おすすめコースを見る</a>
+        <span class="cta-note" id="apply-note"></span>
       </div>
     </section>
 
@@ -107,22 +115,35 @@
       <ul id="steps" class="bullets"></ul>
     </section>
 
-    <!-- ===== 事例イメージ ===== -->
+    <!-- ===== 事例（拡張版） ===== -->
     <section class="card">
-      <h3>📈 事例と効果イメージ</h3>
-      <div class="cols3">
-        <div class="kpi">
-          <strong>BtoB営業</strong><br>
-          フォロー即時化で商談化率↑
-        </div>
-        <div class="kpi">
-          <strong>EC</strong><br>
-          商品説明の量産でSEO流入増
-        </div>
-        <div class="kpi">
-          <strong>セミナー</strong><br>
-          告知→アンケ→見込み育成を自動ループ
-        </div>
+      <h3>📈 AI活用事例と期待できる効果</h3>
+      <p id="cases-intro" class="muted"></p>
+
+      <div class="cols3" style="margin-top:8px">
+        <!-- BtoB営業 -->
+        <article class="case">
+          <h4>🏢 BtoB営業</h4>
+          <p><strong>課題：</strong>問い合わせ後の初動が遅れがちで、担当者ごとに提案の質がばらつく。</p>
+          <p><strong>AI活用：</strong>フォーム連動で<strong>「お礼＋一次提案メール」</strong>を即時生成。顧客属性や過去事例から<strong>提案資料の骨子</strong>と<strong>見積り下書き</strong>を自動作成。返信文のトーンも統一。</p>
+          <p><strong>効果：</strong>初回対応が<strong>数日→数分</strong>に短縮し、商談化率が改善（例：<strong>15%→25〜30%</strong>）。営業は資料作成から解放され、クロージングに集中できる。</p>
+        </article>
+
+        <!-- EC -->
+        <article class="case">
+          <h4>🛒 EC（ネットショップ）</h4>
+          <p><strong>課題：</strong>商品説明・SEO記事・レビュー返信の工数が大きく、新商品の立ち上げが遅れる。</p>
+          <p><strong>AI活用：</strong>スペックと画像を渡すだけで<strong>説明文／FAQ／比較記事／購入ガイド</strong>を一括生成。検索意図に沿った<strong>関連キーワード入り長文</strong>も半自動で量産。レビュー返信は下書きをAIが作成。</p>
+          <p><strong>効果：</strong>商品ページ更新が<strong>数分の一</strong>に短縮。検索流入が増え、商品理解が深まって<strong>購入率も改善</strong>。運営は販促や在庫戦略に時間を回せる。</p>
+        </article>
+
+        <!-- セミナー -->
+        <article class="case">
+          <h4>🎤 セミナー・イベント</h4>
+          <p><strong>課題：</strong>告知文・当日台本・アンケ集計・フォローが属人化し、単発で終わりがち。</p>
+          <p><strong>AI活用：</strong>概要入力だけで<strong>告知文／SNS投稿／メール案内</strong>を生成。進行台本や司会スクリプトも作成。アンケは<strong>自動集計・要約</strong>し、参加者別の<strong>フォローメール</strong>を自動生成。</p>
+          <p><strong>効果：</strong>少人数でも回る仕組み化ができ、<strong>リード獲得数・商談化率が向上</strong>。単発開催から、継続的に顧客育成できるサイクルへ。</p>
+        </article>
       </div>
     </section>
 
@@ -154,82 +175,97 @@
   </footer>
 
   <script>
-    // --- URL から score を取得（id は使わない）
+    // --- URL から score を取得
     const params = new URLSearchParams(location.search);
     const score  = clamp(Number(params.get('score')) || 0, 0, 100);
 
-    // --- 表示に反映
+    // --- スコア・レベル表示
     document.getElementById('score-num').textContent = String(score);
-
     const info = levelInfo(score);
     document.getElementById('level-label').textContent = info.levelLabel;
     document.getElementById('plan-badge').textContent = info.planBadge;
 
-    // CTA
+    // --- CTA
     const apply = document.getElementById('apply-btn');
     const courses = document.getElementById('courses-btn');
     apply.textContent = `${info.planCode} に申し込む`;
     apply.href   = `./exo_course_detail.html?plan=${encodeURIComponent(info.planCode)}&score=${score}`;
     courses.href = `./exo_courses.html?score=${score}`;
+    document.getElementById('apply-note').textContent = info.ctaNote;
 
-    // 解説
+    // --- 解説／3ステップ
     document.getElementById('explain').textContent = info.explain;
     document.getElementById('steps').innerHTML = info.steps.map(s => `<li>${s}</li>`).join('');
+
+    // --- 事例セクションの導入（レベル別）
+    document.getElementById('cases-intro').textContent = info.casesIntro;
 
     // ---- helpers
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
+    // レベル判定＆文言（※閾値は現行仕様に合わせて 0–20 / 21–40 / 41–60 / 61–100）
     function levelInfo(s){
-      // しきい値と文言はここで一括管理
+      // 上級（61–100）
       if (s >= 61){
         return {
           levelLabel: '上級層（61–100）',
           planCode  : 'PRACTICAL',
           planBadge : 'PRACTICAL（仕組み化）',
-          explain   : '実務でAIが回っています。テンプレと自動化を接続し、仕組み化まで一気通貫で進めましょう。',
+          explain   : '既に実務でAIが回っています。次は仕組み化と自動化の徹底です。稼働中プロセスをKPI化し、生成物の品質と成果を数値で監視しながら改善。外部ツールやAPI連携で半自動→全自動を広げ、チーム全体に拡張可能なモデルを設計しましょう。「AIを使う」から「AIを設計する」段階です。',
           steps     : [
-            '稼働中のテンプレをKPI化し、改善を自動計測',
-            'GAS／外部ツール連携で半自動フロー化',
-            'RAG・エージェントのPoC→社内展開'
-          ]
+            '現行のAI活用プロセスを棚卸し、KPI（質・量・時間・売上）を設定',
+            'GAS／iPaaS／各種APIと連携して自動化を拡大（手作業の分岐を削減）',
+            'ダッシュボードで効果を常時モニタリングし、全社展開できる運用モデルを構築'
+          ],
+          casesIntro: 'ここでは、AIをビジネス設計に統合していくための典型例を示しています。自社の仕組みにどう落とし込むか、KPI管理や自動化と併せて活用してください。',
+          ctaNote   : '実務を教材にしながら、AIを“経営の武器”へ磨き上げましょう。'
         };
       }
+      // 中級（41–60）
       if (s >= 41){
         return {
           levelLabel: '中級層（41–60）',
           planCode  : 'MIDDLE',
           planBadge : 'MIDDLE（売上直結）',
-          explain   : '基礎はOK。売上直結の領域へ転換し、集客〜商談〜成約の各所にAIを組み込みましょう。',
+          explain   : '基礎はできています。次は売上直結の領域にAIを組み込みましょう。SNS投稿・営業メール・FAQ対応をAIで量産化し、人は商談や顧客対応に集中。成果物はテンプレ化して再利用し、再現性を高めます。実務に組み込むほど学びと成果が同時に積み上がります。',
           steps     : [
-            'LP/SNS/メールの一次案をAIで量産→人が仕上げ',
-            '商談フォロー／FAQ対応をテンプレ化して再利用',
-            '小さな自動化（フォーム→返信→記録→レポート）'
-          ]
+            'SNS投稿／営業メール／FAQをAIで一括生成して一次案を高速に用意',
+            '良い出力をテンプレ化して資産化（プロンプト・フォーマット・チェック表）',
+            '空いた時間を商談・接客・企画に投下して売上に直結させる'
+          ],
+          casesIntro: 'ここでは、AIを“学びながら成果を出す”ための具体例を紹介しています。自分の事業に当てはめ、まずは効果の出やすい領域から組み込んでください。',
+          ctaNote   : 'AIを学びながら実際に売上アップを体感できるステップです。'
         };
       }
+      // 入門（21–40）
       if (s >= 21){
         return {
           levelLabel: '入門層（21–40）',
           planCode  : 'ENTRY',
-          planBadge : 'ENTRY',
-          explain   : 'まずは安全な使い方と良いプロンプトの型を整え、資料・メール・要約で日次の成果を出しましょう。',
+          planBadge : 'ENTRY（基礎固め）',
+          explain   : 'AIを使い始めた段階です。安全な使い方と良いプロンプトの型を整え、資料・メール・要約など日次タスクで「できた！」を積みましょう。小さく速く回して自信と再現性を作るのが最短ルートです。',
           steps     : [
-            '基本リテラシーと社内ルールの整備',
-            '勝ちやすい3領域のテンプレ取得（資料・メール・要約）',
-            '成功プロンプトをテンプレ化して共有'
-          ]
+            '基本リテラシー（機密・著作権・個人情報）と社内ルールを確認',
+            '資料作成・メール下書き・要約の3領域で勝ち筋テンプレを作る',
+            'うまくいった手順をテンプレ化して保存・共有'
+          ],
+          casesIntro: 'ここでは、AI活用の典型的な3つの業務シーンを紹介しています。まずは身近な作業をAIに置き換え、「できた！」という体験を増やしてください。',
+          ctaNote   : '基礎を学びながら、実務で使える型を一緒に作っていきましょう。'
         };
       }
+      // 初心者（0–20）
       return {
         levelLabel: '初心者層（0–20）',
         planCode  : 'ENTRY',
-        planBadge : 'ENTRY',
-        explain   : '今はAI活用の入り口です。まずは毎日触れる習慣化と、型化で再現性を作ることから始めましょう。',
+        planBadge : 'ENTRY（はじめの一歩）',
+        explain   : 'AI活用の入り口です。難しいことを狙わず、まずは毎日触れる習慣化から。メモ・要約・メール下書きのような身近なタスクでAIに任せて「使える」体験を作りましょう。成功体験の蓄積が次のステップへの原動力になります。',
         steps     : [
-          '安全に使うための基本リテラシー習得',
-          '日次業務（要約・下書き）をAIテンプレで実践',
-          '良い手順をテンプレに保存し、再利用'
-        ]
+          '毎日1回はAIに質問や依頼をしてみる（まずは短文でOK）',
+          'メール／日報の下書きをAIに作らせ、人が最終調整',
+          'うまくいった出力とプロンプトをメモして次回に再利用'
+        ],
+        casesIntro: 'ここでは、AI活用の典型的な3つの業務シーンを紹介しています。ご自身の事業（営業・ネット販売・セミナー／店舗集客など）に置き換えて、どこから始めるかをイメージしてください。',
+        ctaNote   : '今日の小さな実践が、90日後の大きな変化につながります。'
       };
     }
   </script>
