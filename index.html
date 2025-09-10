@@ -123,6 +123,19 @@
     <section class="card" id="sec-questions">
       <h2>STEP2｜10問に回答</h2>
 
+      <!-- ▼5段階スケール凡例 -->
+      <div class="scale-legend card" style="padding:12px 14px; margin-top:8px">
+        <strong>評価スケール：</strong>
+        <ul style="margin:6px 0 0; padding-left:1.2em; color:#374151">
+          <li><strong>1＝未着手</strong>（ほぼ実施していない）</li>
+          <li><strong>2＝試行段階</strong>（一部で試している）</li>
+          <li><strong>3＝部分運用</strong>（ときどき実施・定着途中）</li>
+          <li><strong>4＝継続運用</strong>（標準化に近い・継続実施）</li>
+          <li><strong>5＝高度運用</strong>（標準化＋自動化／全社展開レベル）</li>
+        </ul>
+      </div>
+      <!-- ▲凡例 -->
+
       <fieldset><legend>1. 自社のAI活用目的は明確ですか？（例：売上・コスト削減・品質向上など）</legend>
         <div class="opts"><label><input type="radio" name="q1" value="1">1</label><label><input type="radio" name="q1" value="2">2</label><label><input type="radio" name="q1" value="3" checked>3</label><label><input type="radio" name="q1" value="4">4</label><label><input type="radio" name="q1" value="5">5</label></div>
       </fieldset>
@@ -200,60 +213,4 @@
     const emailEl = $('#email'), toastEl = $('#toast');
     const scoreOut=$('#score-out'), lvLabel=$('#lv-label'), adviceEl=$('#advice');
 
-    const state = { email:"", score:0 };
-    const isEmail = v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
-
-    function getAnswer(i){ const r = document.querySelector(`input[name="q${i}"]:checked`); return r ? Number(r.value) : 3; }
-    function gatherAnswersArr(){ const a = []; for(let i=1;i<=10;i++) a.push(getAnswer(i)); return a; }
-    function gatherAnswersSum(arr){ return arr.reduce((s,n)=>s+Number(n||0),0); }
-    function clamp100(n){ n=Number(n)||0; return Math.max(0, Math.min(100, Math.round(n))); }
-    function calcScoreFrom(arr){ return clamp100(gatherAnswersSum(arr)*2); }
-
-    function levelFrom(score){
-      if(score>=81) return {label:'先進層', advice:'戦略レベルでAIを統合しましょう'};
-      if(score>=61) return {label:'上級層', advice:'自動化・PoCへ進みましょう'};
-      if(score>=41) return {label:'中級層（41–60）', advice:'テンプレ×KPIで改善を回す'};
-      if(score>=21) return {label:'入門層（21–40）', advice:'毎日の習慣化から開始'};
-      return {label:'初心者層（0–20）', advice:'まずは安全に触れる場を増やす'};
-    }
-
-    function postToGAS(fields){
-      const f = document.getElementById('ghostForm');
-      f.action = window.GAS_URL;
-      f.elements.type.value  = fields.type  || '';
-      f.elements.email.value = fields.email || '';
-      f.elements.score.value = fields.score !== undefined ? String(fields.score) : '';
-      for(let i=1;i<=10;i++){ const name = `q${i}`; f.elements[name].value = (fields[name] !== undefined ? String(fields[name]) : ''); }
-      f.elements.key.value   = window.RESULT_KEY;
-      f.elements.t.value     = String(Date.now());
-      f.submit();
-    }
-
-    $('#btn-register').addEventListener('click', ()=>{
-      const v=(emailEl.value||'').trim();
-      if(!isEmail(v)){ alert('正しいメールを入力してください'); emailEl.focus(); return; }
-      state.email = v;
-      postToGAS({ type:'register', email: state.email });
-      toastEl.textContent = 'メールを登録しました。診断後に結果メールが届きます。';
-    });
-
-    $('#btn-diagnose').addEventListener('click', ()=>{
-      const answers = gatherAnswersArr();
-      state.score = calcScoreFrom(answers);
-      const lv = levelFrom(state.score);
-      scoreOut.textContent = state.score;
-      lvLabel.textContent  = lv.label;
-      adviceEl.textContent = lv.advice;
-
-      if(state.email){
-        const payload = { type:'result', email:state.email, score:state.score };
-        answers.forEach((v,i)=> payload[`q${i+1}`] = v);
-        postToGAS(payload);
-        alert('結果メールの送信を受け付けました。受信箱（迷惑メール含む）をご確認ください。');
-      }
-      document.getElementById('result-card').scrollIntoView({behavior:'smooth'});
-    });
-  })();
-  </script>
-</body>
-</html>
+    const
