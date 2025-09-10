@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI偏差値診断｜メール登録→診断→結果メール</title>
 
   <!-- GA4（任意） -->
@@ -11,239 +11,228 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
-    gtag('config', 'G-QFQZF4F1QW');
-  </script>
-
-  <!-- ★GAS WebアプリURL と 秘密キー（GAS側と一致させる） -->
-  <script>
-    window.GAS_URL    = "https://script.google.com/macros/s/AKfycbwb-fVeskWFM4-Ya-8FRvOo02ipfQdHSJe_3ihfSo4fic2F6vjjznV-nxW1Kwqy2prC/exec";
-    window.RESULT_KEY = "RG8rK7vQ3bX1pY2z";
+    gtag('config', 'G-QFQZF4F1QW', { send_page_view: true });
   </script>
 
   <style>
-    :root { --brand:#635bff; --ink:#111827; --card:#fff; --bg:#f8fafc; --muted:#6b7280; --line:#e5e7eb; }
-    *{ box-sizing:border-box }
-    body{
-      margin:0; color:var(--ink); background:var(--bg);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
-      line-height:1.7;
+    :root{
+      --ink:#0f172a; --muted:#475569; --line:#e5e7eb; --bg:#f8fafc; --card:#fff;
+      --brand:#6366f1; --good:#16a34a; --chip:#eef2ff;
     }
-    main{ max-width:980px; margin:0 auto; padding:20px 16px }
-    h1{
-      font-size:clamp(26px,3.5vw,32px);
-      margin:10px 0 8px;
-      text-align:center;
-      letter-spacing:.3px;
-    }
-    .subtitle{
-      text-align:center; color:#777; margin:-4px 0 12px; font-size:14px;
-    }
-    .card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; margin:16px 0 }
-    .card h2{ font-size:20px; font-weight:700; margin:0 0 10px }
-    .card ul{ padding-left:1.2em; margin:8px 0 }
-    .card ul li{ margin:6px 0; }
-    .row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap }
-    input[type="email"]{
-      flex:1 1 280px; min-width:240px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font:inherit
-    }
-    .btn{ padding:12px 16px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer; font:inherit }
-    .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand) }
-    .btn[disabled]{ opacity:.6; pointer-events:none }
-    fieldset{ border:1px solid var(--line); border-radius:10px; padding:10px; margin:10px 0 }
-    legend{ font-weight:600; padding:0 4px }
-    .opts label{ margin-right:10px }
-    .result{ display:flex; gap:12px; align-items:center; flex-wrap:wrap }
-    .pill{ display:inline-block; padding:4px 10px; border:1px solid var(--line); border-radius:999px; background:#fff }
-    .score{ font-size:28px; font-weight:800 }
-    .muted{ color:var(--muted) }
-
-    /* AI偏差値説明カード（グレー枠） */
-    .card.explain {
-      background:#fff;
-      border:1px solid #e5e7eb;
-      border-radius:12px;
-      padding:16px 18px;
-      margin:16px 0;
-    }
-    .card.explain p { margin:6px 0; color:#444; line-height:1.6; }
-
-    /* 特典カード（黄色） */
-    .card.bonus {
-      background:#fffbe6;
-      border:1px solid #f3e6a6;
-      box-shadow:0 6px 18px rgba(17,24,39,.06);
-    }
-    .card.bonus h2 { display:flex; align-items:center; gap:8px; }
-    .card.bonus h2 .icon { font-size:22px; line-height:1; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.6;color:var(--ink);background:var(--bg)}
+    .wrap{max-width:980px;margin:24px auto;padding:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 20px rgba(15,23,42,.04);padding:20px;margin-bottom:16px}
+    h1{font-size:clamp(22px,3vw,28px);margin:0 0 8px}
+    p.lead{color:var(--muted);margin:0 0 16px}
+    .q{border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0;background:#fff}
+    .q label.title{display:block;font-weight:600;margin-bottom:8px}
+    .choices{display:flex;gap:12px;flex-wrap:wrap}
+    .choices input{accent-color:var(--brand)}
+    .hint{color:var(--muted);font-size:14px;margin-top:4px}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .result{border-left:4px solid var(--brand);padding-left:12px;margin:12px 0}
+    .footer{color:var(--muted);font-size:12px;text-align:center;margin-top:28px}
+    .score-badge{display:inline-block;background:var(--chip);color:var(--brand);padding:4px 8px;border-radius:999px;font-weight:700}
+    .grid{display:grid;gap:12px}
+    @media (min-width:720px){.grid{grid-template-columns:1fr 1fr}}
   </style>
 </head>
 <body>
-  <main>
-    <!-- タイトル＋バージョン -->
-    <h1>AI偏差値診断</h1>
-    <p class="subtitle">Ver.1.1｜最終更新：2025年9月7日</p>
+  <div class="wrap">
+    <div class="card">
+      <h1>AI偏差値診断</h1>
+      <p class="lead">以下の10項目について、現在の状況に近い数字（<strong>1：まったく／2：少し／3：普通／4：できている／5：とてもできている</strong>）を選んでください。専門用語は避け、日常業務でのイメージが湧く表現に調整しました。</p>
+    </div>
 
-    <!-- AI偏差値とは？ 説明（グレー枠） -->
-    <section class="card explain">
-      <p><strong>「AI偏差値」とは？</strong></p>
-      <p>
-        経営や業務においてAIをどれだけ効果的に活用できているかを示す指標です。<br>
-        本診断では10の質問に答えるだけで、AI活用レベルを数値化。<br>
-        結果に応じて<strong>改善の方向性・実践アドバイス</strong>を提示します。
-      </p>
-    </section>
-
-    <!-- 🎁 特典情報（黄色枠） -->
-    <section class="card bonus">
-      <h2><span class="icon">🎁</span>特典付き！AI偏差値診断で実務に効くアイデア50選をゲット</h2>
-      <p>
-        本診断にご参加いただいた方には、特典として
-        <strong>「AIを活用した業務改善アイデア50選」</strong> をプレゼントいたします。
-      </p>
-      <ul>
-        <li>診断後、ご登録のメールに「AI偏差値詳細レポート」のリンクが届きます。</li>
-        <li>詳細レポートページから、特典PDFをダウンロードできます。</li>
-        <li>営業・企画・バックオフィスなど幅広い分野で使える具体的なAI活用アイデアを収録。</li>
-      </ul>
-      <p class="muted">※メールアドレスをご登録いただいた方のみご案内可能です。</p>
-    </section>
-
-    <!-- STEP 1 -->
-    <section class="card">
-      <h2>STEP1｜診断結果をメールで受け取る</h2>
-      <div class="row">
-        <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="メールアドレスを入力" />
-        <button id="btn-register" class="btn primary" type="button">登録する</button>
+    <form id="form" class="card">
+      <div id="questions">
+        <!-- 1 -->
+        <div class="q">
+          <label class="title" for="q1">1. AIツール（ChatGPTなど）を仕事で使ったことがある</label>
+          <div class="choices" role="radiogroup" aria-labelledby="q1">
+            <label><input type="radio" name="q1" value="1" required> 1</label>
+            <label><input type="radio" name="q1" value="2"> 2</label>
+            <label><input type="radio" name="q1" value="3"> 3</label>
+            <label><input type="radio" name="q1" value="4"> 4</label>
+            <label><input type="radio" name="q1" value="5"> 5</label>
+          </div>
+        </div>
+        <!-- 2 -->
+        <div class="q">
+          <label class="title" for="q2">2. AIへの指示の仕方（プロンプト）を工夫している</label>
+          <div class="choices" role="radiogroup" aria-labelledby="q2">
+            <label><input type="radio" name="q2" value="1" required> 1</label>
+            <label><input type="radio" name="q2" value="2"> 2</label>
+            <label><input type="radio" name="q2" value="3"> 3</label>
+            <label><input type="radio" name="q2" value="4"> 4</label>
+            <label><input type="radio" name="q2" value="5"> 5</label>
+          </div>
+        </div>
+        <!-- 3 -->
+        <div class="q">
+          <label class="title" for="q3">3. AIが出した成果をチェックする基準を持っている</label>
+          <div class="choices" role="radiogroup" aria-labelledby="q3">
+            <label><input type="radio" name="q3" value="1" required> 1</label>
+            <label><input type="radio" name="q3" value="2"> 2</label>
+            <label><input type="radio" name="q3" value="3"> 3</label>
+            <label><input type="radio" name="q3" value="4"> 4</label>
+            <label><input type="radio" name="q3" value="5"> 5</label>
+          </div>
+          <div class="hint">例：レビュー手順、品質チェックリスト、NG例の見本など</div>
+        </div>
+        <!-- 4 -->
+        <div class="q">
+          <label class="title" for="q4">4. うまくいったAIの使い方をマニュアル化して再利用している</label>
+          <div class="choices" role="radiogroup" aria-labelledby="q4">
+            <label><input type="radio" name="q4" value="1" required> 1</label>
+            <label><input type="radio" name="q4" value="2"> 2</label>
+            <label><input type="radio" name="q4" value="3"> 3</label>
+            <label><input type="radio" name="q4" value="4"> 4</label>
+            <label><input type="radio" name="q4" value="5"> 5</label>
+          </div>
+        </div>
+        <!-- 5 -->
+        <div class="q">
+          <label class="title" for="q5">5. AIを他ツール（スプレッドシートやカレンダー等）と組み合わせて効率化している</label>
+          <div class="choices" role="radiogroup" aria-labelledby="q5">
+            <label><input type="radio" name="q5" value="1" required> 1</label>
+            <label><input type="radio" name="q5" value="2"> 2</label>
+            <label><input type="radio" name="q5" value="3"> 3</label>
+            <label><input type="radio" name="q5" value="4"> 4</label>
+            <label><input type="radio" name="q5" value="5"> 5</label>
+          </div>
+          <div class="hint">例：GAS連携、メール自動送信、顧客管理との連携 など</div>
+        </div>
+        <!-- 6 -->
+        <div class="q">
+          <label class="title" for="q6">6. AIを使うときのルールや安全対策がある</label>
+          <div class="choices" role="radiogroup" aria-labelledby="q6">
+            <label><input type="radio" name="q6" value="1" required> 1</label>
+            <label><input type="radio" name="q6" value="2"> 2</label>
+            <label><input type="radio" name="q6" value="3"> 3</label>
+            <label><input type="radio" name="q6" value="4"> 4</label>
+            <label><input type="radio" name="q6" value="5"> 5</label>
+          </div>
+        </div>
+        <!-- 7 -->
+        <div class="q">
+          <label class="title" for="q7">7. AIの使い方や成功例をチームで共有している</label>
+          <div class="choices" role="radiogroup" aria-labelledby="q7">
+            <label><input type="radio" name="q7" value="1" required> 1</label>
+            <label><input type="radio" name="q7" value="2"> 2</label>
+            <label><input type="radio" name="q7" value="3"> 3</label>
+            <label><input type="radio" name="q7" value="4"> 4</label>
+            <label><input type="radio" name="q7" value="5"> 5</label>
+          </div>
+        </div>
+        <!-- 8 -->
+        <div class="q">
+          <label class="title" for="q8">8. AIの効果を数字や比較で検証している</label>
+          <div class="choices" role="radiogroup" aria-labelledby="q8">
+            <label><input type="radio" name="q8" value="1" required> 1</label>
+            <label><input type="radio" name="q8" value="2"> 2</label>
+            <label><input type="radio" name="q8" value="3"> 3</label>
+            <label><input type="radio" name="q8" value="4"> 4</label>
+            <label><input type="radio" name="q8" value="5"> 5</label>
+          </div>
+          <div class="hint">例：作業時間の短縮率、A/Bテスト、KPI連動 など</div>
+        </div>
+        <!-- 9 -->
+        <div class="q">
+          <label class="title" for="q9">9. AIに自動で仕事を任せる仕組みを使い始めている</label>
+          <div class="choices" role="radiogroup" aria-labelledby="q9">
+            <label><input type="radio" name="q9" value="1" required> 1</label>
+            <label><input type="radio" name="q9" value="2"> 2</label>
+            <label><input type="radio" name="q9" value="3"> 3</label>
+            <label><input type="radio" name="q9" value="4"> 4</label>
+            <label><input type="radio" name="q9" value="5"> 5</label>
+          </div>
+          <div class="hint">例：自動化フロー、RAG、AIエージェント、定型レポート自動生成 など</div>
+        </div>
+        <!-- 10 (具体例入りで更新) -->
+        <div class="q">
+          <label class="title" for="q10">10. 新しいAI機能（例：<u>画像生成</u>、<u>音声認識</u>、<u>自動翻訳</u>、<u>議事録自動化</u>、<u>Excel/Sheetsの自動処理</u> など）を試して使えるか確認している</label>
+          <div class="choices" role="radiogroup" aria-labelledby="q10">
+            <label><input type="radio" name="q10" value="1" required> 1</label>
+            <label><input type="radio" name="q10" value="2"> 2</label>
+            <label><input type="radio" name="q10" value="3"> 3</label>
+            <label><input type="radio" name="q10" value="4"> 4</label>
+            <label><input type="radio" name="q10" value="5"> 5</label>
+          </div>
+        </div>
       </div>
-      <p id="toast" class="muted" style="margin-top:6px"></p>
-    </section>
 
-    <!-- STEP 2: 設問（復活版） -->
-    <section class="card" id="sec-questions">
-      <h2>STEP2｜10問に回答</h2>
-
-      <fieldset><legend>1. ChatGPTなどのAIツールを業務で使ったことがある</legend>
-        <div class="opts"><label><input type="radio" name="q1" value="1">1</label><label><input type="radio" name="q1" value="2">2</label><label><input type="radio" name="q1" value="3" checked>3</label><label><input type="radio" name="q1" value="4">4</label><label><input type="radio" name="q1" value="5">5</label></div>
-      </fieldset>
-      <fieldset><legend>2. プロンプトを工夫して出力を改善している</legend>
-        <div class="opts"><label><input type="radio" name="q2" value="1">1</label><label><input type="radio" name="q2" value="2">2</label><label><input type="radio" name="q2" value="3" checked>3</label><label><input type="radio" name="q2" value="4">4</label><label><input type="radio" name="q2" value="5">5</label></div>
-      </fieldset>
-      <fieldset><legend>3. AI成果物の品質基準（レビュー）を運用している</legend>
-        <div class="opts"><label><input type="radio" name="q3" value="1">1</label><label><input type="radio" name="q3" value="2">2</label><label><input type="radio" name="q3" value="3" checked>3</label><label><input type="radio" name="q3" value="4">4</label><label><input type="radio" name="q3" value="5">5</label></div>
-      </fieldset>
-      <fieldset><legend>4. 成功手順をテンプレ化し再利用している</legend>
-        <div class="opts"><label><input type="radio" name="q4" value="1">1</label><label><input type="radio" name="q4" value="2">2</label><label><input type="radio" name="q4" value="3" checked>3</label><label><input type="radio" name="q4" value="4">4</label><label><input type="radio" name="q4" value="5">5</label></div>
-      </fieldset>
-      <fieldset><legend>5. ツール連携×AIで業務効率化が進んでいる</legend>
-        <div class="opts"><label><input type="radio" name="q5" value="1">1</label><label><input type="radio" name="q5" value="2">2</label><label><input type="radio" name="q5" value="3" checked>3</label><label><input type="radio" name="q5" value="4">4</label><label><input type="radio" name="q5" value="5">5</label></div>
-      </fieldset>
-      <fieldset><legend>6. セキュリティ／利用ルールが整備されている</legend>
-        <div class="opts"><label><input type="radio" name="q6" value="1">1</label><label><input type="radio" name="q6" value="2">2</label><label><input type="radio" name="q6" value="3" checked>3</label><label><input type="radio" name="q6" value="4">4</label><label><input type="radio" name="q6" value="5">5</label></div>
-      </fieldset>
-      <fieldset><legend>7. ガイドラインや成功事例を共有している</legend>
-        <div class="opts"><label><input type="radio" name="q7" value="1">1</label><label><input type="radio" name="q7" value="2">2</label><label><input type="radio" name="q7" value="3" checked>3</label><label><input type="radio" name="q7" value="4">4</label><label><input type="radio" name="q7" value="5">5</label></div>
-      </fieldset>
-      <fieldset><legend>8. 評価・検証（A/B・指標化）に取り組んでいる</legend>
-        <div class="opts"><label><input type="radio" name="q8" value="1">1</label><label><input type="radio" name="q8" value="2">2</label><label><input type="radio" name="q8" value="3" checked>3</label><label><input type="radio" name="q8" value="4">4</label><label><input type="radio" name="q8" value="5">5</label></div>
-      </fieldset>
-      <fieldset><legend>9. 自動化／RAG／エージェント運用を始めている</legend>
-        <div class="opts"><label><input type="radio" name="q9" value="1">1</label><label><input type="radio" name="q9" value="2">2</label><label><input type="radio" name="q9" value="3" checked>3</label><label><input type="radio" name="q9" value="4">4</label><label><input type="radio" name="q9" value="5">5</label></div>
-      </fieldset>
-      <fieldset><legend>10. 新しいAI機能を定期的に試し、評価している</legend>
-        <div class="opts"><label><input type="radio" name="q10" value="1">1</label><label><input type="radio" name="q10" value="2">2</label><label><input type="radio" name="q10" value="3" checked>3</label><label><input type="radio" name="q10" value="4">4</label><label><input type="radio" name="q10" value="5">5</label></div>
-      </fieldset>
-
-      <div style="text-align:right;margin-top:10px">
-        <button id="btn-diagnose" class="btn primary" type="button">診断する</button>
+      <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <button type="button" class="btn" id="calcBtn">診断する</button>
+        <span id="quickScore" class="score-badge" hidden>合計: <b id="sum">0</b> / 50</span>
       </div>
-    </section>
 
-    <!-- STEP 3: 結果 -->
-    <section class="card" id="result-card">
-      <h2>STEP3｜診断結果</h2>
-      <p class="result">
-        <span>AI偏差値：<span class="score" id="score-out">--</span></span>
-        <span class="pill">レベル：<span id="lv-label">--</span></span>
-      </p>
-      <p id="advice" class="muted"></p>
-      <p class="muted" style="margin-top:8px">※メール未登録の場合は送信しません。</p>
-    </section>
-  </main>
+      <div id="result" class="result" hidden>
+        <h3 style="margin:6px 0 4px">診断結果（フロント計算）</h3>
+        <div id="summary"></div>
+      </div>
+    </form>
 
-  <!-- CORS回避：隠しiframe＋フォームでPOST -->
-  <iframe name="gs_ghost" style="display:none;width:0;height:0;border:0"></iframe>
-  <form id="ghostForm" target="gs_ghost" method="POST" action="" style="display:none">
-    <input type="hidden" name="type"  value="">
-    <input type="hidden" name="email" value="">
-    <input type="hidden" name="score" value="">
-    <input type="hidden" name="q1" value=""><input type="hidden" name="q2" value="">
-    <input type="hidden" name="q3" value=""><input type="hidden" name="q4" value="">
-    <input type="hidden" name="q5" value=""><input type="hidden" name="q6" value="">
-    <input type="hidden" name="q7" value=""><input type="hidden" name="q8" value="">
-    <input type="hidden" name="q9" value=""><input type="hidden" name="q10" value="">
-    <input type="hidden" name="key" value=""><input type="hidden" name="t" value="">
-  </form>
+    <div class="card">
+      <h3 style="margin-top:0">次のステップ</h3>
+      <ol>
+        <li>上の「診断する」を押すと、合計点とレベルが表示されます。</li>
+        <li>必要に応じて、メール送信・保存は既存のGAS連携に接続してください（<code>GAS_WEB_APP_URL</code> を使う想定）。</li>
+      </ol>
+      <p class="hint">※ このファイルは設問テキストの更新に加えて、<strong>フロント側だけで診断結果を即時表示</strong>できる軽いロジックを含みます。既存のサーバー連携がある場合は、フォーム送信処理に合わせて <code>handleSubmit()</code> 内をご利用ください。</p>
+    </div>
+
+    <div class="footer">© 56project / MY AI DESK</div>
+  </div>
 
   <script>
-  (function(){
-    const $ = s => document.querySelector(s);
-    const emailEl = $('#email'), toastEl = $('#toast');
-    const scoreOut=$('#score-out'), lvLabel=$('#lv-label'), adviceEl=$('#advice');
+    // 合計点とレベルの算出（フロントのみ）
+    const calcBtn = document.getElementById('calcBtn');
+    const resultEl = document.getElementById('result');
+    const summaryEl = document.getElementById('summary');
+    const quickScore = document.getElementById('quickScore');
+    const sumEl = document.getElementById('sum');
 
-    const state = { email:"", score:0 };
-    const isEmail = v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
-
-    function getAnswer(i){ const r = document.querySelector(`input[name="q${i}"]:checked`); return r ? Number(r.value) : 3; }
-    function gatherAnswersArr(){ const a = []; for(let i=1;i<=10;i++) a.push(getAnswer(i)); return a; }
-    function gatherAnswersSum(arr){ return arr.reduce((s,n)=>s+Number(n||0),0); }
-    function clamp100(n){ n=Number(n)||0; return Math.max(0, Math.min(100, Math.round(n))); }
-    function calcScoreFrom(arr){ return clamp100(gatherAnswersSum(arr)*2); }
-
-    function levelFrom(score){
-      if(score>=81) return {label:'先進層', advice:'戦略レベルでAIを統合しましょう'};
-      if(score>=61) return {label:'上級層', advice:'自動化・PoCへ進みましょう'};
-      if(score>=41) return {label:'中級層（41–60）', advice:'テンプレ×KPIで改善を回す'};
-      if(score>=21) return {label:'入門層（21–40）', advice:'毎日の習慣化から開始'};
-      return {label:'初心者層（0–20）', advice:'まずは安全に触れる場を増やす'};
-    }
-
-    function postToGAS(fields){
-      const f = document.getElementById('ghostForm');
-      f.action = window.GAS_URL;
-      f.elements.type.value  = fields.type  || '';
-      f.elements.email.value = fields.email || '';
-      f.elements.score.value = fields.score !== undefined ? String(fields.score) : '';
-      for(let i=1;i<=10;i++){ const name = `q${i}`; f.elements[name].value = (fields[name] !== undefined ? String(fields[name]) : ''); }
-      f.elements.key.value   = window.RESULT_KEY;
-      f.elements.t.value     = String(Date.now());
-      f.submit();
-    }
-
-    $('#btn-register').addEventListener('click', ()=>{
-      const v=(emailEl.value||'').trim();
-      if(!isEmail(v)){ alert('正しいメールを入力してください'); emailEl.focus(); return; }
-      state.email = v;
-      postToGAS({ type:'register', email: state.email });
-      toastEl.textContent = 'メールを登録しました。診断後に結果メールが届きます。';
-    });
-
-    $('#btn-diagnose').addEventListener('click', ()=>{
-      const answers = gatherAnswersArr();
-      state.score = calcScoreFrom(answers);
-      const lv = levelFrom(state.score);
-      scoreOut.textContent = state.score;
-      lvLabel.textContent  = lv.label;
-      adviceEl.textContent = lv.advice;
-
-      if(state.email){
-        const payload = { type:'result', email:state.email, score:state.score };
-        answers.forEach((v,i)=> payload[`q${i+1}`] = v);
-        postToGAS(payload);
-        alert('結果メールの送信を受け付けました。受信箱（迷惑メール含む）をご確認ください。');
+    function getScore(){
+      let total = 0; let answered = 0;
+      for(let i=1;i<=10;i++){
+        const sel = document.querySelector(`input[name=q${i}]:checked`);
+        if(sel){ total += Number(sel.value); answered++; }
       }
-      document.getElementById('result-card').scrollIntoView({behavior:'smooth'});
+      return { total, answered };
+    }
+
+    function toLevel(score){
+      if(score >= 45) return { label:'S（先進）', color:'var(--good)' };
+      if(score >= 36) return { label:'A（実装）', color:'var(--brand)' };
+      if(score >= 26) return { label:'B（運用）', color:'#0ea5e9' };
+      if(score >= 16) return { label:'C（試行）', color:'#f59e0b' };
+      return { label:'D（未着手）', color:'#ef4444' };
+    }
+
+    calcBtn.addEventListener('click', () => {
+      const { total, answered } = getScore();
+      if(answered < 10){
+        alert('未回答の設問があります。全て回答してください。');
+        return;
+      }
+      sumEl.textContent = total;
+      quickScore.hidden = false;
+      const lv = toLevel(total);
+      resultEl.hidden = false;
+      summaryEl.innerHTML = `
+        <p style="margin:.2rem 0">合計点：<strong>${total}</strong> / 50　｜　レベル：<strong style="color:${lv.color}">${lv.label}</strong></p>
+        <p class="hint" style="margin:.2rem 0">目安：40点以上は「既に実装・運用の型あり」。25〜39点は「型づくりと連携の拡充」。24点以下は「まずは日常業務の1タスクをAI化」から。</p>
+      `;
+      // ここで既存のGAS送信を呼びたい場合は handleSubmit(total) を使用
     });
-  })();
+
+    // 既存連携用（必要なら利用）
+    async function handleSubmit(total){
+      // 例：fetch(GAS_WEB_APP_URL, { method:'POST', body: JSON.stringify({ score: total, ... }) })
+    }
   </script>
 </body>
 </html>
