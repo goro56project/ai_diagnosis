@@ -35,13 +35,11 @@
       text-align:center;
       letter-spacing:.3px;
     }
-    .subtitle{
-      text-align:center; color:#777; margin:-4px 0 12px; font-size:14px;
-    }
+    .subtitle{ text-align:center; color:#777; margin:-4px 0 12px; font-size:14px; }
     .card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; margin:16px 0 }
     .card h2{ font-size:20px; font-weight:700; margin:0 0 10px }
     .card ul{ padding-left:1.2em; margin:8px 0 }
-    .card ul li{ margin:6px 0; }
+    .card ul li{ margin:6px 0 }
     .row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap }
     input[type="email"]{
       flex:1 1 280px; min-width:240px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font:inherit
@@ -57,22 +55,10 @@
     .score{ font-size:28px; font-weight:800 }
     .muted{ color:var(--muted) }
 
-    /* AI偏差値説明カード（グレー枠） */
-    .card.explain {
-      background:#fff;
-      border:1px solid #e5e7eb;
-      border-radius:12px;
-      padding:16px 18px;
-      margin:16px 0;
-    }
+    .card.explain { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:16px 18px; margin:16px 0; }
     .card.explain p { margin:6px 0; color:#444; line-height:1.6; }
 
-    /* 特典カード（黄色） */
-    .card.bonus {
-      background:#fffbe6;
-      border:1px solid #f3e6a6;
-      box-shadow:0 6px 18px rgba(17,24,39,.06);
-    }
+    .card.bonus { background:#fffbe6; border:1px solid #f3e6a6; box-shadow:0 6px 18px rgba(17,24,39,.06); }
     .card.bonus h2 { display:flex; align-items:center; gap:8px; }
     .card.bonus h2 .icon { font-size:22px; line-height:1; }
   </style>
@@ -84,7 +70,7 @@
     <h1>AI偏差値診断</h1>
     <p class="subtitle">Ver.1.1｜最終更新：2025年9月7日</p>
 
-    <!-- AI偏差値とは？ 説明（グレー枠） -->
+    <!-- AI偏差値とは？ 説明 -->
     <section class="card explain">
       <p><strong>「AI偏差値」とは？</strong></p>
       <p>
@@ -94,13 +80,9 @@
       </p>
     </section>
 
-    <!-- 🎁 特典情報（黄色枠） -->
+    <!-- 特典 -->
     <section class="card bonus">
       <h2><span class="icon">🎁</span>特典付き！AI偏差値診断で実務に効くアイデア50選をゲット</h2>
-      <p>
-        本診断にご参加いただいた方には、特典として
-        <strong>「AIを活用した業務改善アイデア50選」</strong> をプレゼントいたします。
-      </p>
       <ul>
         <li>診断後、ご登録のメールに「AI偏差値詳細レポート」のリンクが届きます。</li>
         <li>詳細レポートページから、特典PDFをダウンロードできます。</li>
@@ -119,11 +101,11 @@
       <p id="toast" class="muted" style="margin-top:6px"></p>
     </section>
 
-    <!-- STEP 2: 設問（新テキスト） -->
+    <!-- STEP 2: 設問 -->
     <section class="card" id="sec-questions">
       <h2>STEP2｜10問に回答</h2>
 
-      <!-- ▼5段階スケール凡例 -->
+      <!-- 5段階スケール凡例 -->
       <div class="scale-legend card" style="padding:12px 14px; margin-top:8px">
         <strong>評価スケール：</strong>
         <ul style="margin:6px 0 0; padding-left:1.2em; color:#374151">
@@ -134,8 +116,8 @@
           <li><strong>5＝高度運用</strong>（標準化＋自動化／全社展開レベル）</li>
         </ul>
       </div>
-      <!-- ▲凡例 -->
 
+      <!-- Q1〜Q10 -->
       <fieldset><legend>1. 自社のAI活用目的は明確ですか？（例：売上・コスト削減・品質向上など）</legend>
         <div class="opts"><label><input type="radio" name="q1" value="1">1</label><label><input type="radio" name="q1" value="2">2</label><label><input type="radio" name="q1" value="3" checked>3</label><label><input type="radio" name="q1" value="4">4</label><label><input type="radio" name="q1" value="5">5</label></div>
       </fieldset>
@@ -189,7 +171,7 @@
         <span class="pill">レベル：<span id="lv-label">--</span></span>
       </p>
       <p id="advice" class="muted"></p>
-      <p class="muted" style="margin-top:8px">※メール未登録の場合は送信しません。</p>
+      <p class="muted" style="margin-top:8px">※メール未登録の場合はサーバー送信は行いません。</p>
     </section>
   </main>
 
@@ -205,12 +187,115 @@
     <input type="hidden" name="q7" value=""><input type="hidden" name="q8" value="">
     <input type="hidden" name="q9" value=""><input type="hidden" name="q10" value="">
     <input type="hidden" name="key" value=""><input type="hidden" name="t" value="">
+    <input type="hidden" name="source" value="ai_diagnosis_top_v1_1">
   </form>
 
   <script>
   (function(){
     const $ = s => document.querySelector(s);
     const emailEl = $('#email'), toastEl = $('#toast');
-    const scoreOut=$('#score-out'), lvLabel=$('#lv-label'), adviceEl=$('#advice');
+    const scoreOut = $('#score-out'), lvLabel = $('#lv-label'), adviceEl = $('#advice');
+    const ghostForm = $('#ghostForm');
 
-    const
+    function nowTs(){ return new Date().toISOString(); }
+
+    function getVal(name){
+      const el = document.querySelector(`input[name="${name}"]:checked`);
+      return el ? Number(el.value) : 0;
+    }
+
+    function collectAnswers(){
+      const vals = [];
+      for(let i=1;i<=10;i++) vals.push(getVal(`q${i}`));
+      return vals;
+    }
+
+    function calcScore(vals){
+      const avg = vals.reduce((a,b)=>a+b,0) / vals.length; // 1〜5
+      const score = Math.round(avg * 20); // 20〜100
+      return Math.min(100, Math.max(20, score));
+    }
+
+    function levelLabel(score){
+      if(score >= 85) return 'Lv5：高度運用';
+      if(score >= 70) return 'Lv4：継続運用';
+      if(score >= 55) return 'Lv3：部分運用';
+      if(score >= 40) return 'Lv2：試行段階';
+      return 'Lv1：未着手';
+    }
+
+    function makeAdvice(vals){
+      const topics = [
+        '目的の言語化（売上・効率・品質）',
+        'KPIとAI寄与の可視化',
+        '実績ログの習慣化',
+        '利用ルール（セキュリティ/情報分類）',
+        '業務フロー組込み（テンプレ/自動化）',
+        'AI用データ基盤の整備',
+        '品質レビュー基準の定義',
+        '外部ツール連携による自動化',
+        '小さく試して標準化→横展開',
+        '新機能の定期トライ'
+      ];
+      // 低い項目の上位3つ
+      const pairs = vals.map((v,i)=>({i, v})).sort((a,b)=>a.v-b.v).slice(0,3);
+      const items = pairs.map(p=>`・${topics[p.i]}：スコア${p.v} → 次の1歩を決めましょう`);
+      return `優先改善ポイント（上位3つ）\n${items.join('\n')}`;
+    }
+
+    function postGhost(payload){
+      ghostForm.action = window.GAS_URL;
+      // set inputs
+      for(const [k,v] of Object.entries(payload)){
+        const input = ghostForm.querySelector(`input[name="${k}"]`);
+        if(input) input.value = String(v);
+      }
+      ghostForm.submit(); // iframe へPOST（CORS影響なし）
+    }
+
+    // --- STEP1: メール登録 ---
+    $('#btn-register').addEventListener('click', ()=>{
+      const email = (emailEl.value||'').trim();
+      if(!email){
+        toastEl.textContent = 'メールアドレスを入力してください。';
+        return;
+      }
+      toastEl.textContent = '送信中…';
+      const payload = {
+        type:'register', email, key:window.RESULT_KEY, t:nowTs()
+      };
+      postGhost(payload);
+      // UX用トースト
+      setTimeout(()=>{
+        toastEl.textContent = '登録しました。メールをご確認ください。';
+      }, 1000);
+    });
+
+    // --- STEP2: 診断 ---
+    $('#btn-diagnose').addEventListener('click', ()=>{
+      const vals = collectAnswers();
+      const score = calcScore(vals);
+      scoreOut.textContent = String(score);
+      lvLabel.textContent = levelLabel(score);
+      adviceEl.textContent = makeAdvice(vals);
+
+      // メール登録済みならサーバー送信
+      const email = (emailEl.value||'').trim();
+      if(email){
+        const payload = {
+          type:'diagnosis',
+          email,
+          score,
+          q1:vals[0], q2:vals[1], q3:vals[2], q4:vals[3], q5:vals[4],
+          q6:vals[5], q7:vals[6], q8:vals[7], q9:vals[8], q10:vals[9],
+          key:window.RESULT_KEY,
+          t:nowTs(),
+          source:'ai_diagnosis_top_v1_1'
+        };
+        postGhost(payload);
+      }
+    });
+  })();
+  </script>
+</body>
+</html>
