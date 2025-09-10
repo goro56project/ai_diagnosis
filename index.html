@@ -77,6 +77,60 @@
     .card.bonus h2 .icon { font-size:22px; line-height:1; }
   </style>
 </head>
+  <!-- ===== 設問テキスト差し替えパッチ（UI/仕様は不変更） ===== -->
+<script>
+(function () {
+  // ここに新しい設問（10問）を定義：順番は q1〜q10 を想定
+  const newQuestions = [
+    "Q1. 自社のAI活用目的は明確ですか？（例：売上・コスト削減・品質向上など）",
+    "Q2. KPI（成果指標）とAIの貢献度を定量で追えていますか？",
+    "Q3. 日次/週次でAI活用の実績（入力数・生成数・反応率など）を記録していますか？",
+    "Q4. 社内でAI利用のルール（セキュリティ/情報分類/持ち出し制限）は整備していますか？",
+    "Q5. 主要業務フローにAIを“組み込む”運用（テンプレ/プロンプト/自動化）がありますか？",
+    "Q6. データの保管場所・更新頻度・担当が決まった“AI用データ基盤”はありますか？",
+    "Q7. 生成物（文章/画像/コード）の品質をレビューする基準と手順は定義済みですか？",
+    "Q8. 外部ツール（GAS/Slack/LINE/カレンダー等）とAIを連携した自動化はありますか？",
+    "Q9. 小さく試して学びを共有→標準化→横展開、の運用サイクルは回っていますか？",
+    // ★要望反映：10だけ修正「新しいAI機能とは何か」を入れる
+    "Q10. 直近3か月で“新しいAI機能”を試しましたか？（例：音声/画像/動画/エージェント/自律実行 など）"
+  ];
+
+  // 1) 既存JSに questions 配列があるパターンなら差し替え（安全に上書き）
+  if (Array.isArray(window.questions) && window.questions.length >= 10) {
+    for (let i = 0; i < 10; i++) window.questions[i] = newQuestions[i];
+  }
+
+  // 2) DOMに q1〜q10 などのID/属性がある場合はテキスト置換
+  const trySet = (sel, text) => {
+    const el = document.querySelector(sel);
+    if (el) el.textContent = text;
+  };
+  for (let i = 1; i <= 10; i++) {
+    trySet(`#q${i}`, newQuestions[i-1]);            // 例: <span id="q1">
+    trySet(`[data-q="${i}"]`, newQuestions[i-1]);   // 例: <div data-q="1">
+    trySet(`[data-question-index="${i}"]`, newQuestions[i-1]); // 例: data-question-index
+  }
+
+  // 3) ラジオ/チェックのラベル内テキストだけを持つ構造にも対応（見つかったら順番で上書き）
+  const labelContainers = document.querySelectorAll('.question-text, .q-text, .question h3, .question-label');
+  if (labelContainers.length >= 10) {
+    for (let i = 0; i < 10; i++) {
+      if (labelContainers[i]) labelContainers[i].textContent = newQuestions[i];
+    }
+  }
+
+  // 4) もしクライアント側テンプレートで後描画の場合は、描画後に再度実行
+  document.addEventListener('ai:questions:rendered', () => {
+    for (let i = 1; i <= 10; i++) {
+      trySet(`#q${i}`, newQuestions[i-1]);
+      trySet(`[data-q="${i}"]`, newQuestions[i-1]);
+      trySet(`[data-question-index="${i}"]`, newQuestions[i-1]);
+    }
+  });
+})();
+</script>
+<!-- ===== /設問テキスト差し替えパッチ ===== -->
+
 <body>
   <main>
     <!-- タイトル＋バージョン -->
