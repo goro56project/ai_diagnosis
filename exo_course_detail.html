@@ -53,11 +53,9 @@
         </ul>
         <p class="note">成果：<b>「AIに安全で高品質な指示を出せた」成功体験</b>／成果をテンプレ化して<b>再現可能</b>に。</p>
         <div class="cta-row">
-          <!-- 申込は Stripe 直リンク -->
           <a class="btn primary" href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener">
             このコースで申し込む <span class="price">¥980</span>
           </a>
-          <!-- 学習の流れは詳細へ -->
           <a class="btn ghost flow-link" data-course="entry" href="exo_course_detail.html?course=entry#flow">学習の流れ</a>
         </div>
       </section>
@@ -108,34 +106,21 @@
   <footer>© ExoVisionary Hub</footer>
 
   <script>
-    // 「学習の流れ」リンクを各コース詳細(#flow)へ確実に遷移させつつ、score/level/lv を引き継ぐ
+    // 「学習の流れ」リンクへ score/level/lv を付与（クリックはブラウザデフォルトに任せる）
     document.addEventListener('DOMContentLoaded', () => {
-      const incoming = new URLSearchParams(location.search);
+      const qsIn = new URLSearchParams(location.search);
       const keep = new URLSearchParams();
-      ['score','level','lv'].forEach(k => { if (incoming.get(k)) keep.set(k, incoming.get(k)); });
+      ['score','level','lv'].forEach(k => { if (qsIn.get(k)) keep.set(k, qsIn.get(k)); });
 
-      const baseDetail = new URL('exo_course_detail.html', location.href);
-      const buildDetailUrl = (course) => {
-        const u = new URL(baseDetail);
-        u.hash = 'flow';
-        u.searchParams.set('course', course);
-        keep.forEach((v,k) => u.searchParams.set(k, v));
-        return u.toString();
-      };
+      if (!keep.toString()) return;
 
-      // flow-link を確実遷移（他のハンドラ競合を避けるため capture + stopPropagation）
       document.querySelectorAll('.flow-link').forEach(a => {
-        const course = a.dataset.course || 'entry';
-        a.href = buildDetailUrl(course);
-        a.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          window.location.assign(a.href);
-        }, {capture:true});
+        try {
+          const url = new URL(a.getAttribute('href'), location.href);
+          keep.forEach((v,k) => url.searchParams.set(k, v));
+          a.setAttribute('href', url.toString());
+        } catch(_) {}
       });
-
-      // 申込ボタンは外部決済。干渉しないが target を保証
-      document.querySelectorAll('.btn.primary').forEach(a => { a.target = '_blank'; });
     });
   </script>
 </body>
