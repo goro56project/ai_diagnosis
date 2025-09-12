@@ -1,101 +1,66 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>コース詳細 | ExoVisionary Hub</title>
-  <style>
-    :root {
-      --ink:#0f172a; --muted:#475569; --brand:#111827;
-      --pill:#eef2ff; --pill-ink:#3730a3;
-      --card:#fff; --line:#e5e7eb; --bg:#f9fafb;
-    }
-    *{box-sizing:border-box;}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-         background:var(--bg);color:var(--ink);line-height:1.6;}
-    .wrap{max-width:960px;margin:40px auto;padding:0 20px;}
-    h1{font-size:1.8rem;margin-bottom:10px;}
-    .pill{display:inline-block;padding:4px 10px;border-radius:9999px;
-          background:var(--pill);color:var(--pill-ink);font-size:0.85rem;}
-    .card{background:var(--card);border:1px solid var(--line);
-          border-radius:12px;padding:20px;margin-top:20px;}
-    ul{padding-left:20px;}
-    .btn{display:inline-block;margin-top:20px;padding:12px 24px;border-radius:8px;
-         background:var(--brand);color:#fff;text-decoration:none;font-weight:600;}
-    .back{display:inline-block;margin-top:20px;color:var(--muted);text-decoration:none;}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>おすすめコース | MYGPT School</title>
+<style>
+  :root{--ink:#0f172a;--muted:#475569;--brand:#111827;--card:#fff;--line:#e5e7eb;--bg:#f8fafc}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans JP","Yu Gothic UI","YuGothic","Meiryo",sans-serif;line-height:1.75}
+  .wrap{max-width:1080px;margin:48px auto;padding:0 20px}
+  h1{font-size:28px;margin:0 0 18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column}
+  .tag{font-size:12px;background:#eef2ff;color:#3730a3;border-radius:999px;padding:4px 10px;align-self:flex-start}
+  h2{font-size:20px;margin:10px 0 6px}
+  p{color:var(--muted);margin:0 0 12px}
+  ul{margin:0 0 0 18px}
+  .btn{margin-top:auto;display:inline-block;background:var(--brand);color:#fff;text-decoration:none;padding:12px 14px;border-radius:10px;font-weight:700;text-align:center}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <span id="courseBadge" class="pill"></span>
-    <h1 id="courseTitle"></h1>
-    <p id="courseDesc"></p>
+<div class="wrap">
+  <h1>おすすめコース</h1>
+  <div class="grid">
 
-    <div class="card">
-      <h2>学べること</h2>
-      <ul id="learnList"></ul>
-      <h2>モジュール例</h2>
-      <ul id="moduleList"></ul>
-    </div>
+    <article class="card">
+      <span class="tag">ENTRY</span>
+      <h2>ENTRY｜AI基礎＆日常業務の成功体験</h2>
+      <p>初心者向け。安全にAIを使い、資料やメールで成果を出す段階へ。</p>
+      <ul>
+        <li>AIリテラシー</li>
+        <li>ChatGPT基礎</li>
+        <li>資料×メール×要約</li>
+      </ul>
+      <a class="btn" href="entry_detail.html">学習の流れを見る</a>
+    </article>
 
-    <a id="applyBtn" class="btn" target="_blank">このコースで申し込む</a>
-    <br />
-    <a href="exo_course_list.html" class="back">← コース一覧に戻る</a>
+    <article class="card">
+      <span class="tag">MIDDLE</span>
+      <h2>MIDDLE｜AI×業務改善の入口</h2>
+      <p>半自動化とKPIで運用。フォーム→自動返信→記録→可視化まで。</p>
+      <ul>
+        <li>業務テンプレ構築</li>
+        <li>GASで自動化</li>
+        <li>KPI可視化</li>
+      </ul>
+      <a class="btn" href="middle_detail.html">学習の流れを見る</a>
+    </article>
+
+    <article class="card">
+      <span class="tag">PRACTICAL</span>
+      <h2>PRACTICAL｜疑似案件で本格運用へ</h2>
+      <p>要件定義〜実装〜納品一式まで通す本格コース。</p>
+      <ul>
+        <li>要件定義と設計</li>
+        <li>RAGのPoC</li>
+        <li>運用ドキュメント整備</li>
+      </ul>
+      <a class="btn" href="practical_detail.html">学習の流れを見る</a>
+    </article>
+
   </div>
-
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const plan = params.get("plan");
-
-    // コースごとのデータ定義
-    const courses = {
-      ENTRY: {
-        badge: "ENTRY",
-        title: "ENTRY｜AI基礎＆日常業務の成功体験（1日完結）",
-        desc: "AI初心者や40〜50代向けの短期集中コース。安全ルールを押さえつつ、ChatGPTで資料・メール・デザイン補助を体験。",
-        learn: ["AIリテラシー（安全/NGケース）","ChatGPT基礎","資料・メールの指示設計","画像生成の基礎"],
-        modules: ["安全ルール演習","資料×メール×要約","画像生成基礎","成功プロンプトのテンプレ化"],
-        url: "https://buy.stripe.com/test_entry" // ←本番StripeURLに差し替えて
-      },
-      MIDDLE: {
-        badge: "MIDDLE",
-        title: "MIDDLE｜実務直結スキル＆自動化基盤構築（2週間完結）",
-        desc: "仕事で即活かせるAIスキルを体系的に習得。Google Apps Scriptや自動化を実務レベルで体験。",
-        learn: ["Google Apps Script連携","業務自動化の基礎","社内活用テンプレ構築","SNS戦略設計"],
-        modules: ["GASでの自動送信","日報自動化","FAQ自動応答ボット","SNS投稿設計"],
-        url: "https://buy.stripe.com/test_middle" // ←本番StripeURLに差し替えて
-      },
-      PRACTICAL: {
-        badge: "PRACTICAL",
-        title: "PRACTICAL｜AI導入プロジェクト実践（1ヶ月完結）",
-        desc: "実案件を題材に、AI導入を実際に企画・構築・運用までやり切る実践型コース。",
-        learn: ["AIプロジェクト設計","PoC構築","導入効果検証","チーム導入の実務"],
-        modules: ["案件選定と要件整理","PoC開発","効果測定レポート","導入プレゼン実習"],
-        url: "https://buy.stripe.com/test_practical" // ←本番StripeURLに差し替えて
-      }
-    };
-
-    const course = courses[plan] || courses["ENTRY"];
-    document.getElementById("courseBadge").textContent = course.badge;
-    document.getElementById("courseTitle").textContent = course.title;
-    document.getElementById("courseDesc").textContent = course.desc;
-
-    const learnList = document.getElementById("learnList");
-    course.learn.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      learnList.appendChild(li);
-    });
-
-    const moduleList = document.getElementById("moduleList");
-    course.modules.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      moduleList.appendChild(li);
-    });
-
-    const applyBtn = document.getElementById("applyBtn");
-    applyBtn.href = course.url;
-  </script>
+</div>
 </body>
 </html>
