@@ -1,151 +1,50 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>おすすめコース | ExoVisionary Hub</title>
-  <style>
-    :root{ --brand:#111827; --ink:#0f172a; --muted:#475569; --card:#fff; --line:#e5e7eb; }
-    *{ box-sizing:border-box; }
-    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; color:var(--ink); background:#f7f7fb; }
-    header{ background:#fff; border-bottom:1px solid var(--line); }
-    header .wrap{ max-width:1100px; margin:0 auto; padding:16px; }
-    h1{ font-size:clamp(22px,3.4vw,28px); margin:4px 0; }
-    p.lead{ color:var(--muted); margin:6px 0 0; }
-    main{ max-width:1100px; margin:0 auto; padding:16px; }
-    .grid{ display:flex; flex-wrap:wrap; gap:24px; }
-    .card{ flex:1 1 320px; background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:20px; position:relative; }
-    .tag{ display:inline-block; background:#eef6ff; color:#2563eb; border-radius:999px; padding:4px 10px; font-size:.85rem; margin:0 0 8px; }
-    .title{ font-size:1.2rem; line-height:1.4; margin:6px 0 12px; }
-    ul.list{ list-style:none; margin:0; padding:0; }
-    ul.list li{ margin:8px 0; line-height:1.6; }
-    ul.list li span.m{ margin-right:8px; }
-    .note{ background:#f8fafc; border:1px dashed #e2e8f0; border-radius:12px; padding:10px 12px; margin:12px 0 0; color:var(--ink); }
-    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; align-items:center; }
-    .btn{ display:inline-block; border-radius:999px; padding:10px 16px; text-decoration:none; font-weight:600; cursor:pointer; user-select:none; }
-    .btn.primary{ background:var(--brand); color:#fff; border:1px solid var(--brand); }
-    .btn.ghost{ border:1px solid #cbd5e1; color:var(--ink); background:#fff; }
-    .price{ font-weight:800; color:#16a34a; margin-left:6px; }
-    footer{ color:#64748b; font-size:12px; text-align:center; padding:24px 16px; }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="wrap">
-      <h1>おすすめコース</h1>
-      <p class="lead">申込は決済へ、学習の流れは各コースの詳細ページへ確実に遷移します。</p>
-    </div>
-  </header>
+<script>
+/* ===== 学習の流れ → 各コース詳細へ “確実に” 遷移させる ===== */
+(function () {
+  // 現在のクエリから引き継ぐキー
+  const carryKeys = ['score', 'level', 'lv'];
+  const inQs = new URLSearchParams(location.search);
 
-  <main>
-    <div class="grid">
+  // 詳細ページURLを安全に作る（どのページ階層でも壊れない）
+  function buildDetailURL(course) {
+    // 現在パスのディレクトリを基準に exo_course_detail.html を解決
+    const dir = location.href.replace(/[^/]*$/, ''); // 末尾ファイル名を落とす
+    const u = new URL('exo_course_detail.html', dir);
+    u.searchParams.set('course', String(course || 'entry').toLowerCase());
+    carryKeys.forEach(k => { const v = inQs.get(k); if (v) u.searchParams.set(k, v); });
+    u.hash = 'flow';
+    return u.toString();
+  }
 
-      <!-- ENTRY -->
-      <section class="card">
-        <p class="tag">入門〜初級向け</p>
-        <h2 class="title">ENTRY：AI基礎＆日常業務の成功体験（1日完結）</h2>
-        <ul class="list">
-          <li><span class="m">✓</span><b>S1〜S6のステップ形式：</b>安全・品質・再現性を意識したAI活用を短時間で体験</li>
-          <li><span class="m">✓</span><b>安全に使える力：</b>情報の扱い方やNGケースを理解し、安心してAIを活用</li>
-          <li><span class="m">✓</span><b>良い指示が出せる力：</b>O–C–IO–E型フレームで実務的なプロンプトを作成</li>
-          <li><span class="m">✓</span><b>小さく成果を出す力：</b>要約・資料・メール文案などで即日成果を体験</li>
-          <li><span class="m">✓</span><b>再現・共有する力：</b>成功した指示をテンプレ化してチームに展開</li>
-        </ul>
-        <p class="note">成果：<b>「AIに安全で高品質な指示を出せた」成功体験</b>／成果をテンプレ化して<b>再現可能</b>に。</p>
-        <div class="cta-row">
-          <a class="btn primary" href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener">このコースで申し込む <span class="price">¥980</span></a>
-          <button class="btn ghost flow-btn"
-                  data-course="entry"
-                  type="button">学習の流れ</button>
-        </div>
-      </section>
+  // 実遷移（他スクリプトの妨害を回避）
+  function hardNavigate(href) {
+    try {
+      window.onbeforeunload = null;
+      document.activeElement && document.activeElement.blur();
+    } catch(_) {}
+    // もっとも強い遷移（assignでもOKだが、href代入が最短）
+    window.location.href = href;
+  }
 
-      <!-- MIDDLE -->
-      <section class="card">
-        <p class="tag">初級〜中級向け</p>
-        <h2 class="title">MIDDLE：AI×業務改善の入口（2週間）</h2>
-        <ul class="list">
-          <li><span class="m">✓</span><b>よく使う業務を型にする：</b>議事録・メール・FAQをテンプレ化し、誰でも再利用できる形に整理</li>
-          <li><span class="m">✓</span><b>ちょっとした自動化：</b>フォーム→シート→自動返信→レポート連携</li>
-          <li><span class="m">✓</span><b>試して改善：</b>A/Bテストや評価データで効果検証→改良</li>
-          <li><span class="m">✓</span><b>数値で見える化：</b>時間短縮や精度をダッシュボードで可視化</li>
-          <li><span class="m">✓</span><b>成果を広げる：</b>テンプレと半自動フローをチーム展開</li>
-        </ul>
-        <p class="note">成果：<b>「小さな業務が勝手に回る」半自動フロー</b>を構築し、改善を回せる。</p>
-        <div class="cta-row">
-          <a class="btn primary" href="https://buy.stripe.com/fZu7sK3VLbLS5QXb796Zy02" target="_blank" rel="noopener">このコースで申し込む <span class="price">¥980</span></a>
-          <button class="btn ghost flow-btn"
-                  data-course="middle"
-                  type="button">学習の流れ</button>
-        </div>
-      </section>
+  function wire(el) {
+    const course = el.getAttribute('data-course');
+    if (!course) return; // data-courseが無いと何もしない
+    const url = buildDetailURL(course);
 
-      <!-- PRACTICAL -->
-      <section class="card">
-        <p class="tag">実践〜先進向け</p>
-        <h2 class="title">PRACTICAL：疑似案件で本格運用へ（3週間）</h2>
-        <ul class="list">
-          <li><span class="m">✓</span><b>依頼を正しく聞き出す：</b>クライアント役のGPTとロールプレイし、目的・制約・優先度を整理</li>
-          <li><span class="m">✓</span><b>仕組みに設計する：</b>業務の流れ・役割分担・失敗時対応まで含む設計図を作成</li>
-          <li><span class="m">✓</span><b>動く仕組みにする：</b>フォーム入力→自動記録→集計→レポートまでを一連化</li>
-          <li><span class="m">✓</span><b>納品にまとめる：</b>設計書・操作マニュアル・成果レポート・デモ台本をそろえて「納品一式」を完成</li>
-          <li><span class="m">✓</span><b>データで検証して改善：</b>FAQ50件のRAGミニPoCで正答率を測定→改善</li>
-        </ul>
-        <p class="note">成果：<b>提案〜納品まで自走</b>できるミニ案件レベルの実力（動く仕組み＋納品一式）。</p>
-        <div class="cta-row">
-          <a class="btn primary" href="https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03" target="_blank" rel="noopener">このコースで申し込む <span class="price">¥980</span></a>
-          <button class="btn ghost flow-btn"
-                  data-course="practical"
-                  type="button">学習の流れ</button>
-        </div>
-      </section>
+    // <a>ならhrefもセット（通常クリックで動く）
+    if (el.tagName === 'A') el.setAttribute('href', url);
 
-    </div>
-  </main>
+    // 何かに阻害されても遷移させる（captureで先取り）
+    const handler = (e) => { e.preventDefault(); e.stopImmediatePropagation?.(); hardNavigate(url); };
+    el.addEventListener('click',   handler, true);
+    el.addEventListener('mousedown', handler, true);
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') handler(e);
+    }, true);
+    el.setAttribute('aria-label', '学習の流れ（詳細ページへ移動）');
+  }
 
-  <footer>© ExoVisionary Hub</footer>
-
-  <script>
-    // 強制ナビゲーション: クリック/Enter/Space/マウスダウンのどれでも遷移
-    (function () {
-      // 画面クエリの score/level/lv を引き継ぐ
-      const qsIn = new URLSearchParams(location.search);
-      const carry = new URLSearchParams();
-      ['score','level','lv'].forEach(k => { if (qsIn.get(k)) carry.set(k, qsIn.get(k)); });
-
-      function detailURL(course){
-        const base = new URL('exo_course_detail.html', location.href);
-        base.searchParams.set('course', course);
-        carry.forEach((v,k)=>base.searchParams.set(k,v));
-        base.hash = 'flow';
-        return base.toString();
-      }
-
-      function go(href){
-        try{
-          // 最強遷移
-          window.onbeforeunload = null;
-          document.activeElement && document.activeElement.blur();
-          location.href = href;
-        }catch(e){
-          // 予備
-          window.location.assign(href);
-        }
-      }
-
-      function wire(el){
-        const href = detailURL(el.dataset.course);
-        // アクセシビリティ
-        el.setAttribute('aria-label', '学習の流れ（詳細ページへ移動）');
-        el.addEventListener('click', e => { e.preventDefault(); e.stopImmediatePropagation?.(); go(href); }, true);
-        el.addEventListener('mousedown', e => { e.preventDefault(); e.stopImmediatePropagation?.(); go(href); }, true);
-        el.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopImmediatePropagation?.(); go(href); }
-        }, true);
-      }
-
-      document.querySelectorAll('.flow-btn').forEach(wire);
-    })();
-  </script>
-</body>
-</html>
+  // .flow-link と .flow-btn の両方をサポート
+  document.querySelectorAll('.flow-link, .flow-btn').forEach(wire);
+})();
+</script>
