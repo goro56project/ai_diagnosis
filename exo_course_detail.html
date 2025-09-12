@@ -25,24 +25,8 @@
   .lead{line-height:1.8}
   .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
   @media (max-width:860px){.grid-2{grid-template-columns:1fr}}
-  /* Alert */
   .alert{border:1px solid #fecaca;background:#fff1f2;color:#991b1b;padding:10px 12px;border-radius:12px;margin-top:8px;font-weight:600}
   .alert small{display:block;color:#b91c1c;font-weight:500}
-  /* FAQ */
-  .faq-ui{display:grid;grid-template-columns:1fr 380px;gap:18px}
-  @media (max-width:980px){.faq-ui{grid-template-columns:1fr}}
-  .faq-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
-  .faq-item summary{list-style:none;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:.4rem}
-  .faq-item summary::-webkit-details-marker{display:none}
-  .faq-item summary::before{content:"▸";transition:.2s}
-  .faq-item[open] summary::before{transform:rotate(90deg)}
-  .faq-item .a{margin-top:8px;line-height:1.7}
-  .chat-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
-  .chipbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px}
-  .chip{background:#eef2ff;color:#3730a3;border-radius:999px;padding:6px 10px;font-size:.85rem;border:1px solid #e5e7eb;cursor:pointer}
-  .qa{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-  .bub{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
-  .bub.ai{background:#f8fafc}
   footer{margin:28px 0 8px;text-align:center;color:#94a3b8}
 </style>
 </head>
@@ -115,7 +99,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const sp = new URLSearchParams(location.search);
-  const rawPlan = sp.get('plan') || sp.get('course') || 'entry';
+  const rawPlan = sp.get('plan') || sp.get('course') || 'middle'; // ← このページは middle 前提
   const planKey = String(rawPlan).toLowerCase();
   const score = sp.get('score') || '—';
   const level = sp.get('level') || '—';
@@ -127,21 +111,56 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const COURSES = {
-    entry:{
-      badge:'入門〜初級向け',
-      title:'ENTRY｜AI基礎＆日常業務の成功体験（1日完結）',
-      lead:'AI初心者や40〜50代向けに設計された短期集中コース。安全ルールを押さえつつ、ChatGPTで資料・メール・デザイン補助の成果を出し、最初の成功体験を提供します。成果はテンプレ化してチームでも再現可能に。',
-      skills:['AIリテラシー（安全な情報管理・NGケース）','ChatGPT基礎（プロンプトの型：O–C–IO–E法）','資料・メールで使える指示設計','画像生成の基礎（バナー／図解素材）'],
-      modules:['安全ルール演習','資料×メール×要約実践','画像生成の基礎演習','成功プロンプトのテンプレ化'],
-      hands:['資料叩き台＋要約の作成','メール案内文の生成','簡単な画像バナー2点作成','プロンプトライブラリ整備'],
-      outcomes:['実務用プロンプト集','テンプレ化した資料サンプル','簡易マニュアル（再現チェックリスト）'],
-      after:['安全かつ短時間で成果を出せる','成功したプロンプトをテンプレ化して共有できる','メール・資料・簡単なバナーを自分で作れる'],
-      flow:['午前：安全ルールと指示の型を学ぶ','午後：資料・メール・画像生成を実践','夕方：成果をテンプレ化・マニュアル化して完了']
+    // 参考：他コースをここに足してもOK
+    middle:{
+      badge:'初級〜中級向け',
+      title:'MIDDLE｜AI×業務改善の入口（2週間）',
+      lead:'ENTRYで得た成功体験を一歩進め、テンプレ設計→小さな自動化→データで改善→KPI可視化までを2週間で体験します。最終的に「小さな業務が勝手に回る」半自動フローを自分の手で構築できる状態を目指します。',
+      // 学べること
+      skills:[
+        'テンプレ設計（議事録・FAQ・メールなどの型づくり）',
+        '小さな自動化の実装（フォーム/シート/自動返信/集計の連携）',
+        '改善運用（A/Bテスト、評価データの読み方）',
+        'KPI可視化（品質・再現性・時間の3軸をダッシュボード化）'
+      ],
+      // モジュール例
+      modules:[
+        'よく使う業務の型化（テンプレ3本を仕上げる）',
+        'Googleフォーム→スプレッドシート連携',
+        '自動返信メールと集計レポート作成',
+        'A/Bテストと改善ログ運用',
+        '簡易ダッシュボードでKPI可視化'
+      ],
+      // ハンズオン
+      hands:[
+        'テンプレ3本作成（例：議事録/FAQ/定型メール）',
+        '小さな自動化：受付→自動返信→記録→簡易レポート',
+        'A/Bテストを1回実施し、改善ログに記録',
+        '品質/再現性/時間の3指標をKPIボードに反映'
+      ],
+      // 成果物
+      outcomes:[
+        '“勝手に回る” 半自動フロー（テンプレ＋連携＋レポート）',
+        'テンプレ一式と改善ログ（再現のための記録）',
+        'KPIダッシュボード（効果を数値で説明できる）'
+      ],
+      // 受講後
+      after:[
+        '小さな業務を自走運用できる（属人化を削減）',
+        '数値で効果検証し、継続改善できる',
+        '作った仕組みをチームへ展開しやすい'
+      ],
+      // 学習の流れ（2週間）
+      flow:[
+        'Week1：テンプレ設計／フォーム〜シート連携／自動返信・集計の基礎',
+        'Week2：A/Bテストで改善 → KPI可視化 → 半自動フローを仕上げ'
+      ]
     }
   };
 
-  const course = COURSES[planKey] || COURSES.entry;
-  const payURL = STRIPE_LINKS[planKey] || STRIPE_LINKS.entry;
+  // このページは middle を基本表示。URLで entry/practical が来た場合はフォールバックでentry表記にしないよう middle をデフォルト固定。
+  const course = COURSES.middle;
+  const payURL = STRIPE_LINKS.middle;
 
   const $ = id => document.getElementById(id);
   const fill = (id, arr) => { const el=$(id); if(el) el.innerHTML=(arr||[]).map(t=>`<li>${t}</li>`).join(''); };
