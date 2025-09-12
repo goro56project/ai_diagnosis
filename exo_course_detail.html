@@ -1,176 +1,198 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>コース詳細 | ExoVisionary Hub</title>
-<style>
-  :root{--ink:#0f172a;--muted:#475569;--brand:#111827;--pill:#eef2ff;--pill-ink:#3730a3;--card:#fff;--line:#e9ecef;--bg:#f8fafc}
-  *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Meiryo,sans-serif;color:var(--ink);background:var(--bg)}
-  .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 60px}
-  .toplinks{max-width:1100px;margin:0 auto;padding:10px 16px 0;text-align:center;font-size:14px}
-  .toplinks a{color:#0a58ca;text-decoration:none}.toplinks a+a{margin-left:12px}
-  .pill{display:inline-block;background:var(--pill);color:var(--pill-ink);padding:.35em .8em;border-radius:999px;font-size:.9rem}
-  h1{font-size:clamp(24px,4vw,36px);margin:.5rem 0 0}
-  .muted{color:var(--muted)}
-  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  .btn{display:inline-block;border:1px solid var(--brand);background:var(--brand);color:#fff;padding:12px 16px;border-radius:999px;text-decoration:none;cursor:pointer}
-  .btn.ghost{background:#fff;color:var(--ink);border-color:#cbd5e1}
-  .price{font-weight:700}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:18px;margin:14px 0}
-  h2{font-size:1.4rem;margin:.2rem 0 .6rem}
-  h3{font-size:1.1rem;margin:.6rem 0 .3rem}
-  ul{margin:.1rem 0 .8rem 1.2rem}
-  .lead{line-height:1.8}
-  .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-  @media (max-width:860px){.grid-2{grid-template-columns:1fr}}
-  .alert{border:1px solid #fecaca;background:#fff1f2;color:#991b1b;padding:10px 12px;border-radius:12px;margin-top:8px;font-weight:600}
-  .alert small{display:block;color:#b91c1c;font-weight:500}
-  footer{margin:28px 0 8px;text-align:center;color:#94a3b8}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>おすすめコース | ExoVisionary Hub</title>
+
+  <!-- （任意）GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QFQZF4F1QW', { transport_type: 'beacon' });
+  </script>
+
+  <style>
+    :root{ --brand:#111827; --ink:#0f172a; --muted:#475569; --card:#fff; --line:#e5e7eb; --accent:#7356b6; }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; color:var(--ink); background:#f7f7fb; }
+    header{ background:#fff; border-bottom:1px solid var(--line); }
+    header .wrap{ max-width:1100px; margin:0 auto; padding:16px; }
+    h1{ font-size:clamp(22px,3.4vw,28px); margin:4px 0; }
+    p.lead{ color:var(--muted); margin:6px 0 0; }
+    main{ max-width:1100px; margin:0 auto; padding:16px; }
+    .grid{ display:flex; flex-wrap:wrap; gap:24px; }
+    .card{ position:relative; flex:1 1 320px; background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:20px; cursor:pointer; }
+    .card:focus-within, .card:hover{ outline:2px solid #dbeafe; }
+    .tag{ display:inline-block; background:#eef6ff; color:#2563eb; border-radius:999px; padding:4px 10px; font-size:.85rem; margin:0 0 8px; }
+    .title{ font-size:1.2rem; line-height:1.4; margin:6px 0 12px; }
+    .title a{ color:inherit; text-decoration:none; }
+    ul.list{ list-style:none; margin:0; padding:0; }
+    ul.list li{ margin:8px 0; line-height:1.6; }
+    ul.list li span.m{ margin-right:8px; }
+    .note{ background:#f8fafc; border:1px dashed #e2e8f0; border-radius:12px; padding:10px 12px; margin:12px 0 0; color:var(--ink); }
+    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; align-items:center; }
+    .btn{ display:inline-block; border-radius:999px; padding:10px 16px; text-decoration:none; font-weight:600; }
+    .btn.primary{ background:var(--brand); color:#fff; border:1px solid var(--brand); }
+    .btn.ghost{ border:1px solid #cbd5e1; color:var(--ink); background:#fff; }
+    .price{ font-weight:800; color:#16a34a; margin-left:6px; }
+    footer{ color:#64748b; font-size:12px; text-align:center; padding:24px 16px; }
+
+    /* 全カードクリックで遷移させるための隠しリンク（アクセシブル） */
+    .stretched-link{
+      position:absolute; inset:0; z-index:1; color:transparent; text-indent:-9999px; overflow:hidden;
+    }
+    .cta-row .btn{ z-index:2; } /* CTAは上に */
+  </style>
 </head>
 <body>
-  <!-- 上部 規約リンク -->
-  <div class="toplinks">
-    <a href="terms.html" target="_blank">利用規約</a>
-    <a href="privacy.html" target="_blank">プライバシーポリシー</a>
-    <a href="law.html" target="_blank">特定商取引法に基づく表記</a>
-  </div>
-
-  <main class="wrap">
-    <!-- ヘッダー -->
-    <div class="row"><span class="pill" id="badge">コース</span></div>
-    <h1 id="course-title">コース名（自動）</h1>
-    <p class="muted" style="margin:.35rem 0 1rem">
-      診断スコア：<span id="score-out">—</span> ／ レベル：<span id="level-out">—</span>
-    </p>
-    <div class="row" style="margin:.2rem 0 .6rem">
-      <a href="#" class="btn" id="btn-apply" target="_blank" rel="noopener">この内容で申し込む <span class="price">¥980</span></a>
-      <a href="#flow" class="btn ghost">学習の流れ</a>
-      <a href="exo_courses.html" class="btn ghost" id="btn-back">コース一覧に戻る</a>
+  <header>
+    <div class="wrap">
+      <h1>おすすめコース</h1>
+      <p class="lead">診断結果や現在地に合わせて、最短で成果につながるコースを選べます。申込ボタンで各コースの詳細ページへ移動します。</p>
     </div>
+  </header>
 
-    <!-- 有料プラン必須の注意書き -->
-    <div class="alert" role="note">
-      重要：本スクールはカスタムGPTで運用しているため、<u>受講にはChatGPTの有料プラン（ChatGPT Plus 等）が必須</u>です。
-      <small>※未加入の場合、教材・課題の一部が利用できません。</small>
+  <main>
+    <div class="grid">
+
+      <!-- ENTRY -->
+      <section class="card" data-course="entry" tabindex="0" role="button" aria-label="ENTRYの詳細へ">
+        <a class="stretched-link course-link" data-course="entry" href="exo_course_detail.html?course=entry">ENTRY</a>
+        <p class="tag">入門〜初級向け</p>
+        <h2 class="title">
+          <a class="course-link" data-course="entry" href="exo_course_detail.html?course=entry">
+            ENTRY：AI基礎＆日常業務の成功体験（1日完結）
+          </a>
+        </h2>
+        <ul class="list">
+          <li><span class="m">✓</span><b>S1〜S6のステップ形式：</b>安全・品質・再現性を意識したAI活用を短時間で体験</li>
+          <li><span class="m">✓</span><b>安全に使える力：</b>情報の扱い方やNGケースを理解し、安心してAIを活用</li>
+          <li><span class="m">✓</span><b>良い指示が出せる力：</b>O–C–IO–E型フレームワークで実務的なプロンプトを作成</li>
+          <li><span class="m">✓</span><b>小さく成果を出す力：</b>要約・資料作成・メール文案などで即日成果を体験</li>
+          <li><span class="m">✓</span><b>再現・共有する力：</b>成功した指示をテンプレ化してチームに展開</li>
+        </ul>
+        <p class="note">成果：<b>「AIに安全で高品質な指示を出せた」成功体験</b>／成果をテンプレ化して<b>再現できるスキル</b>が身につく</p>
+        <div class="cta-row">
+          <a class="btn primary course-cta" data-course="entry" href="exo_course_detail.html?course=entry#contact">
+            このコースで申し込む <span class="price">¥980</span>
+          </a>
+          <a class="btn ghost course-flow" data-course="entry" href="exo_course_detail.html?course=entry#flow">学習の流れ</a>
+        </div>
+      </section>
+
+      <!-- MIDDLE -->
+      <section class="card" data-course="middle" tabindex="0" role="button" aria-label="MIDDLEの詳細へ">
+        <a class="stretched-link course-link" data-course="middle" href="exo_course_detail.html?course=middle">MIDDLE</a>
+        <p class="tag">初級〜中級向け</p>
+        <h2 class="title">
+          <a class="course-link" data-course="middle" href="exo_course_detail.html?course=middle">
+            MIDDLE：AI×業務改善の入口（2週間）
+          </a>
+        </h2>
+        <ul class="list">
+          <li><span class="m">✓</span><b>よく使う業務を型にする：</b>議事録・メール・FAQをテンプレ化し、誰でも再利用できる形に整理</li>
+          <li><span class="m">✓</span><b>ちょっとした自動化を作る：</b>Googleフォーム→スプレッドシート→自動返信メール→簡単レポートまでをGASで連携</li>
+          <li><span class="m">✓</span><b>試して改善する：</b>A/Bテストや評価データで「どの型が成果につながるか」を検証し改良</li>
+          <li><span class="m">✓</span><b>数値で見える化する：</b>時間短縮や作業精度を数字で把握し、改善点を特定</li>
+          <li><span class="m">✓</span><b>成果をチームに広げる：</b>作ったテンプレや自動化を共有して、チーム全体の再現性を高める</li>
+        </ul>
+        <p class="note">成果：<b>「小さな業務が勝手に回る半自動フロー」</b>を自分で構築し、改善を回す力が身につく</p>
+        <div class="cta-row">
+          <a class="btn primary course-cta" data-course="middle" href="exo_course_detail.html?course=middle#contact">
+            このコースで申し込む <span class="price">¥980</span>
+          </a>
+          <a class="btn ghost course-flow" data-course="middle" href="exo_course_detail.html?course=middle#flow">学習の流れ</a>
+        </div>
+      </section>
+
+      <!-- PRACTICAL -->
+      <section class="card" data-course="practical" tabindex="0" role="button" aria-label="PRACTICALの詳細へ">
+        <a class="stretched-link course-link" data-course="practical" href="exo_course_detail.html?course=practical">PRACTICAL</a>
+        <p class="tag">実践〜先進向け</p>
+        <h2 class="title">
+          <a class="course-link" data-course="practical" href="exo_course_detail.html?course=practical">
+            PRACTICAL：疑似案件で本格運用へ（3週間）
+          </a>
+        </h2>
+        <ul class="list">
+          <li><span class="m">✓</span><b>依頼を正しく聞き出す：</b>クライアント役のGPTとロールプレイし、目的・制約・優先度を整理</li>
+          <li><span class="m">✓</span><b>仕組み化に設計する：</b>業務の流れ・役割分担・失敗時の対応まで含む実務レベルの設計図を作成</li>
+          <li><span class="m">✓</span><b>動く仕組みにする：</b>フォーム入力→自動で記録→まとめレポートまでつなぐ一連の流れを構築</li>
+          <li><span class="m">✓</span><b>納品にまとめる：</b>設計書・操作マニュアル・成果レポート・デモ台本をそろえて「納品一式」を完成</li>
+          <li><span class="m">✓</span><b>データで検証して改善：</b>FAQ50件のRAGミニPoCで正答率を測定→改善し、数値で成果を示す</li>
+        </ul>
+        <p class="note">成果：<b>提案〜納品まで自走</b>できるミニ案件レベルの実力（動く仕組み＋納品一式）</p>
+        <div class="cta-row">
+          <a class="btn primary course-cta" data-course="practical" href="exo_course_detail.html?course=practical#contact">
+            このコースで申し込む <span class="price">¥980</span>
+          </a>
+          <a class="btn ghost course-flow" data-course="practical" href="exo_course_detail.html?course=practical#flow">学習の流れ</a>
+        </div>
+      </section>
+
     </div>
-
-    <!-- 概要 -->
-    <section class="card" id="summary">
-      <h2>このコースで狙うこと</h2>
-      <p class="lead" id="lead"></p>
-
-      <div class="grid-2">
-        <div>
-          <h3>学べること（コアスキル）</h3>
-          <ul id="skills"></ul>
-        </div>
-        <div>
-          <h3>モジュール（例）</h3>
-          <ul id="modules"></ul>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div>
-          <h3>ハンズオン / 課題</h3>
-          <ul id="hands"></ul>
-        </div>
-        <div>
-          <h3>成果物</h3>
-          <ul id="outcomes"></ul>
-          <h3 style="margin-top:.8rem">受講後にできること</h3>
-          <ul id="after"></ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- 学習の流れ -->
-    <section class="card" id="flow">
-      <h2>学習の流れ</h2>
-      <ul id="flow-list"></ul>
-    </section>
-
-    <footer>© ExoVisionary Hub</footer>
   </main>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const sp = new URLSearchParams(location.search);
-  const score = sp.get('score') || '—';
-  const level = sp.get('level') || '—';
+  <footer>© ExoVisionary Hub</footer>
 
-  const STRIPE_LINKS = {
-    entry:'https://buy.stripe.com/bJecN42RHdU03IPb796Zy01',
-    middle:'https://buy.stripe.com/fZu7sK3VLbLS5QXb796Zy02',
-    practical:'https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03'
-  };
+  <script>
+    // 一覧→詳細へ遷移する際に score / level / lv を引き継ぎ、GAイベントを送信
+    document.addEventListener('DOMContentLoaded', () => {
+      const qs = new URLSearchParams(location.search);
+      const score = qs.get('score');
+      const level = qs.get('level');
+      const lv    = qs.get('lv');
 
-  const COURSES = {
-    practical:{
-      badge:'実践〜先進向け',
-      title:'PRACTICAL｜疑似案件で本格運用へ（3週間）',
-      lead:'MIDDLEで培った土台を「案件化」へ。クライアント要件のヒアリングから設計・実装・納品・検証・発表までを3週間で通しで実践します。最終的に、提案〜納品まで自走できるミニ案件レベルの実力と、横展開できる納品一式を揃えます。',
-      skills:[
-        '要件定義（ヒアリング／要件定義書の作成）',
-        '業務設計（データ流・役割/権限・例外処理・運用設計・SLA）',
-        '実装（フォーム→記録→集計→通知の連携／ノーコード＋簡易スクリプト）',
-        '納品一式の整備（設計書・操作マニュアル・成果レポート・デモ台本）',
-        '検証と改善（RAGミニPoCで評価→改善→再評価）'
-      ],
-      modules:[
-        '要件定義ロールプレイ（GPTがクライアント役）',
-        '設計書ドラフト作成（データ流・権限・失敗時ハンドリング）',
-        '入力→処理→出力の実装（フォーム入力の自動記録／要約レポート／通知）',
-        '納品パッケージ化（設計書＋マニュアル＋レポート＋デモ台本）',
-        'RAGミニPoC：FAQ50件で正答率を測定し、改善ログを作成',
-        '最終発表（3分ピッチ）'
-      ],
-      hands:[
-        '要件定義書を1本作成',
-        '設計書一式（フロー図・権限表・例外対応）',
-        '実装（ノーコード連携＋必要に応じて自動化スクリプト）と動作動画',
-        '納品物：操作マニュアル／成果レポート／デモ説明台本',
-        'RAG評価ログ（初期・改善・再評価の記録）'
-      ],
-      outcomes:[
-        '提案〜納品まで自走できるミニ案件（動く仕組み＋納品一式）',
-        '評価・改善ログと再現可能な手順書',
-        '社内展開に使える発表用スライド'
-      ],
-      after:[
-        '小規模案件を社内で提案→設計→実装→納品まで主導できる',
-        '品質・再現性・運用を数値と資料で説明できる',
-        '納品一式をテンプレ化し、他部署へ横展開しやすい'
-      ],
-      flow:[
-        'Week1：要件定義→設計ドラフト作成',
-        'Week2：実装→動作確認→納品一式の整備',
-        'Week3：RAGミニPoCで検証→改善→最終発表'
-      ]
-    }
-  };
+      function buildDetailURL(course, hash){
+        const url = new URL('exo_course_detail.html', location.href);
+        url.searchParams.set('course', course);
+        if (score) url.searchParams.set('score', score);
+        if (level) url.searchParams.set('level', level);
+        if (lv)    url.searchParams.set('lv', lv);
+        if (hash)  url.hash = hash;
+        return url.toString();
+      }
 
-  // このページは practical を固定表示
-  const course = COURSES.practical;
-  const payURL = STRIPE_LINKS.practical;
+      // 各リンクのhrefを上書き（クエリ付与）
+      document.querySelectorAll('.course-link').forEach(a=>{
+        const course = a.getAttribute('data-course') || 'entry';
+        a.href = buildDetailURL(course, '');
+      });
+      document.querySelectorAll('.course-cta').forEach(a=>{
+        const course = a.getAttribute('data-course') || 'entry';
+        a.href = buildDetailURL(course, 'contact');
+        a.addEventListener('click', () => {
+          if (typeof gtag === 'function') {
+            gtag('event', 'course_cta_click', { event_category:'CTA', event_label: course });
+          }
+        });
+      });
+      document.querySelectorAll('.course-flow').forEach(a=>{
+        const course = a.getAttribute('data-course') || 'entry';
+        a.href = buildDetailURL(course, 'flow');
+      });
 
-  const $ = id => document.getElementById(id);
-  const fill = (id, arr) => { const el=$(id); if(el) el.innerHTML=(arr||[]).map(t=>`<li>${t}</li>`).join(''); };
-
-  $('badge').textContent = course.badge;
-  $('course-title').textContent = course.title;
-  $('score-out').textContent = score;
-  $('level-out').textContent = level;
-  $('lead').textContent = course.lead;
-  fill('skills',course.skills); fill('modules',course.modules);
-  fill('hands',course.hands);   fill('outcomes',course.outcomes);
-  fill('after',course.after);   fill('flow-list',course.flow);
-
-  $('btn-apply').href = payURL;
-});
-</script>
+      // カード全体クリックでも詳細へ
+      document.querySelectorAll('.card[data-course]').forEach(card=>{
+        const course = card.getAttribute('data-course');
+        const dst = buildDetailURL(course, '');
+        card.addEventListener('click', (e)=>{
+          // CTAや内部リンククリック時はバブリングで二重遷移しない
+          const isInsideLink = e.target.closest('a');
+          if (!isInsideLink) location.href = dst;
+        });
+        // キーボード操作
+        card.addEventListener('keydown', (e)=>{
+          if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault();
+            location.href = dst;
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>
