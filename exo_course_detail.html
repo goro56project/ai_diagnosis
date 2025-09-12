@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>おすすめコース | ExoVisionary Hub</title>
   <style>
-    :root{ --brand:#111827; --ink:#0f172a; --muted:#475569; --card:#fff; --line:#e2e8f0; }
+    :root{ --brand:#111827; --ink:#0f172a; --muted:#475569; --card:#fff; --line:#e5e7eb; --accent:#7356b6; }
     *{ box-sizing:border-box; }
     body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; color:var(--ink); background:#f7f7fb; }
     header{ background:#fff; border-bottom:1px solid var(--line); }
@@ -22,7 +22,7 @@
     ul.list li span.m{ margin-right:8px; }
     .note{ background:#f8fafc; border:1px dashed #e2e8f0; border-radius:12px; padding:10px 12px; margin:12px 0 0; color:var(--ink); }
     .cta-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; align-items:center; }
-    .btn{ display:inline-block; border-radius:999px; padding:10px 16px; text-decoration:none; font-weight:600; }
+    .btn{ display:inline-block; border-radius:999px; padding:10px 16px; text-decoration:none; font-weight:600; cursor:pointer; }
     .btn.primary{ background:var(--brand); color:#fff; border:1px solid var(--brand); }
     .btn.ghost{ border:1px solid #cbd5e1; color:var(--ink); background:#fff; }
     .price{ font-weight:800; color:#16a34a; margin-left:6px; }
@@ -106,22 +106,37 @@
   <footer>© ExoVisionary Hub</footer>
 
   <script>
-    // 「学習の流れ」リンクへ score/level/lv を付与（クリックはブラウザデフォルトに任せる）
-    document.addEventListener('DOMContentLoaded', () => {
-      const qsIn = new URLSearchParams(location.search);
+    // 1) score/level/lv を「学習の流れ」リンクへ引き継ぎ
+    (function propagateParams(){
+      const qs = new URLSearchParams(location.search);
       const keep = new URLSearchParams();
-      ['score','level','lv'].forEach(k => { if (qsIn.get(k)) keep.set(k, qsIn.get(k)); });
+      ['score','level','lv'].forEach(k => { if (qs.get(k)) keep.set(k, qs.get(k)); });
 
       if (!keep.toString()) return;
-
       document.querySelectorAll('.flow-link').forEach(a => {
         try {
           const url = new URL(a.getAttribute('href'), location.href);
-          keep.forEach((v,k) => url.searchParams.set(k, v));
+          keep.forEach((v, k) => url.searchParams.set(k, v));
           a.setAttribute('href', url.toString());
-        } catch(_) {}
+        } catch(e) {}
       });
-    });
+    })();
+
+    // 2) クリック抑止の影響を受けず、確実に詳細へ遷移させる
+    (function hardNavigate(){
+      document.querySelectorAll('.flow-link').forEach(a => {
+        a.addEventListener('click', (ev) => {
+          // 別スクリプトの preventDefault を上書き
+          ev.stopImmediatePropagation?.();
+          ev.preventDefault();
+          const href = a.getAttribute('href');
+          if (href) {
+            // ハードナビゲーション（同一タブ遷移）
+            window.location.assign(href);
+          }
+        }, true); // キャプチャ段階で先取り
+      });
+    })();
   </script>
 </body>
 </html>
