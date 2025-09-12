@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>おすすめコース | ExoVisionary Hub</title>
   <style>
-    :root{ --brand:#111827; --ink:#0f172a; --muted:#475569; --card:#fff; --line:#e5e7eb; --accent:#7356b6; }
+    :root{ --brand:#111827; --ink:#0f172a; --muted:#475569; --card:#fff; --line:#e2e8f0; }
     *{ box-sizing:border-box; }
     body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; color:var(--ink); background:#f7f7fb; }
     header{ background:#fff; border-bottom:1px solid var(--line); }
@@ -108,23 +108,35 @@
   <footer>© ExoVisionary Hub</footer>
 
   <script>
-    // 学習の流れリンクに score / level / lv を引き継ぐ（決済リンクには付与しない）
-    (function() {
-      const qs = new URLSearchParams(location.search);
+    // 「学習の流れ」リンクを各コース詳細(#flow)へ確実に遷移させつつ、score/level/lv を引き継ぐ
+    document.addEventListener('DOMContentLoaded', () => {
+      const incoming = new URLSearchParams(location.search);
       const keep = new URLSearchParams();
-      ['score','level','lv'].forEach(k => { if (qs.get(k)) keep.set(k, qs.get(k)); });
+      ['score','level','lv'].forEach(k => { if (incoming.get(k)) keep.set(k, incoming.get(k)); });
 
-      if (keep.toString()) {
-        document.querySelectorAll('.flow-link').forEach(a => {
-          try {
-            const url = new URL(a.href, location.href);
-            // 既存の course はそのままに、追加パラメータだけ足す
-            keep.forEach((v, k) => url.searchParams.set(k, v));
-            a.href = url.toString();
-          } catch (_) {}
-        });
-      }
-    })();
+      const baseDetail = new URL('exo_course_detail.html', location.href);
+      const buildDetailUrl = (course) => {
+        const u = new URL(baseDetail);
+        u.hash = 'flow';
+        u.searchParams.set('course', course);
+        keep.forEach((v,k) => u.searchParams.set(k, v));
+        return u.toString();
+      };
+
+      // flow-link を確実遷移（他のハンドラ競合を避けるため capture + stopPropagation）
+      document.querySelectorAll('.flow-link').forEach(a => {
+        const course = a.dataset.course || 'entry';
+        a.href = buildDetailUrl(course);
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          window.location.assign(a.href);
+        }, {capture:true});
+      });
+
+      // 申込ボタンは外部決済。干渉しないが target を保証
+      document.querySelectorAll('.btn.primary').forEach(a => { a.target = '_blank'; });
+    });
   </script>
 </body>
 </html>
