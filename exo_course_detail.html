@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>おすすめコース | ExoVisionary Hub</title>
   <style>
-    :root{ --brand:#111827; --ink:#0f172a; --muted:#475569; --card:#fff; --line:#e5e7eb; --accent:#7356b6; }
+    :root{ --brand:#111827; --ink:#0f172a; --muted:#475569; --card:#fff; --line:#e5e7eb; }
     *{ box-sizing:border-box; }
     body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; color:var(--ink); background:#f7f7fb; }
     header{ background:#fff; border-bottom:1px solid var(--line); }
@@ -14,7 +14,7 @@
     p.lead{ color:var(--muted); margin:6px 0 0; }
     main{ max-width:1100px; margin:0 auto; padding:16px; }
     .grid{ display:flex; flex-wrap:wrap; gap:24px; }
-    .card{ flex:1 1 320px; background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:20px; }
+    .card{ flex:1 1 320px; background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:20px; position:relative; }
     .tag{ display:inline-block; background:#eef6ff; color:#2563eb; border-radius:999px; padding:4px 10px; font-size:.85rem; margin:0 0 8px; }
     .title{ font-size:1.2rem; line-height:1.4; margin:6px 0 12px; }
     ul.list{ list-style:none; margin:0; padding:0; }
@@ -22,7 +22,7 @@
     ul.list li span.m{ margin-right:8px; }
     .note{ background:#f8fafc; border:1px dashed #e2e8f0; border-radius:12px; padding:10px 12px; margin:12px 0 0; color:var(--ink); }
     .cta-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; align-items:center; }
-    .btn{ display:inline-block; border-radius:999px; padding:10px 16px; text-decoration:none; font-weight:600; cursor:pointer; }
+    .btn{ display:inline-block; border-radius:999px; padding:10px 16px; text-decoration:none; font-weight:600; cursor:pointer; user-select:none; }
     .btn.primary{ background:var(--brand); color:#fff; border:1px solid var(--brand); }
     .btn.ghost{ border:1px solid #cbd5e1; color:var(--ink); background:#fff; }
     .price{ font-weight:800; color:#16a34a; margin-left:6px; }
@@ -33,7 +33,7 @@
   <header>
     <div class="wrap">
       <h1>おすすめコース</h1>
-      <p class="lead">診断結果や現在地に合わせて、最短で成果につながるコースを選べます。申込ボタンは決済へ、学習の流れは各コース詳細へ遷移します。</p>
+      <p class="lead">申込は決済へ、学習の流れは各コースの詳細ページへ確実に遷移します。</p>
     </div>
   </header>
 
@@ -53,10 +53,10 @@
         </ul>
         <p class="note">成果：<b>「AIに安全で高品質な指示を出せた」成功体験</b>／成果をテンプレ化して<b>再現可能</b>に。</p>
         <div class="cta-row">
-          <a class="btn primary" href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener">
-            このコースで申し込む <span class="price">¥980</span>
-          </a>
-          <a class="btn ghost flow-link" data-course="entry" href="exo_course_detail.html?course=entry#flow">学習の流れ</a>
+          <a class="btn primary" href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01" target="_blank" rel="noopener">このコースで申し込む <span class="price">¥980</span></a>
+          <button class="btn ghost flow-btn"
+                  data-course="entry"
+                  type="button">学習の流れ</button>
         </div>
       </section>
 
@@ -73,10 +73,10 @@
         </ul>
         <p class="note">成果：<b>「小さな業務が勝手に回る」半自動フロー</b>を構築し、改善を回せる。</p>
         <div class="cta-row">
-          <a class="btn primary" href="https://buy.stripe.com/fZu7sK3VLbLS5QXb796Zy02" target="_blank" rel="noopener">
-            このコースで申し込む <span class="price">¥980</span>
-          </a>
-          <a class="btn ghost flow-link" data-course="middle" href="exo_course_detail.html?course=middle#flow">学習の流れ</a>
+          <a class="btn primary" href="https://buy.stripe.com/fZu7sK3VLbLS5QXb796Zy02" target="_blank" rel="noopener">このコースで申し込む <span class="price">¥980</span></a>
+          <button class="btn ghost flow-btn"
+                  data-course="middle"
+                  type="button">学習の流れ</button>
         </div>
       </section>
 
@@ -93,10 +93,10 @@
         </ul>
         <p class="note">成果：<b>提案〜納品まで自走</b>できるミニ案件レベルの実力（動く仕組み＋納品一式）。</p>
         <div class="cta-row">
-          <a class="btn primary" href="https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03" target="_blank" rel="noopener">
-            このコースで申し込む <span class="price">¥980</span>
-          </a>
-          <a class="btn ghost flow-link" data-course="practical" href="exo_course_detail.html?course=practical#flow">学習の流れ</a>
+          <a class="btn primary" href="https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03" target="_blank" rel="noopener">このコースで申し込む <span class="price">¥980</span></a>
+          <button class="btn ghost flow-btn"
+                  data-course="practical"
+                  type="button">学習の流れ</button>
         </div>
       </section>
 
@@ -106,36 +106,45 @@
   <footer>© ExoVisionary Hub</footer>
 
   <script>
-    // 1) score/level/lv を「学習の流れ」リンクへ引き継ぎ
-    (function propagateParams(){
-      const qs = new URLSearchParams(location.search);
-      const keep = new URLSearchParams();
-      ['score','level','lv'].forEach(k => { if (qs.get(k)) keep.set(k, qs.get(k)); });
+    // 強制ナビゲーション: クリック/Enter/Space/マウスダウンのどれでも遷移
+    (function () {
+      // 画面クエリの score/level/lv を引き継ぐ
+      const qsIn = new URLSearchParams(location.search);
+      const carry = new URLSearchParams();
+      ['score','level','lv'].forEach(k => { if (qsIn.get(k)) carry.set(k, qsIn.get(k)); });
 
-      if (!keep.toString()) return;
-      document.querySelectorAll('.flow-link').forEach(a => {
-        try {
-          const url = new URL(a.getAttribute('href'), location.href);
-          keep.forEach((v, k) => url.searchParams.set(k, v));
-          a.setAttribute('href', url.toString());
-        } catch(e) {}
-      });
-    })();
+      function detailURL(course){
+        const base = new URL('exo_course_detail.html', location.href);
+        base.searchParams.set('course', course);
+        carry.forEach((v,k)=>base.searchParams.set(k,v));
+        base.hash = 'flow';
+        return base.toString();
+      }
 
-    // 2) クリック抑止の影響を受けず、確実に詳細へ遷移させる
-    (function hardNavigate(){
-      document.querySelectorAll('.flow-link').forEach(a => {
-        a.addEventListener('click', (ev) => {
-          // 別スクリプトの preventDefault を上書き
-          ev.stopImmediatePropagation?.();
-          ev.preventDefault();
-          const href = a.getAttribute('href');
-          if (href) {
-            // ハードナビゲーション（同一タブ遷移）
-            window.location.assign(href);
-          }
-        }, true); // キャプチャ段階で先取り
-      });
+      function go(href){
+        try{
+          // 最強遷移
+          window.onbeforeunload = null;
+          document.activeElement && document.activeElement.blur();
+          location.href = href;
+        }catch(e){
+          // 予備
+          window.location.assign(href);
+        }
+      }
+
+      function wire(el){
+        const href = detailURL(el.dataset.course);
+        // アクセシビリティ
+        el.setAttribute('aria-label', '学習の流れ（詳細ページへ移動）');
+        el.addEventListener('click', e => { e.preventDefault(); e.stopImmediatePropagation?.(); go(href); }, true);
+        el.addEventListener('mousedown', e => { e.preventDefault(); e.stopImmediatePropagation?.(); go(href); }, true);
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopImmediatePropagation?.(); go(href); }
+        }, true);
+      }
+
+      document.querySelectorAll('.flow-btn').forEach(wire);
     })();
   </script>
 </body>
