@@ -6,18 +6,21 @@
 <title>コース詳細 | ExoVisionary Hub</title>
 <style>
   :root{--ink:#0f172a;--muted:#475569;--brand:#111827;--card:#fff;--line:#e5e7eb;--bg:#f8fafc}
-  *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Meiryo,sans-serif;color:var(--ink);background:var(--bg)}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Meiryo,sans-serif;color:var(--ink);background:var(--bg)}
   .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 60px}
   .pill{display:inline-block;background:#eef2ff;color:#3730a3;padding:.35em .8em;border-radius:999px;font-size:.9rem}
-  h1{font-size:clamp(24px,4vw,36px);margin:.5rem 0 0} .muted{color:var(--muted)}
+  h1{font-size:clamp(24px,4vw,36px);margin:.5rem 0 0}.muted{color:var(--muted)}
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
   .btn{display:inline-block;border:1px solid var(--brand);background:var(--brand);color:#fff;padding:12px 16px;border-radius:999px;text-decoration:none}
   .btn.ghost{background:#fff;color:var(--ink);border-color:#cbd5e1}
+  .btn.block{display:block;text-align:center;width:100%;margin-top:14px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:18px;margin:14px 0}
-  h2{font-size:1.4rem;margin:.2rem 0 .6rem} h3{font-size:1.1rem;margin:.6rem 0 .3rem} ul{margin:.1rem 0 .8rem 1.2rem}
-  .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px} @media (max-width:860px){.grid-2{grid-template-columns:1fr}}
-  /* JSが有効なときだけ他コースを隠す（noscript時は全部見える＝白紙にならない） */
-  html.js .course-block{display:none} html.js .course-block.active{display:block}
+  h2{font-size:1.4rem;margin:.2rem 0 .6rem}h3{font-size:1.1rem;margin:.6rem 0 .3rem}ul{margin:.1rem 0 .8rem 1.2rem}
+  .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  @media(max-width:860px){.grid-2{grid-template-columns:1fr}}
+  html.js .course-block{display:none}
+  html.js .course-block.active{display:block}
   footer{margin:28px 0 8px;text-align:center;color:#94a3b8}
 </style>
 </head>
@@ -33,15 +36,15 @@
   <!-- ENTRY -->
   <section id="entry" class="course-block card">
     <h2>ENTRY｜AI基礎＆日常業務の成功体験（1日完結）</h2>
-    <p>AI初心者や40〜50代向けの短期集中コース。安全ルールを押さえつつ、ChatGPTで資料・メール・デザイン補助の成果を出し、最初の成功体験を得ます。成果はテンプレ化してチームでも再現可能に。</p>
+    <p>AI初心者や40〜50代向けの短期集中コース。安全ルールを押さえつつ、ChatGPTで資料・メール・デザイン補助の成果を出し、最初の成功体験を得ます。</p>
     <div class="grid-2">
       <div>
         <h3>学べること</h3>
         <ul>
           <li>AIリテラシー（安全/NGケース）</li>
-          <li>ChatGPT基礎（O–C–IO–E）</li>
+          <li>ChatGPT基礎</li>
           <li>資料・メールの指示設計</li>
-          <li>画像生成の基礎（バナー/図解）</li>
+          <li>画像生成の基礎</li>
         </ul>
       </div>
       <div>
@@ -54,26 +57,27 @@
         </ul>
       </div>
     </div>
-    <h3>学習の流れ</h3>
+    <h3 id="flow">学習の流れ</h3>
     <ul>
       <li>午前：安全ルールと指示の型</li>
       <li>午後：資料・メール・画像生成の実践</li>
-      <li>夕方：成果のテンプレ化とミニマニュアル化</li>
+      <li>夕方：成果テンプレ化と共有</li>
     </ul>
+    <a href="https://checkout.stripe.com/pay/cs_live_ENTRY_xxxxxxxxxxxxx" class="btn block">このコースで申し込む（¥980）</a>
   </section>
 
   <!-- MIDDLE -->
   <section id="middle" class="course-block card">
     <h2>MIDDLE｜AI×業務改善の入口（2週間）</h2>
-    <p>ENTRYで得た成功体験を一歩進め、テンプレ設計→小さな自動化→データで改善→KPI可視化までを2週間で体験。最終的に「小さな業務が勝手に回る」半自動フローを自力で構築できる状態を目指します。</p>
+    <p>ENTRYで得た成功体験を一歩進め、テンプレ設計→小さな自動化→改善→KPI可視化までを2週間で体験。</p>
     <div class="grid-2">
       <div>
         <h3>学べること</h3>
         <ul>
-          <li>テンプレ設計（議事録/FAQ/メールの型）</li>
-          <li>小さな自動化（フォーム/シート/返信/集計連携）</li>
-          <li>改善運用（A/Bテストと評価データ）</li>
-          <li>KPI可視化（品質・再現性・時間の3軸）</li>
+          <li>テンプレ設計</li>
+          <li>小さな自動化</li>
+          <li>改善運用</li>
+          <li>KPI可視化</li>
         </ul>
       </div>
       <div>
@@ -92,30 +96,31 @@
       <li>Week2：フォーム→返信→記録→レポート連携</li>
       <li>Week2：A/B検証→KPIボードで可視化</li>
     </ul>
+    <a href="https://checkout.stripe.com/pay/cs_live_MIDDLE_xxxxxxxxxxxxx" class="btn block">このコースで申し込む（¥980）</a>
   </section>
 
   <!-- PRACTICAL -->
   <section id="practical" class="course-block card">
     <h2>PRACTICAL｜疑似案件で本格運用へ（3週間）</h2>
-    <p>MIDDLEで培った土台を「案件化」。要件ヒアリングから設計・実装・納品・検証・発表までを3週間で通し実践。提案〜納品まで自走できるミニ案件レベルの実力を獲得します。</p>
+    <p>MIDDLEで培った土台を案件化。ヒアリングから設計・実装・納品・検証・発表まで通し実践。</p>
     <div class="grid-2">
       <div>
         <h3>学べること</h3>
         <ul>
-          <li>要件定義（ヒアリング／要件定義書）</li>
-          <li>業務設計（データ流・権限・例外処理・SLA）</li>
-          <li>実装（入力→記録→集計→通知、ノーコード＋簡易スクリプト）</li>
-          <li>納品一式（設計書・操作マニュアル・成果レポート・デモ台本）</li>
-          <li>検証と改善（RAGミニPoC：正答率→改善→再評価）</li>
+          <li>要件定義（ヒアリング/要件定義書）</li>
+          <li>業務設計（データ流・権限・例外処理）</li>
+          <li>実装（入力→記録→集計→通知）</li>
+          <li>納品一式（設計書・操作マニュアル・成果レポート）</li>
+          <li>検証と改善（RAGミニPoC）</li>
         </ul>
       </div>
       <div>
         <h3>モジュール例</h3>
         <ul>
-          <li>要件定義ロールプレイ（GPTがクライアント役）</li>
-          <li>設計書ドラフト作成（データ流・権限・失敗時ハンドリング）</li>
-          <li>一連の実装（フォーム入力の自動記録→要約レポート通知）</li>
-          <li>RAGミニPoC（FAQ50件で正答率を測り改善ログ化）</li>
+          <li>要件定義ロールプレイ</li>
+          <li>設計書ドラフト作成</li>
+          <li>一連の実装（フォーム入力→自動記録→通知）</li>
+          <li>RAGミニPoC（FAQで正答率検証→改善）</li>
           <li>最終発表（3分ピッチ）</li>
         </ul>
       </div>
@@ -124,17 +129,16 @@
     <ul>
       <li>Week1：要件定義→設計ドラフト</li>
       <li>Week2：実装→納品一式</li>
-      <li>Week3：RAGミニPoC→改善→最終発表</li>
+      <li>Week3：改善→発表</li>
     </ul>
+    <a href="https://checkout.stripe.com/pay/cs_live_PRACTICAL_xxxxxxxxxxxxx" class="btn block">このコースで申し込む（¥980）</a>
   </section>
 
   <footer>© ExoVisionary Hub</footer>
 </main>
 
 <script>
-/* JSが生きているときだけ出し分け（白紙防止のため先に class を付与） */
 document.documentElement.classList.add('js');
-
 (function(){
   const qs=new URLSearchParams(location.search);
   const course=(qs.get('course')||'entry').toLowerCase();
@@ -148,14 +152,12 @@ document.documentElement.classList.add('js');
   document.getElementById('title').textContent=map[course]||map.entry;
   document.getElementById('badge').textContent=course.toUpperCase();
 
-  // 出し分け（JS無効時は全部見える）
   document.querySelectorAll('.course-block').forEach(s=>s.classList.remove('active'));
   const show=document.getElementById(course)||document.getElementById('entry');
   show.classList.add('active');
 
-  // #flow が付いていればそこまでスクロール
   if (location.hash==='#flow') {
-    const h=show.querySelector('h3')||show;
+    const h=show.querySelector('#flow')||show;
     h.scrollIntoView({behavior:'smooth',block:'start'});
   }
 })();
