@@ -1,166 +1,101 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>コース詳細 | ExoVisionary Hub</title>
-<style>
-  :root{--ink:#0f172a;--muted:#475569;--brand:#111827;--card:#fff;--line:#e5e7eb;--bg:#f8fafc}
-  *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Meiryo,sans-serif;color:var(--ink);background:var(--bg)}
-  .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 60px}
-  .pill{display:inline-block;background:#eef2ff;color:#3730a3;padding:.35em .8em;border-radius:999px;font-size:.9rem}
-  h1{font-size:clamp(24px,4vw,36px);margin:.5rem 0 0}.muted{color:var(--muted)}
-  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  .btn{display:inline-block;border:1px solid var(--brand);background:var(--brand);color:#fff;padding:12px 16px;border-radius:999px;text-decoration:none}
-  .btn.ghost{background:#fff;color:var(--ink);border-color:#cbd5e1}
-  .btn.block{display:block;text-align:center;width:100%;margin-top:14px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:18px;margin:14px 0}
-  h2{font-size:1.4rem;margin:.2rem 0 .6rem}h3{font-size:1.1rem;margin:.6rem 0 .3rem}ul{margin:.1rem 0 .8rem 1.2rem}
-  .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-  @media(max-width:860px){.grid-2{grid-template-columns:1fr}}
-  html.js .course-block{display:none}
-  html.js .course-block.active{display:block}
-  footer{margin:28px 0 8px;text-align:center;color:#94a3b8}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>コース詳細 | ExoVisionary Hub</title>
+  <style>
+    :root {
+      --ink:#0f172a; --muted:#475569; --brand:#111827;
+      --pill:#eef2ff; --pill-ink:#3730a3;
+      --card:#fff; --line:#e5e7eb; --bg:#f9fafb;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+         background:var(--bg);color:var(--ink);line-height:1.6;}
+    .wrap{max-width:960px;margin:40px auto;padding:0 20px;}
+    h1{font-size:1.8rem;margin-bottom:10px;}
+    .pill{display:inline-block;padding:4px 10px;border-radius:9999px;
+          background:var(--pill);color:var(--pill-ink);font-size:0.85rem;}
+    .card{background:var(--card);border:1px solid var(--line);
+          border-radius:12px;padding:20px;margin-top:20px;}
+    ul{padding-left:20px;}
+    .btn{display:inline-block;margin-top:20px;padding:12px 24px;border-radius:8px;
+         background:var(--brand);color:#fff;text-decoration:none;font-weight:600;}
+    .back{display:inline-block;margin-top:20px;color:var(--muted);text-decoration:none;}
+  </style>
 </head>
 <body>
-<main class="wrap">
-  <div class="row"><span class="pill" id="badge">コース詳細</span></div>
-  <h1 id="title">コース詳細</h1>
-  <p class="muted">診断スコア：<span id="score">—</span> ／ レベル：<span id="level">—</span></p>
-  <div class="row" style="margin:.2rem 0 .6rem">
-    <a href="exo_courses.html" class="btn ghost">コース一覧に戻る</a>
+  <div class="wrap">
+    <span id="courseBadge" class="pill"></span>
+    <h1 id="courseTitle"></h1>
+    <p id="courseDesc"></p>
+
+    <div class="card">
+      <h2>学べること</h2>
+      <ul id="learnList"></ul>
+      <h2>モジュール例</h2>
+      <ul id="moduleList"></ul>
+    </div>
+
+    <a id="applyBtn" class="btn" target="_blank">このコースで申し込む</a>
+    <br />
+    <a href="exo_course_list.html" class="back">← コース一覧に戻る</a>
   </div>
 
-  <!-- ENTRY -->
-  <section id="entry" class="course-block card">
-    <h2>ENTRY｜AI基礎＆日常業務の成功体験（1日完結）</h2>
-    <p>AI初心者や40〜50代向けの短期集中コース。安全ルールを押さえつつ、ChatGPTで資料・メール・デザイン補助の成果を出し、最初の成功体験を得ます。</p>
-    <div class="grid-2">
-      <div>
-        <h3>学べること</h3>
-        <ul>
-          <li>AIリテラシー（安全/NGケース）</li>
-          <li>ChatGPT基礎</li>
-          <li>資料・メールの指示設計</li>
-          <li>画像生成の基礎</li>
-        </ul>
-      </div>
-      <div>
-        <h3>モジュール例</h3>
-        <ul>
-          <li>安全ルール演習</li>
-          <li>資料×メール×要約</li>
-          <li>画像生成基礎</li>
-          <li>成功プロンプトのテンプレ化</li>
-        </ul>
-      </div>
-    </div>
-    <h3 id="flow">学習の流れ</h3>
-    <ul>
-      <li>午前：安全ルールと指示の型</li>
-      <li>午後：資料・メール・画像生成の実践</li>
-      <li>夕方：成果テンプレ化と共有</li>
-    </ul>
-    <a href="https://checkout.stripe.com/pay/cs_live_ENTRY_xxxxxxxxxxxxx" class="btn block">このコースで申し込む（¥980）</a>
-  </section>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const plan = params.get("plan");
 
-  <!-- MIDDLE -->
-  <section id="middle" class="course-block card">
-    <h2>MIDDLE｜AI×業務改善の入口（2週間）</h2>
-    <p>ENTRYで得た成功体験を一歩進め、テンプレ設計→小さな自動化→改善→KPI可視化までを2週間で体験。</p>
-    <div class="grid-2">
-      <div>
-        <h3>学べること</h3>
-        <ul>
-          <li>テンプレ設計</li>
-          <li>小さな自動化</li>
-          <li>改善運用</li>
-          <li>KPI可視化</li>
-        </ul>
-      </div>
-      <div>
-        <h3>モジュール例</h3>
-        <ul>
-          <li>よく使う業務の型化（テンプレ3本）</li>
-          <li>Googleフォーム⇄スプレッドシート連携</li>
-          <li>自動返信メールと集計レポート</li>
-          <li>A/Bテスト運用とダッシュボード化</li>
-        </ul>
-      </div>
-    </div>
-    <h3>学習の流れ</h3>
-    <ul>
-      <li>Week1：テンプレ3本を作成</li>
-      <li>Week2：フォーム→返信→記録→レポート連携</li>
-      <li>Week2：A/B検証→KPIボードで可視化</li>
-    </ul>
-    <a href="https://checkout.stripe.com/pay/cs_live_MIDDLE_xxxxxxxxxxxxx" class="btn block">このコースで申し込む（¥980）</a>
-  </section>
+    // コースごとのデータ定義
+    const courses = {
+      ENTRY: {
+        badge: "ENTRY",
+        title: "ENTRY｜AI基礎＆日常業務の成功体験（1日完結）",
+        desc: "AI初心者や40〜50代向けの短期集中コース。安全ルールを押さえつつ、ChatGPTで資料・メール・デザイン補助を体験。",
+        learn: ["AIリテラシー（安全/NGケース）","ChatGPT基礎","資料・メールの指示設計","画像生成の基礎"],
+        modules: ["安全ルール演習","資料×メール×要約","画像生成基礎","成功プロンプトのテンプレ化"],
+        url: "https://buy.stripe.com/test_entry" // ←本番StripeURLに差し替えて
+      },
+      MIDDLE: {
+        badge: "MIDDLE",
+        title: "MIDDLE｜実務直結スキル＆自動化基盤構築（2週間完結）",
+        desc: "仕事で即活かせるAIスキルを体系的に習得。Google Apps Scriptや自動化を実務レベルで体験。",
+        learn: ["Google Apps Script連携","業務自動化の基礎","社内活用テンプレ構築","SNS戦略設計"],
+        modules: ["GASでの自動送信","日報自動化","FAQ自動応答ボット","SNS投稿設計"],
+        url: "https://buy.stripe.com/test_middle" // ←本番StripeURLに差し替えて
+      },
+      PRACTICAL: {
+        badge: "PRACTICAL",
+        title: "PRACTICAL｜AI導入プロジェクト実践（1ヶ月完結）",
+        desc: "実案件を題材に、AI導入を実際に企画・構築・運用までやり切る実践型コース。",
+        learn: ["AIプロジェクト設計","PoC構築","導入効果検証","チーム導入の実務"],
+        modules: ["案件選定と要件整理","PoC開発","効果測定レポート","導入プレゼン実習"],
+        url: "https://buy.stripe.com/test_practical" // ←本番StripeURLに差し替えて
+      }
+    };
 
-  <!-- PRACTICAL -->
-  <section id="practical" class="course-block card">
-    <h2>PRACTICAL｜疑似案件で本格運用へ（3週間）</h2>
-    <p>MIDDLEで培った土台を案件化。ヒアリングから設計・実装・納品・検証・発表まで通し実践。</p>
-    <div class="grid-2">
-      <div>
-        <h3>学べること</h3>
-        <ul>
-          <li>要件定義（ヒアリング/要件定義書）</li>
-          <li>業務設計（データ流・権限・例外処理）</li>
-          <li>実装（入力→記録→集計→通知）</li>
-          <li>納品一式（設計書・操作マニュアル・成果レポート）</li>
-          <li>検証と改善（RAGミニPoC）</li>
-        </ul>
-      </div>
-      <div>
-        <h3>モジュール例</h3>
-        <ul>
-          <li>要件定義ロールプレイ</li>
-          <li>設計書ドラフト作成</li>
-          <li>一連の実装（フォーム入力→自動記録→通知）</li>
-          <li>RAGミニPoC（FAQで正答率検証→改善）</li>
-          <li>最終発表（3分ピッチ）</li>
-        </ul>
-      </div>
-    </div>
-    <h3>学習の流れ</h3>
-    <ul>
-      <li>Week1：要件定義→設計ドラフト</li>
-      <li>Week2：実装→納品一式</li>
-      <li>Week3：改善→発表</li>
-    </ul>
-    <a href="https://checkout.stripe.com/pay/cs_live_PRACTICAL_xxxxxxxxxxxxx" class="btn block">このコースで申し込む（¥980）</a>
-  </section>
+    const course = courses[plan] || courses["ENTRY"];
+    document.getElementById("courseBadge").textContent = course.badge;
+    document.getElementById("courseTitle").textContent = course.title;
+    document.getElementById("courseDesc").textContent = course.desc;
 
-  <footer>© ExoVisionary Hub</footer>
-</main>
+    const learnList = document.getElementById("learnList");
+    course.learn.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      learnList.appendChild(li);
+    });
 
-<script>
-document.documentElement.classList.add('js');
-(function(){
-  const qs=new URLSearchParams(location.search);
-  const course=(qs.get('course')||'entry').toLowerCase();
-  const score=qs.get('score')||'—'; const level=qs.get('level')||'—';
-  document.getElementById('score').textContent=score;
-  document.getElementById('level').textContent=level;
+    const moduleList = document.getElementById("moduleList");
+    course.modules.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      moduleList.appendChild(li);
+    });
 
-  const map={entry:'ENTRY｜AI基礎＆日常業務の成功体験（1日完結）',
-             middle:'MIDDLE｜AI×業務改善の入口（2週間）',
-             practical:'PRACTICAL｜疑似案件で本格運用へ（3週間）'};
-  document.getElementById('title').textContent=map[course]||map.entry;
-  document.getElementById('badge').textContent=course.toUpperCase();
-
-  document.querySelectorAll('.course-block').forEach(s=>s.classList.remove('active'));
-  const show=document.getElementById(course)||document.getElementById('entry');
-  show.classList.add('active');
-
-  if (location.hash==='#flow') {
-    const h=show.querySelector('#flow')||show;
-    h.scrollIntoView({behavior:'smooth',block:'start'});
-  }
-})();
-</script>
+    const applyBtn = document.getElementById("applyBtn");
+    applyBtn.href = course.url;
+  </script>
 </body>
 </html>
