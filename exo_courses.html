@@ -1,41 +1,145 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>おすすめコース | MYGPT School</title>
-<style>
-  body{margin:0;background:#f8fafc;color:#0f172a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
-  .wrap{max-width:960px;margin:24px auto;padding:0 16px}
-  h1{margin:0 0 12px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-  .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px}
-  .card h2{margin:4px 0 6px;font-size:18px}
-  .muted{color:#475569;font-size:14px;margin:0 0 10px}
-  .btn{display:inline-block;background:#111827;color:#fff;text-decoration:none;padding:10px 14px;border-radius:10px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>おすすめコース | ExoVisionary Hub</title>
+
+  <!-- （任意）GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQZF4F1QW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QFQZF4F1QW', { transport_type: 'beacon' });
+  </script>
+
+  <style>
+    :root{ --brand:#111827; --ink:#0f172a; --muted:#475569; --card:#fff; --line:#e5e7eb; --accent:#7356b6; }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif; color:var(--ink); background:#f7f7fb; }
+    header{ background:#fff; border-bottom:1px solid var(--line); }
+    header .wrap{ max-width:1100px; margin:0 auto; padding:16px; }
+    h1{ font-size:clamp(22px,3.4vw,28px); margin:4px 0; }
+    p.lead{ color:var(--muted); margin:6px 0 0; }
+    main{ max-width:1100px; margin:0 auto; padding:16px; }
+    .grid{ display:flex; flex-wrap:wrap; gap:24px; }
+    .card{ flex:1 1 320px; background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:20px; }
+    .tag{ display:inline-block; background:#eef6ff; color:#2563eb; border-radius:999px; padding:4px 10px; font-size:.85rem; margin:0 0 8px; }
+    .title{ font-size:1.2rem; line-height:1.4; margin:6px 0 12px; }
+    ul.list{ list-style:none; margin:0; padding:0; }
+    ul.list li{ margin:8px 0; line-height:1.6; }
+    ul.list li span.m{ margin-right:8px; }
+    .note{ background:#f8fafc; border:1px dashed #e2e8f0; border-radius:12px; padding:10px 12px; margin:12px 0 0; color:var(--ink); }
+    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; align-items:center; }
+    .btn{ display:inline-block; border-radius:999px; padding:10px 16px; text-decoration:none; font-weight:600; }
+    .btn.primary{ background:var(--brand); color:#fff; border:1px solid var(--brand); }
+    .btn.ghost{ border:1px solid #cbd5e1; color:var(--ink); background:#fff; }
+    .price{ font-weight:800; color:#16a34a; margin-left:6px; }
+    footer{ color:#64748b; font-size:12px; text-align:center; padding:24px 16px; }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>おすすめコース</h1>
-    <p class="muted">各コースの詳細ページからお申し込み（Stripe決済）に進めます。</p>
-    <div class="grid">
-      <div class="card">
-        <h2>ENTRY（入門）</h2>
-        <p class="muted">非エンジニアの最短スターター。</p>
-        <a class="btn" href="./entry_course_detail.html">ENTRYの詳細を見る</a>
-      </div>
-      <div class="card">
-        <h2>MIDDLE（中級）</h2>
-        <p class="muted">実務で回るテンプレと自動化の土台。</p>
-        <a class="btn" href="./middle_course_detail.html">MIDDLEの詳細を見る</a>
-      </div>
-      <div class="card">
-        <h2>PRACTICAL（実践）</h2>
-        <p class="muted">現場導入・成果コミット型。</p>
-        <a class="btn" href="./practical_course_detail.html">PRACTICALの詳細を見る</a>
-      </div>
+  <header>
+    <div class="wrap">
+      <h1>おすすめコース</h1>
+      <p class="lead">診断結果や現在地に合わせて、最短で成果につながるコースを選べます。申込ボタンで各コースの詳細ページへ移動します。</p>
     </div>
-  </div>
+  </header>
+
+  <main>
+    <div class="grid">
+
+      <!-- ENTRY -->
+      <section class="card" data-card>
+        <p class="tag">入門〜初級向け</p>
+        <h2 class="title">ENTRY：AI基礎＆日常業務の成功体験（1日完結）</h2>
+        <ul class="list">
+          <li><span class="m">✓</span><b>S1〜S6のステップ形式：</b>安全・品質・再現性を意識したAI活用を短時間で体験</li>
+          <li><span class="m">✓</span><b>安全に使える力：</b>情報の扱い方やNGケースを理解し、安心してAIを活用</li>
+          <li><span class="m">✓</span><b>良い指示が出せる力：</b>O–C–IO–E型フレームワークで実務的なプロンプトを作成</li>
+          <li><span class="m">✓</span><b>小さく成果を出す力：</b>要約・資料作成・メール文案などで即日成果を体験</li>
+          <li><span class="m">✓</span><b>再現・共有する力：</b>成功した指示をテンプレ化してチームに展開</li>
+        </ul>
+        <p class="note">成果：<b>「AIに安全で高品質な指示を出せた」成功体験</b>／成果をテンプレ化して<b>再現できるスキル</b>が身につく</p>
+        <div class="cta-row">
+          <a class="btn primary course-cta" data-course="entry" href="exo_course_detail.html?course=entry#contact">
+            このコースで申し込む <span class="price">¥980</span>
+          </a>
+          <a class="btn ghost" href="exo_course_detail.html?course=entry#flow">学習の流れ</a>
+        </div>
+      </section>
+
+      <!-- MIDDLE (UPDATED) -->
+      <section class="card" data-card>
+        <p class="tag">初級〜中級向け</p>
+        <h2 class="title">MIDDLE：AI×業務改善の入口（2週間）</h2>
+        <ul class="list">
+          <li><span class="m">✓</span><b>よく使う業務を型にする：</b>議事録・メール・FAQをテンプレ化し、誰でも再利用できる形に整理</li>
+          <li><span class="m">✓</span><b>ちょっとした自動化を作る：</b>Googleフォーム→スプレッドシート→自動返信メール→簡単レポートまでをGASで連携</li>
+          <li><span class="m">✓</span><b>試して改善する：</b>A/Bテストや評価データで「どの型が成果につながるか」を検証し改良</li>
+          <li><span class="m">✓</span><b>数値で見える化する：</b>時間短縮や作業精度を数字で把握し、改善点を特定</li>
+          <li><span class="m">✓</span><b>成果をチームに広げる：</b>作ったテンプレや自動化を共有して、チーム全体の再現性を高める</li>
+        </ul>
+        <p class="note">成果：<b>「小さな業務が勝手に回る半自動フロー」</b>を自分で構築し、改善を回す力が身につく</p>
+        <div class="cta-row">
+          <a class="btn primary course-cta" data-course="middle" href="exo_course_detail.html?course=middle#contact">
+            このコースで申し込む <span class="price">¥980</span>
+          </a>
+          <a class="btn ghost" href="exo_course_detail.html?course=middle#flow">学習の流れ</a>
+        </div>
+      </section>
+
+      <!-- PRACTICAL (UPDATED) -->
+      <section class="card" data-card>
+        <p class="tag">実践〜先進向け</p>
+        <h2 class="title">PRACTICAL：疑似案件で本格運用へ（3週間）</h2>
+        <ul class="list">
+          <li><span class="m">✓</span><b>依頼を正しく聞き出す：</b>クライアント役のGPTとロールプレイし、目的・制約・優先度を整理</li>
+          <li><span class="m">✓</span><b>仕組みに設計する：</b>業務の流れ・役割分担・失敗時の対応までを含む実務レベルの設計図を作成</li>
+          <li><span class="m">✓</span><b>動く仕組みにする：</b>フォーム入力→自動で記録→まとめレポートまでつなぐ一連の流れを構築</li>
+          <li><span class="m">✓</span><b>納品にまとめる：</b>設計書・操作マニュアル・成果レポート・デモ台本をそろえて「納品一式」を完成</li>
+          <li><span class="m">✓</span><b>データで検証して改善：</b>FAQ50件のRAGミニPoCで正答率を測定→改善し、数値で成果を示す</li>
+        </ul>
+        <p class="note">成果：<b>提案〜納品まで自走</b>できる実務力を獲得（要件定義・設計・実装・検証・納品を一人でやり切る）</p>
+        <div class="cta-row">
+          <a class="btn primary course-cta" data-course="practical" href="exo_course_detail.html?course=practical#contact">
+            このコースで申し込む <span class="price">¥980</span>
+          </a>
+          <a class="btn ghost" href="exo_course_detail.html?course=practical#flow">学習の流れ</a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>© ExoVisionary Hub</footer>
+
+  <script>
+    // クリック時に診断クエリ（score/level/lv）を引き継いで遷移
+    document.addEventListener('DOMContentLoaded', () => {
+      const qs = new URLSearchParams(location.search);
+      const score = qs.get('score');
+      const level = qs.get('level');
+      const lv    = qs.get('lv');
+
+      document.querySelectorAll('.course-cta').forEach(a => {
+        const course = a.getAttribute('data-course') || 'entry';
+        const url = new URL('exo_course_detail.html', location.href);
+        url.hash = 'contact';
+        url.searchParams.set('course', course);
+        if (score) url.searchParams.set('score', score);
+        if (level) url.searchParams.set('level', level);
+        if (lv)    url.searchParams.set('lv', lv);
+        a.href = url.toString();
+
+        a.addEventListener('click', () => {
+          if (typeof gtag === 'function') {
+            gtag('event', 'course_cta_click', { event_category:'CTA', event_label: course });
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>
