@@ -6,116 +6,176 @@
 <title>PRACTICAL｜疑似案件で本格運用へ（3週間）</title>
 <style>
   :root{
-    --ink:#0f172a;--muted:#475569;--brand:#111827;--card:#fff;--bg:#f8fafc;--line:#e5e7eb;
-    --pill:#eef2ff;--pill-ink:#3730a3
+    --ink:#0f172a;--muted:#475569;--bg:#f8fafc;--card:#ffffff;--line:#e5e7eb;
+    --accent:#2563eb;--accent-ink:#ffffff;--pill:#e0e7ff
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;line-height:1.6}
-  a{color:inherit;text-decoration:none}
-  .wrap{max-width:1000px;margin:0 auto;padding:24px}
-  .crumbs{font-size:12px;color:var(--muted);margin-bottom:8px}
-  .grid{display:grid;gap:16px}
-  .two{grid-template-columns:1fr}
-  @media(min-width:900px){ .two{grid-template-columns:1.1fr .9fr} }
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
-  .pill{display:inline-block;background:var(--pill);color:var(--pill-ink);font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px}
-  h1{margin:10px 0 6px;font-size:28px}
-  h2{margin:22px 0 10px;font-size:22px}
-  h3{margin:16px 0 8px;font-size:18px}
-  ul{margin:8px 0 0 20px}
-  ol{margin:8px 0 0 20px}
-  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
-  .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;font-weight:700;border:1px solid var(--line);background:#fff}
-  .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
-  .note{color:var(--muted);font-size:13px}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;line-height:1.65}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px}
+  .crumbs{font-size:12px;color:var(--muted);margin:6px 0 12px}
+  .hero{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 10px}
+  .badge{display:inline-block;background:var(--pill);color:#3730a3;font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px}
+  h1{font-size:30px;margin:8px 0 6px}
+  .lead{color:var(--muted);margin:0 0 8px}
+  .toc{position:sticky;top:10px;display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .toc a{display:inline-block;background:#eef2f7;border:1px solid var(--line);padding:8px 10px;border-radius:999px;color:#111827}
+  .grid{display:grid;gap:18px}
+  @media(min-width:960px){ .grid.two{grid-template-columns:1.15fr .85fr} }
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  h2{font-size:22px;margin:10px 0}
+  h3{font-size:18px;margin:10px 0 6px}
+  ul,ol{margin:8px 0 0 20px}
+  .timeline li{margin:10px 0}
+  .callout{border:1px dashed var(--line);border-radius:12px;padding:14px;background:#fbfdff}
+  .meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .meta .chip{background:#f9fafb;border:1px solid var(--line);border-radius:12px;padding:12px}
+  .pricebox{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
   .price{font-size:28px;font-weight:800}
-  .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .meta .card{padding:14px}
-  .footer{margin:36px 0 10px;font-size:12px;color:var(--muted);text-align:center}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;font-weight:700;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink)}
+  .btn.secondary{background:#fff;color:#111827;border-color:var(--line)}
+  .aside{position:sticky;top:10px}
+  .footer{margin:36px 0 8px;color:var(--muted);font-size:12px;text-align:center}
+  details{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+  details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="crumbs"><a href="./exo_courses.html">おすすめコース</a> / PRACTICAL</div>
+<div class="wrap">
+  <div class="crumbs"><a href="./exo_courses.html">おすすめコース</a> / PRACTICAL</div>
 
-    <div class="grid two">
-      <main class="card">
-        <div class="pill">実践〜先進向け</div>
-        <h1>PRACTICAL：疑似案件で本格運用へ（3週間）</h1>
-        <p class="note">依頼の聞き出し〜設計〜“動く仕組み”〜納品までを通しで実践。実務レベルの運用設計と通し実装をやり切る。</p>
-
-        <section>
-          <h2>こんな方におすすめ</h2>
-          <ul>
-            <li>顧客/社内からの依頼を正しく構造化したい</li>
-            <li>失敗時の対応まで含む運用設計を学びたい</li>
-            <li>フォーム→自動記録→集計→レポートまで一気通貫で作りたい</li>
-          </ul>
-        </section>
-
-        <section id="flow">
-          <h2>学習の流れ</h2>
-          <ol>
-            <li>要件定義：目的・制約・優先度を固める</li>
-            <li>設計：業務フロー、役割分担、例外時対応</li>
-            <li>構築：入力→記録→集計→レポートの一連を実装</li>
-          </ol>
-        </section>
-
-        <section>
-          <h2>到達イメージ</h2>
-          <ul>
-            <li>実案件に流用できる設計書・運用資料が残る</li>
-            <li>“動いて回る”自動化ラインを構築できる</li>
-            <li>納品/引き継ぎに耐えるドキュメントが揃う</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>カリキュラム概要</h2>
-          <ul>
-            <li>要件定義テンプレ＆ヒアリング実演</li>
-            <li>運用設計（権限・監視・例外ハンドリング）</li>
-            <li>通し実装とテスト／成果物まとめ</li>
-          </ul>
-        </section>
-
-        <section class="card" style="border-style:dashed;margin-top:18px">
-          <h3>受講形式</h3>
-          <ul>
-            <li>3週間／個別テーマの伴走</li>
-            <li>レビュー2回＋最終デモ</li>
-          </ul>
-        </section>
-
-        <div style="height:1px;background:#e5e7eb;margin:22px 0"></div>
-
-        <!-- 価格・申込（#contact アンカー対応） -->
-        <section id="contact">
-          <div class="price">¥980</div>
-          <div class="note">※ モニター価格／税込</div>
-          <div class="cta">
-            <!-- Stripe本番リンクに差し替え -->
-            <a class="btn primary" href="PASTE_STRIPE_PRACTICAL_URL" target="_blank" rel="noopener">このコースで申し込む</a>
-            <a class="btn" href="./exo_courses.html">他のコースを見る</a>
-          </div>
-        </section>
-      </main>
-
-      <aside class="grid">
-        <div class="card">
-          <h3>コース情報</h3>
-          <div class="meta">
-            <div class="card"><div class="note">期間</div><strong>3週間</strong></div>
-            <div class="card"><div class="note">想定レベル</div><strong>中級〜先進</strong></div>
-          </div>
-          <p class="note" style="margin-top:10px">※ レベルは目安です。状況に合わせて伴走します。</p>
-        </div>
-      </aside>
+  <div class="hero">
+    <span class="badge">実践〜先進向け</span>
+    <h1>PRACTICAL：疑似案件で本格運用へ（3週間）</h1>
+    <p class="lead">MIDDLE修了者向け。専用カスタムGPT「<strong>PRACTICAL講師ボット</strong>」が、<strong>要件定義 → 設計 → 実装 → 納品 → 検証（RAG PoC） → 発表</strong>までを伴走し、現場で通用する運用ドキュメントと動く仕組みを揃えます。</p>
+    <div class="toc">
+      <a href="#goals">ゴール</a>
+      <a href="#flow">ロードマップ</a>
+      <a href="#deliverables">成果物</a>
+      <a href="#ops">受講中の操作</a>
+      <a href="#rubric">採点基準</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">申込み</a>
     </div>
-
-    <div class="footer">© ExoVisionary Hub</div>
   </div>
+
+  <div class="grid two">
+    <main class="card">
+      <section id="goals">
+        <h2>受講するとこうなれる</h2>
+        <ul>
+          <li><strong>要件を正しく把握</strong>：目的・背景・制約・優先度を矛盾なく整理</li>
+          <li><strong>設計書が作れる</strong>：情報構造・権限・例外処理・運用設計を網羅</li>
+          <li><strong>動く形にできる</strong>：GAS等で最小構成実装、エラー時の分岐も備える</li>
+          <li><strong>納品一式を整える</strong>：設計書・SOP・レポート・デモ台本をパッケージ</li>
+          <li><strong>RAGを検証</strong>：FAQ50件で正答率の測定→改善→再測定</li>
+        </ul>
+      </section>
+
+      <section id="flow">
+        <h2>3週間ロードマップ（S1〜S6）</h2>
+        <ol class="timeline">
+          <li><strong>S1 要件定義</strong>：ロールプレイでイシュー具体化／成功基準・スコープ確定</li>
+          <li><strong>S2 設計</strong>：データフロー・権限表・例外時迂回・監視とログ</li>
+          <li><strong>S3 実装</strong>：フォーム→記録→自動返信→集計（命名規則・トリガー・ログ）</li>
+          <li><strong>S4 納品準備</strong>：SOP・移行チェックリスト・デモ台本・成果レポート</li>
+          <li><strong>S5 RAGミニPoC</strong>：FAQ50件でベンチ→改善→再ベンチ、ログ化</li>
+          <li><strong>S6 最終発表</strong>：デモ＆レビュー、運用可能性を確認</li>
+        </ol>
+        <div class="callout">共通進行：①ねらい → ②講義（3〜5行） → ③ハンズオン → ④提出物採点 → ⑤次アクション</div>
+      </section>
+
+      <section id="deliverables">
+        <h2>持ち帰れるもの（成果物）</h2>
+        <ul>
+          <li>要件定義書（Who/What/Why/How/When＋スコープ・前提・リスク）</li>
+          <li>設計書（フロー図・GAS設計・権限表・失敗時対応・監視）</li>
+          <li>GASコード（関数コメント／トリガー設定手順）</li>
+          <li>納品フォルダ一式（SOP、成果レポート、デモ台本、移行チェックリスト）</li>
+          <li>RAG検証ログ（初期ベンチ→改善→再評価）</li>
+          <li>成果スライド（案件まとめ）</li>
+          <li>あなた専用の<strong>PRACTICAL講師ボット</strong></li>
+        </ul>
+      </section>
+
+      <section id="ops">
+        <h2>受講中の操作（コマンド）</h2>
+        <ul>
+          <li><code>S1開始〜S6開始</code>／<code>再提出</code>／<code>やり直し</code>／<code>次へ</code>／<code>進捗メモ</code></li>
+        </ul>
+        <details style="margin-top:8px">
+          <summary>進捗メモ（再開用）の例を開く</summary>
+<pre style="white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:12px">📌【進捗メモ（再開用）】
+セッション: S2（設計フェーズの実装）
+合否: 合格（9/10）
+所要時間: 75分
+提出物数: 設計書1点（フォーム設計＋エラー処理設計）
+改善点: 権限設定が曖昧。リスク対応案の明記を推奨
+次アクション: S3の実装に進む or 設計を追記して再提出</pre>
+        </details>
+      </section>
+
+      <section id="rubric">
+        <h2>採点ルーブリック（10点）</h2>
+        <ul>
+          <li>要件把握力（2）／設計力（2）／実装力（2）／納品力（2）／検証・改善力（2）</li>
+        </ul>
+        <details><summary>採点出力フォーマット</summary>
+<pre style="white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:12px"># 採点
+- 要件把握力: {}/2（理由）
+- 設計力: {}/2（理由）
+- 実装力: {}/2（理由）
+- 納品力: {}/2（理由）
+- 検証・改善力: {}/2（理由）
+合計: {}/10
+
+# 改善提案（3点）
+1) …
+2) …
+3) …
+
+# 次アクション
+- ○○を修正して再提出
+- または「次へ」で次のセッションへ</pre>
+        </details>
+      </section>
+
+      <section id="faq">
+        <h2>FAQ</h2>
+        <ul>
+          <li>納品物の社内・顧客提案利用は可（再販売・公開は不可）</li>
+          <li>保守：講座範囲の最小構成まで。拡張・保守契約は別途</li>
+          <li>RAG：本講座はPoCレベル。本番運用には追加検証が必要</li>
+        </ul>
+      </section>
+
+      <section id="contact" class="callout">
+        <div class="pricebox">
+          <div>
+            <div class="price">¥980</div>
+            <div class="lead">モニター価格／税込</div>
+          </div>
+          <div>
+            <a class="btn" href="PASTE_STRIPE_PRACTICAL_URL" target="_blank" rel="noopener">このコースで申し込む</a>
+            <a class="btn secondary" href="./exo_courses.html" style="margin-left:8px">他のコースを見る</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="aside">
+      <div class="card">
+        <h3>コース情報</h3>
+        <div class="meta">
+          <div class="chip"><div class="lead">期間</div><strong>3週間</strong></div>
+          <div class="chip"><div class="lead">想定レベル</div><strong>中級〜先進</strong></div>
+        </div>
+        <p class="lead" style="margin-top:10px">最終更新：2025-09-14</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="footer">© ExoVisionary Hub</div>
+</div>
 </body>
 </html>
