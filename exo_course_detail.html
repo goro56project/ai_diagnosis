@@ -1,50 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>コース詳細に移動します…</title>
+<style>
+  :root{--ink:#0f172a;--muted:#64748b;--line:#e5e7eb}
+  *{box-sizing:border-box}
+  body{margin:0;padding:24px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;line-height:1.6}
+  .box{max-width:720px;margin:8vh auto;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff}
+  h1{margin:0 0 6px}
+  .muted{color:var(--muted);font-size:14px}
+  a{color:var(--ink);text-decoration:none}
+</style>
 <script>
-/* ===== 学習の流れ → 各コース詳細へ “確実に” 遷移させる ===== */
 (function () {
-  // 現在のクエリから引き継ぐキー
-  const carryKeys = ['score', 'level', 'lv'];
-  const inQs = new URLSearchParams(location.search);
-
-  // 詳細ページURLを安全に作る（どのページ階層でも壊れない）
-  function buildDetailURL(course) {
-    // 現在パスのディレクトリを基準に exo_course_detail.html を解決
-    const dir = location.href.replace(/[^/]*$/, ''); // 末尾ファイル名を落とす
-    const u = new URL('exo_course_detail.html', dir);
-    u.searchParams.set('course', String(course || 'entry').toLowerCase());
-    carryKeys.forEach(k => { const v = inQs.get(k); if (v) u.searchParams.set(k, v); });
-    u.hash = 'flow';
-    return u.toString();
-  }
-
-  // 実遷移（他スクリプトの妨害を回避）
-  function hardNavigate(href) {
-    try {
-      window.onbeforeunload = null;
-      document.activeElement && document.activeElement.blur();
-    } catch(_) {}
-    // もっとも強い遷移（assignでもOKだが、href代入が最短）
-    window.location.href = href;
-  }
-
-  function wire(el) {
-    const course = el.getAttribute('data-course');
-    if (!course) return; // data-courseが無いと何もしない
-    const url = buildDetailURL(course);
-
-    // <a>ならhrefもセット（通常クリックで動く）
-    if (el.tagName === 'A') el.setAttribute('href', url);
-
-    // 何かに阻害されても遷移させる（captureで先取り）
-    const handler = (e) => { e.preventDefault(); e.stopImmediatePropagation?.(); hardNavigate(url); };
-    el.addEventListener('click',   handler, true);
-    el.addEventListener('mousedown', handler, true);
-    el.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') handler(e);
-    }, true);
-    el.setAttribute('aria-label', '学習の流れ（詳細ページへ移動）');
-  }
-
-  // .flow-link と .flow-btn の両方をサポート
-  document.querySelectorAll('.flow-link, .flow-btn').forEach(wire);
+  const q = new URLSearchParams(location.search);
+  const course = (q.get('course') || '').toLowerCase();
+  const map = {
+    entry: 'entry_course_detail.html',
+    middle: 'middle_course_detail.html',
+    practical: 'practical_course_detail.html'
+  };
+  const target = map[course] || map.entry;
+  const dest = target + (location.hash || '');
+  // 履歴を汚さない
+  location.replace(dest);
 })();
 </script>
+</head>
+<body>
+  <div class="box">
+    <h1>コース詳細に移動します…</h1>
+    <p class="muted">自動で切り替わらない場合は、下のリンクをご利用ください。</p>
+    <ul>
+      <li><a href="./entry_course_detail.html#flow">ENTRY：AI基礎＆日常業務（1日）</a></li>
+      <li><a href="./middle_course_detail.html#flow">MIDDLE：業務改善の入口（2週間）</a></li>
+      <li><a href="./practical_course_detail.html#flow">PRACTICAL：疑似案件で本格運用（3週間）</a></li>
+    </ul>
+  </div>
+</body>
+</html>
