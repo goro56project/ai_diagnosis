@@ -6,115 +6,177 @@
 <title>ENTRY｜AI基礎＆日常業務の成功体験（1日完結）</title>
 <style>
   :root{
-    --ink:#0f172a;--muted:#475569;--brand:#111827;--card:#fff;--bg:#f8fafc;--line:#e5e7eb;
-    --pill:#eef2ff;--pill-ink:#3730a3
+    --ink:#0f172a;--muted:#475569;--bg:#f8fafc;--card:#ffffff;--line:#e5e7eb;
+    --accent:#2563eb;--accent-ink:#ffffff;--pill:#e0e7ff;--good:#16a34a;--warn:#b45309
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;line-height:1.6}
-  a{color:inherit;text-decoration:none}
-  .wrap{max-width:1000px;margin:0 auto;padding:24px}
-  .crumbs{font-size:12px;color:var(--muted);margin-bottom:8px}
-  .grid{display:grid;gap:16px}
-  .two{grid-template-columns:1fr}
-  @media(min-width:900px){ .two{grid-template-columns:1.1fr .9fr} }
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
-  .pill{display:inline-block;background:var(--pill);color:var(--pill-ink);font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px}
-  h1{margin:10px 0 6px;font-size:28px}
-  h2{margin:22px 0 10px;font-size:22px}
-  h3{margin:16px 0 8px;font-size:18px}
-  ul{margin:8px 0 0 20px}
-  ol{margin:8px 0 0 20px}
-  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
-  .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;font-weight:700;border:1px solid var(--line);background:#fff}
-  .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
-  .note{color:var(--muted);font-size:13px}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;line-height:1.65}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px}
+  .crumbs{font-size:12px;color:var(--muted);margin:6px 0 12px}
+  .hero{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 10px}
+  .badge{display:inline-block;background:var(--pill);color:#3730a3;font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px}
+  h1{font-size:30px;margin:8px 0 6px}
+  .lead{color:var(--muted);margin:0 0 8px}
+  .toc{position:sticky;top:10px;display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .toc a{display:inline-block;background:#eef2f7;border:1px solid var(--line);padding:8px 10px;border-radius:999px;color:#111827}
+  .grid{display:grid;gap:18px}
+  @media(min-width:960px){ .grid.two{grid-template-columns:1.15fr .85fr} }
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  h2{font-size:22px;margin:10px 0}
+  h3{font-size:18px;margin:10px 0 6px}
+  ul,ol{margin:8px 0 0 20px}
+  .timeline{counter-reset:step}
+  .timeline li{margin:10px 0;padding-left:8px}
+  .timeline li::marker{color:var(--accent);font-weight:700}
+  .callout{border:1px dashed var(--line);border-radius:12px;padding:14px;background:#fbfdff}
+  .meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .meta .chip{background:#f9fafb;border:1px solid var(--line);border-radius:12px;padding:12px}
+  .pricebox{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
   .price{font-size:28px;font-weight:800}
-  .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .meta .card{padding:14px}
-  .footer{margin:36px 0 10px;font-size:12px;color:var(--muted);text-align:center}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;font-weight:700;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink)}
+  .btn.secondary{background:#fff;color:#111827;border-color:var(--line)}
+  .aside{position:sticky;top:10px}
+  .footer{margin:36px 0 8px;color:var(--muted);font-size:12px;text-align:center}
+  details{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+  details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="crumbs"><a href="./exo_courses.html">おすすめコース</a> / ENTRY</div>
+<div class="wrap">
+  <div class="crumbs"><a href="./exo_courses.html">おすすめコース</a> / ENTRY</div>
 
-    <div class="grid two">
-      <main class="card">
-        <div class="pill">入門〜初級向け</div>
-        <h1>ENTRY：AI基礎＆日常業務の成功体験（1日完結）</h1>
-        <p class="note">安全・品質・再現性を意識したAI活用を短時間で“まずやってみる”。小さく成果を出す成功体験をつくる。</p>
-
-        <section>
-          <h2>こんな方におすすめ</h2>
-          <ul>
-            <li>まずは短時間でAI活用を体験したい</li>
-            <li>安全に使うポイントとNG例を知りたい</li>
-            <li>即日で使えるテンプレ／資料が欲しい</li>
-          </ul>
-        </section>
-
-        <section id="flow">
-          <h2>学習の流れ</h2>
-          <ol>
-            <li>安全に使える基礎（情報の扱い方・NGケース）</li>
-            <li>指示の型：O-C-I-C フレームで実務に展開</li>
-            <li>即日成果：要約・資料化・メール案を仕上げる</li>
-          </ol>
-        </section>
-
-        <section>
-          <h2>到達イメージ</h2>
-          <ul>
-            <li>安全な指示・共有の型が身につく</li>
-            <li>“まず1つ”業務で成果を出せる</li>
-            <li>翌日以降の実装に自信が持てる</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>カリキュラム概要</h2>
-          <ul>
-            <li>プロンプトの基本／権利・情報管理の要点</li>
-            <li>O-C-I-C 指示テンプレの実演</li>
-            <li>すぐ使えるテンプレ配布（議事録・FAQ・メール）</li>
-          </ul>
-        </section>
-
-        <section class="card" style="border-style:dashed;margin-top:18px">
-          <h3>受講形式</h3>
-          <ul>
-            <li>1日完結ワークショップ</li>
-            <li>テンプレ配布＆その場で実務に落とし込み</li>
-          </ul>
-        </section>
-
-        <div style="height:1px;background:#e5e7eb;margin:22px 0"></div>
-
-        <div>
-          <div class="price">¥980</div>
-          <div class="note">※ モニター価格／税込</div>
-          <div class="cta">
-            <!-- Stripe本番リンクをここに貼り替えてください -->
-            <a class="btn primary" href="PASTE_STRIPE_ENTRY_URL" target="_blank" rel="noopener">このコースで申し込む</a>
-            <a class="btn" href="./exo_courses.html">他のコースを見る</a>
-          </div>
-        </div>
-      </main>
-
-      <aside class="grid">
-        <div class="card">
-          <h3>コース情報</h3>
-          <div class="meta">
-            <div class="card"><div class="note">期間</div><strong>1日</strong></div>
-            <div class="card"><div class="note">想定レベル</div><strong>入門〜初級</strong></div>
-          </div>
-          <p class="note" style="margin-top:10px">※ レベルは目安です。状況に合わせて伴走します。</p>
-        </div>
-      </aside>
+  <div class="hero">
+    <span class="badge">入門〜初級向け</span>
+    <h1>ENTRY：AI基礎＆日常業務の成功体験（1日完結）</h1>
+    <p class="lead">AI初心者（特に40〜50代）向け。専用カスタムGPT「<strong>ENTRY講師ボット</strong>」が進行・採点・進捗管理まで担当。S1〜S6で安全・高品質・再現性のある指示作成を身につけ、成果をテンプレ化して共有できるようになります。</p>
+    <div class="toc">
+      <a href="#goals">ゴール</a>
+      <a href="#flow">学習の流れ</a>
+      <a href="#deliverables">成果物</a>
+      <a href="#ops">受講中の操作</a>
+      <a href="#rubric">採点基準</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">申込み</a>
     </div>
-
-    <div class="footer">© ExoVisionary Hub</div>
   </div>
+
+  <div class="grid two">
+    <main class="card">
+      <section id="goals">
+        <h2>受講するとこうなれる</h2>
+        <ul>
+          <li><strong>安全に使える</strong>：社外秘・個人情報・出所配慮でNG回避</li>
+          <li><strong>良い指示が出せる</strong>：O–C–IO–Eの型で再現性の高いプロンプト</li>
+          <li><strong>小さく成果が出せる</strong>：議事録・要約・メールを即日で品質UP</li>
+          <li><strong>テンプレ化して共有</strong>：成果をチーム標準に展開</li>
+        </ul>
+      </section>
+
+      <section id="flow">
+        <h2>当日の流れ（S1〜S6）</h2>
+        <ol class="timeline">
+          <li><strong>S1 安全運用の基礎</strong>：情報の扱い・権利・NG例を理解し、<em>安全チェック表</em>を作成</li>
+          <li><strong>S2 良い指示の型</strong>：O–C–IO–Eで自分の業務テーマをプロンプト化</li>
+          <li><strong>S3 議事録テンプレ</strong>：決定事項・ToDoまで揃う自社フォーマット化</li>
+          <li><strong>S4 要約テンプレ</strong>：読者別（上長/現場）に使える要約を設計</li>
+          <li><strong>S5 メール下書きテンプレ</strong>：件名/本文/追伸まで一括生成</li>
+          <li><strong>S6 テンプレ化と共有</strong>：成果をパッケージ化して配布ルールを定義</li>
+        </ol>
+        <div class="callout">
+          <strong>共通進行：</strong>①ねらい → ②講義（3〜5行） → ③ハンズオン → ④提出物採点 → ⑤次アクション
+        </div>
+      </section>
+
+      <section id="deliverables">
+        <h2>持ち帰れるもの（成果物）</h2>
+        <ul>
+          <li>安全運用チェックリスト（部署版）</li>
+          <li>議事録／要約／メールの<strong>社内配布OKテンプレ</strong>一式</li>
+          <li>あなた専用の<strong>ENTRY講師ボット</strong>（設定済）</li>
+          <li>テンプレ配布手順書＋導入チェックリスト／1週間の実践プラン</li>
+        </ul>
+      </section>
+
+      <section id="ops">
+        <h2>受講中の操作（チャットコマンド）</h2>
+        <ul>
+          <li><code>S1開始〜S6開始</code>：各セッション開始／<code>再提出</code>：再採点／<code>やり直し</code>：その回を最初から</li>
+          <li><code>次へ</code>：合格後に次のセッションへ／<code>進捗メモ</code>：保存用ブロックを再表示</li>
+        </ul>
+        <details style="margin-top:8px">
+          <summary>進捗メモ（再開用）の例を開く</summary>
+          <p>セッション終了時に、合否・所要時間・提出物数・改善点・次アクションを1ブロックで出力。コピー保存して次回貼ると続きから再開。</p>
+          <pre style="white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:12px">📌【進捗メモ（再開用）】
+セッション: S2（良い指示の型）
+合否: 合格（10/10）
+所要時間: 5分
+提出物数: 1件
+改善点: トーン・読者・出力形式を加えるとより実務的
+次アクション: 再提出で改善練習 or 「次へ」でS3へ</pre>
+        </details>
+      </section>
+
+      <section id="rubric">
+        <h2>採点ルーブリック（10点）</h2>
+        <ul>
+          <li>安全性（2）／指示品質（3）／目的適合（3）／再現性（2）</li>
+        </ul>
+        <details><summary>採点出力フォーマット</summary>
+<pre style="white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:12px"># 採点
+- 安全性: {}/2（理由）
+- 指示品質: {}/3（理由）
+- 目的適合: {}/3（理由）
+- 再現性: {}/2（理由）
+合計: {}/10
+
+# 改善提案（3点）
+1) …
+2) …
+3) …
+
+# 次アクション
+- このプロンプトを○○に修正して再提出
+- このチェックリストでセルフレビュー</pre>
+        </details>
+      </section>
+
+      <section id="faq">
+        <h2>FAQ</h2>
+        <ul>
+          <li>録画提供：なし（資料・テンプレ配布あり）</li>
+          <li>社内配布：テンプレとチェックリストは配布可（再販売・公開は不可）</li>
+          <li>推奨環境：Googleアカウント／Chrome、会社PCの制限は事前確認</li>
+        </ul>
+      </section>
+
+      <section id="contact" class="callout">
+        <div class="pricebox">
+          <div>
+            <div class="price">¥980</div>
+            <div class="lead">モニター価格／税込</div>
+          </div>
+          <div>
+            <a class="btn" href="PASTE_STRIPE_ENTRY_URL" target="_blank" rel="noopener">このコースで申し込む</a>
+            <a class="btn secondary" href="./exo_courses.html" style="margin-left:8px">他のコースを見る</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="aside">
+      <div class="card">
+        <h3>コース情報</h3>
+        <div class="meta">
+          <div class="chip"><div class="lead">期間</div><strong>1日</strong></div>
+          <div class="chip"><div class="lead">想定レベル</div><strong>入門〜初級</strong></div>
+        </div>
+        <p class="lead" style="margin-top:10px">最終更新：2025-09-14</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="footer">© ExoVisionary Hub</div>
+</div>
 </body>
 </html>
