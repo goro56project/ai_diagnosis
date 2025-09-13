@@ -3,32 +3,118 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>MIDDLEコース詳細 | MYGPT School</title>
-<meta name="robots" content="noindex,nofollow" />
+<title>MIDDLE｜AI×業務改善の入口（2週間）</title>
 <style>
-  body{margin:0;background:#f8fafc;color:#0f172a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
-  .wrap{max-width:880px;margin:24px auto;padding:0 16px}
-  .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:20px}
-  h1{margin:0 0 6px}.muted{color:#475569}ul{margin:8px 0 0 18px}
-  .cta{display:inline-block;margin-top:16px;background:#111827;color:#fff;text-decoration:none;padding:12px 16px;border-radius:10px}
-  .back{display:inline-block;margin-top:12px;font-size:14px;color:#111827;text-decoration:none}
+  :root{
+    --ink:#0f172a;--muted:#475569;--brand:#111827;--card:#fff;--bg:#f8fafc;--line:#e5e7eb;
+    --pill:#eef2ff;--pill-ink:#3730a3
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;line-height:1.6}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px}
+  .crumbs{font-size:12px;color:var(--muted);margin-bottom:8px}
+  .grid{display:grid;gap:16px}
+  .two{grid-template-columns:1fr}
+  @media(min-width:900px){ .two{grid-template-columns:1.1fr .9fr} }
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .pill{display:inline-block;background:var(--pill);color:var(--pill-ink);font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px}
+  h1{margin:10px 0 6px;font-size:28px}
+  h2{margin:22px 0 10px;font-size:22px}
+  h3{margin:16px 0 8px;font-size:18px}
+  ul{margin:8px 0 0 20px}
+  ol{margin:8px 0 0 20px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;font-weight:700;border:1px solid var(--line);background:#fff}
+  .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+  .note{color:var(--muted);font-size:13px}
+  .price{font-size:28px;font-weight:800}
+  .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .meta .card{padding:14px}
+  .footer{margin:36px 0 10px;font-size:12px;color:var(--muted);text-align:center}
 </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="card">
-      <h1>MIDDLEコース（中級）</h1>
-      <p class="muted">実務テンプレ＋GAS×GPT自動化の土台づくり。</p>
-      <h2>学べること</h2>
-      <ul>
-        <li>GAS×GPT通知（Gmail/LINE）テンプレ</li>
-        <li>日次KPIレポート自動生成</li>
-        <li>カレンダー自動登録（基本）</li>
-      </ul>
-      <!-- ▼ 本番Stripeに置換 -->
-      <a class="cta" href="STRIPE_MIDDLE_URL" target="_blank" rel="noopener">このコースで申し込む（¥980）</a>
-      <div><a class="back" href="./exo_courses.html">← コース一覧に戻る</a></div>
+    <div class="crumbs"><a href="./exo_courses.html">おすすめコース</a> / MIDDLE</div>
+
+    <div class="grid two">
+      <main class="card">
+        <div class="pill">初級〜中級向け</div>
+        <h1>MIDDLE：AI×業務改善の入口（2週間）</h1>
+        <p class="note">“よく使う業務を型化”。議事録・メール・FAQをテンプレ化し、誰でも再利用できる形へ。小さな自動化も体験。</p>
+
+        <section>
+          <h2>こんな方におすすめ</h2>
+          <ul>
+            <li>定型業務の品質とスピードを上げたい</li>
+            <li>Googleフォーム/スプレッドシート/GAS連携を試したい</li>
+            <li>A/Bテストや簡易KPIで改善の手応えを掴みたい</li>
+          </ul>
+        </section>
+
+        <section id="flow">
+          <h2>学習の流れ</h2>
+          <ol>
+            <li>テンプレ化：議事録・メール・FAQの型を作る</li>
+            <li>ミニ自動化：フォーム→表→自動返信→レポート連携</li>
+            <li>検証：A/Bや簡易KPIで“効く施策”を見極める</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>到達イメージ</h2>
+          <ul>
+            <li>再現性あるテンプレ群が手元に残る</li>
+            <li>GAS連携の“最初の一歩”を踏み出せる</li>
+            <li>改善サイクルの回し方が分かる</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>カリキュラム概要</h2>
+          <ul>
+            <li>テンプレ設計の勘所（再現性・共有・更新）</li>
+            <li>GASハンズオン（フォーム→シート→メール）</li>
+            <li>評価とレポート化（軽量ダッシュボード）</li>
+          </ul>
+        </section>
+
+        <section class="card" style="border-style:dashed;margin-top:18px">
+          <h3>受講形式</h3>
+          <ul>
+            <li>2週間／課題ベースの伴走</li>
+            <li>週1レビュー＋チャット質問可</li>
+          </ul>
+        </section>
+
+        <div style="height:1px;background:#e5e7eb;margin:22px 0"></div>
+
+        <div>
+          <div class="price">¥9,800</div>
+          <div class="note">※ モニター価格／税込</div>
+          <div class="cta">
+            <!-- Stripe本番リンクをここに貼り替えてください -->
+            <a class="btn primary" href="PASTE_STRIPE_MIDDLE_URL" target="_blank" rel="noopener">このコースで申し込む</a>
+            <a class="btn" href="./exo_courses.html">他のコースを見る</a>
+          </div>
+        </div>
+      </main>
+
+      <aside class="grid">
+        <div class="card">
+          <h3>コース情報</h3>
+          <div class="meta">
+            <div class="card"><div class="note">期間</div><strong>2週間</strong></div>
+            <div class="card"><div class="note">想定レベル</div><strong>初級〜中級</strong></div>
+          </div>
+          <p class="note" style="margin-top:10px">※ レベルは目安です。状況に合わせて伴走します。</p>
+        </div>
+      </aside>
     </div>
+
+    <div class="footer">© ExoVisionary Hub</div>
   </div>
 </body>
 </html>
