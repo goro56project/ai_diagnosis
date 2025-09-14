@@ -115,7 +115,7 @@
       <section id="contact" class="callout">
         <div class="pricebox">
           <div><div class="price">¥980</div><div class="lead">（税込・モニター）</div></div>
-        <div>
+          <div>
             <a class="btn js-paylink" data-course="middle"
                href="https://buy.stripe.com/fZu7sK3VLbLS5QXb796Zy02"
                target="_blank" rel="noopener">このコースで申し込む</a>
@@ -143,9 +143,11 @@
         <p class="lead" style="margin-top:10px">最終更新：2025-09-14</p>
       </div>
 
-      <!-- ▼ 右カラム：FAQ（GASから5件） -->
+      <!-- ▼ 右カラム：FAQ（自由質問＋5件の例） -->
       <div class="card" id="faq" style="margin-top:12px">
         <h3>FAQ</h3>
+        <div id="faq-ask"></div>
+        <div id="faq-answer"></div>
         <div id="faq-list-side"></div>
       </div>
     </aside>
@@ -154,7 +156,7 @@
   <div class="footer">© ExoVisionary Hub</div>
 </div>
 
-<!-- スクリプトはフッター直前で読み込み -->
+<!-- スクリプト（支払いリンク & GAS連携FAQ） -->
 <script src="./assets/paylinks.js"></script>
 <script src="./assets/faq.js"></script>
 </body>
