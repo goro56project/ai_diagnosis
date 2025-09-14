@@ -47,15 +47,10 @@
   <div class="hero">
     <span class="badge">初級〜中級向け</span>
     <h1>MIDDLE：AI × 業務改善の入口（2週間）</h1>
-    <p class="lead">ENTRY修了者向け。専用カスタムGPT「<strong>MIDDLE講師ボット</strong>」が進行・フィードバック・採点・進捗管理を担当。テンプレ設計→GAS最小構成→改善運用→KPI可視化まで実践し、「小さな業務が勝手に回る」半自動化フローを構築します。</p>
+    <p class="lead">ENTRY修了者向け。専用カスタムGPT「<strong>MIDDLE講師ボット</strong>」が進行・採点・進捗管理を担当。テンプレ設計→GAS最小構成→改善運用→KPI可視化まで実践し、「小さな業務が勝手に回る」半自動化フローを構築します。</p>
     <div class="toc">
-      <a href="#goals">ゴール</a>
-      <a href="#flow">ロードマップ</a>
-      <a href="#deliverables">成果物</a>
-      <a href="#ops">受講中の操作</a>
-      <a href="#rubric">採点基準</a>
-      <a href="#faq">FAQ</a>
-      <a href="#contact">申込み</a>
+      <a href="#goals">ゴール</a><a href="#flow">ロードマップ</a><a href="#deliverables">成果物</a>
+      <a href="#ops">受講中の操作</a><a href="#rubric">採点基準</a><a href="#faq">FAQ</a><a href="#contact">申込み</a>
     </div>
   </div>
 
@@ -64,10 +59,10 @@
       <section id="goals">
         <h2>受講するとこうなれる</h2>
         <ul>
-          <li><strong>テンプレ設計</strong>：変数・構造・用途を分離し共有しやすい型に</li>
-          <li><strong>半自動化</strong>：フォーム→シート→自動返信（GAS）→集計の最小構成を稼働</li>
-          <li><strong>改善ループ</strong>：A/Bやチェックリストで施策の効きを見極めログ化</li>
-          <li><strong>KPIで語れる</strong>：時間短縮・件数・対応率などをダッシュボードで可視化</li>
+          <li><strong>テンプレ設計</strong>：変数・構造・用途を分離</li>
+          <li><strong>半自動化</strong>：フォーム→シート→自動返信（GAS）→集計の最小構成</li>
+          <li><strong>改善ループ</strong>：評価→改善→再評価をログ化</li>
+          <li><strong>KPI可視化</strong>：時間短縮・件数・対応率を見える化</li>
         </ul>
       </section>
 
@@ -75,87 +70,49 @@
         <h2>2週間ロードマップ（S1〜S6）</h2>
         <ol class="timeline">
           <li><strong>S1 キックオフ</strong>：対象業務・KPI・成功定義の確定</li>
-          <li><strong>S2 テンプレ設計</strong>：議事録/FAQ/メールなどでテンプレ3件作成</li>
-          <li><strong>S3 GAS自動化</strong>：トリガー・例外分岐・ログ出力を実装</li>
-          <li><strong>S4 改善ループ</strong>：評価→改善→再評価を確立</li>
-          <li><strong>S5 KPI可視化</strong>：集計シート＋グラフの軽量ダッシュボード</li>
-          <li><strong>S6 移管・展開</strong>：テンプレ＋GAS＋集計＋運用資料をパッケージ化</li>
+          <li><strong>S2 テンプレ設計</strong>：テンプレ3件作成</li>
+          <li><strong>S3 GAS自動化</strong>：トリガー・例外分岐・ログ出力</li>
+          <li><strong>S4 改善ループ</strong>：A/B or Before/Afterで検証</li>
+          <li><strong>S5 KPI可視化</strong>：集計シート＋グラフ</li>
+          <li><strong>S6 移管・展開</strong>：運用パッケージ化</li>
         </ol>
-        <div class="callout">共通進行：①ねらい → ②講義（3〜5行） → ③ハンズオン → ④提出物採点 → ⑤次アクション</div>
+        <div class="callout">共通進行：①ねらい → ②講義 → ③ハンズオン → ④採点 → ⑤次アクション</div>
       </section>
 
       <section id="deliverables">
-        <h2>持ち帰れるもの（成果物）</h2>
+        <h2>持ち帰れるもの</h2>
         <ul>
-          <li>テンプレパック（テンプレ／入力項目一覧／指示例／出力サンプル）</li>
-          <li>GAS最小構成（フォーム・シート・自動返信・ログ）</li>
-          <li>軽量ダッシュボード（集計シート＋グラフ）</li>
-          <li>改善ログ（フィードバック→変更点→再評価）</li>
-          <li>KPI記録（例：時間短縮 30分→10分、一次対応率 55%→88%）</li>
-          <li>運用ガイド（権限・命名・障害時フロー・更新手順）</li>
-          <li>あなた専用の<strong>MIDDLE講師ボット</strong></li>
+          <li>テンプレパック／GAS最小構成／改善ログ／KPIダッシュボード／運用ガイド</li>
+          <li>MIDDLE講師ボット（設定済）</li>
         </ul>
       </section>
 
       <section id="ops">
-        <h2>受講中の操作（コマンド）</h2>
-        <ul>
-          <li><code>S1開始〜S6開始</code>／<code>再提出</code>／<code>やり直し</code>／<code>次へ</code>／<code>進捗メモ</code></li>
-        </ul>
-        <details style="margin-top:8px">
-          <summary>進捗メモ（再開用）の例を開く</summary>
-<pre style="white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:12px">📌【進捗メモ（再開用）】
-セッション: S3（GASで作る小さな自動化）
-合否: 合格（9/10）
-所要時間: 40分
-提出物数: GASコード＋動作確認動画
-改善点: コメント整理とエラー時分岐の追加
-次アクション: 別フォームで応用 or 「次へ」でS4へ</pre>
-        </details>
+        <h2>受講中の操作</h2>
+        <ul><li><code>S1開始〜S6開始</code>／<code>再提出</code>／<code>やり直し</code>／<code>次へ</code>／<code>進捗メモ</code></li></ul>
       </section>
 
       <section id="rubric">
         <h2>採点ルーブリック（10点）</h2>
-        <ul>
-          <li>テンプレ設計力（2）／自動化精度（2）／改善ループ力（2）／KPI設計力（2）／共有性（2）</li>
-        </ul>
-        <details><summary>採点出力フォーマット</summary>
-<pre style="white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:12px"># 採点
-- テンプレ設計力: {}/2（理由）
-- 自動化精度: {}/2（理由）
-- 改善ループ力: {}/2（理由）
-- KPI設計力: {}/2（理由）
-- 成果物の共有性: {}/2（理由）
-合計: {}/10
-
-# 改善提案（3点）
-1) …
-2) …
-3) …
-
-# 次アクション
-- ○○を修正して再提出
-- またはチェックリストでセルフレビュー</pre>
-        </details>
+        <ul><li>テンプレ設計力（2）／自動化精度（2）／改善ループ力（2）／KPI設計力（2）／共有性（2）</li></ul>
       </section>
 
       <section id="faq">
         <h2>FAQ</h2>
         <ul>
-          <li>社内配布：テンプレ・運用ガイド・ダッシュボードは配布可（再販売・公開は不可）</li>
-          <li>GAS保守：講座範囲の最小構成まで。拡張は別途相談</li>
+          <li>社内配布可（再販売・公開不可）</li>
+          <li>GAS保守は最小構成まで（拡張は別途）</li>
           <li>前提：ENTRY修了、Googleアカウント・GAS権限・Chrome推奨</li>
         </ul>
       </section>
 
       <section id="contact" class="callout">
         <div class="pricebox">
+          <div><div class="price">¥980</div><div class="lead">モニター価格／税込</div></div>
           <div>
-            <div class="price">¥980</div>
-            <div class="lead">モニター価格／税込</div>
-          </div>
-          <div>
-            <a class="btn" href="PASTE_STRIPE_MIDDLE_URL" target="_blank" rel="noopener">このコースで申し込む</a>
+            <a class="btn js-paylink" data-course="middle"
+               href="https://buy.stripe.com/fZu7sK3VLbLS5QXb796Zy02"
+               target="_blank" rel="noopener">このコースで申し込む</a>
             <a class="btn secondary" href="./exo_courses.html" style="margin-left:8px">他のコースを見る</a>
           </div>
         </div>
@@ -176,5 +133,6 @@
 
   <div class="footer">© ExoVisionary Hub</div>
 </div>
+<script src="./assets/paylinks.js"></script>
 </body>
 </html>
