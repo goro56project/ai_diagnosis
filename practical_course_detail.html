@@ -38,6 +38,18 @@
   .footer{margin:36px 0 8px;color:var(--muted);font-size:12px;text-align:center}
   details{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
   details summary{cursor:pointer;font-weight:700}
+
+  .notice-secure{
+    margin-top:12px;background:#f8fafc;border:1px solid var(--line);
+    border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;
+    font-size:14px;color:#111827;
+  }
+  .notice-secure .icon{
+    width:28px;height:28px;border-radius:8px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#635bff,#7a5af8);color:#fff;font-weight:800;
+    font-family:ui-sans-serif,system-ui;
+  }
+  .notice-secure strong{font-weight:700}
 </style>
 </head>
 <body>
@@ -117,6 +129,14 @@
                target="_blank" rel="noopener">このコースで申し込む</a>
             <a class="btn secondary" href="./exo_courses.html" style="margin-left:8px">他のコースを見る</a>
           </div>
+        </div>
+
+        <div class="notice-secure" role="note" aria-label="安全な決済について">
+          <div class="icon">S</div>
+          <p>
+            本サービスの決済は <strong>Stripe（世界最大級の決済プラットフォーム）</strong> を利用しています。
+            通信はSSLで暗号化され、カード情報は当サイトに保存されません。
+          </p>
         </div>
       </section>
     </main>
