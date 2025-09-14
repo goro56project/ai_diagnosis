@@ -36,8 +36,10 @@
   .btn.secondary{background:#fff;color:#111827;border-color:var(--line)}
   .aside{position:sticky;top:10px}
   .footer{margin:36px 0 8px;color:var(--muted);font-size:12px;text-align:center}
-  details{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
-  details summary{cursor:pointer;font-weight:700}
+
+  /* FAQ 要素（右カラムで使用） */
+  details.faq{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;margin:8px 0}
+  details.faq summary{cursor:pointer;font-weight:700}
 
   /* 安心決済ノート */
   .notice-secure{
@@ -53,9 +55,6 @@
   .notice-secure strong{font-weight:700}
 </style>
 </head>
-  <script src="./assets/paylinks.js"></script>
-<script src="./assets/faq.js"></script>
-
 <body>
 <div class="wrap">
   <div class="crumbs"><a href="./exo_courses.html">おすすめコース</a> / ENTRY</div>
@@ -115,11 +114,6 @@
         <ul><li>安全性（2）／指示品質（3）／目的適合（3）／再現性（2）</li></ul>
       </section>
 
-      <section id="faq">
-  <h2>AI FAQ</h2>
-  <div id="faq-list"></div>
-</section>
-
       <section id="contact" class="callout">
         <div class="pricebox">
           <div><div class="price">¥980</div><div class="lead">（税込・モニター）</div></div>
@@ -151,11 +145,20 @@
         </div>
         <p class="lead" style="margin-top:10px">最終更新：2025-09-14</p>
       </div>
+
+      <!-- ▼ 右カラム：FAQ（GASから5件） -->
+      <div class="card" id="faq" style="margin-top:12px">
+        <h3>FAQ</h3>
+        <div id="faq-list-side"></div>
+      </div>
     </aside>
   </div>
 
   <div class="footer">© ExoVisionary Hub</div>
 </div>
+
+<!-- スクリプトはフッター直前で読み込み -->
 <script src="./assets/paylinks.js"></script>
+<script src="./assets/faq.js"></script>
 </body>
 </html>
