@@ -7,7 +7,7 @@
 <style>
   :root{
     --ink:#0f172a;--muted:#475569;--bg:#f8fafc;--card:#ffffff;--line:#e5e7eb;
-    --accent:#2563eb;--accent-ink:#ffffff;--pill:#e0e7ff;--good:#16a34a;--warn:#b45309
+    --accent:#2563eb;--accent-ink:#ffffff;--pill:#e0e7ff
   }
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;line-height:1.65}
@@ -26,9 +26,7 @@
   h2{font-size:22px;margin:10px 0}
   h3{font-size:18px;margin:10px 0 6px}
   ul,ol{margin:8px 0 0 20px}
-  .timeline{counter-reset:step}
-  .timeline li{margin:10px 0;padding-left:8px}
-  .timeline li::marker{color:var(--accent);font-weight:700}
+  .timeline li{margin:10px 0}
   .callout{border:1px dashed var(--line);border-radius:12px;padding:14px;background:#fbfdff}
   .meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .meta .chip{background:#f9fafb;border:1px solid var(--line);border-radius:12px;padding:12px}
@@ -51,13 +49,8 @@
     <h1>ENTRY：AI基礎＆日常業務の成功体験（1日完結）</h1>
     <p class="lead">AI初心者（特に40〜50代）向け。専用カスタムGPT「<strong>ENTRY講師ボット</strong>」が進行・採点・進捗管理まで担当。S1〜S6で安全・高品質・再現性のある指示作成を身につけ、成果をテンプレ化して共有できるようになります。</p>
     <div class="toc">
-      <a href="#goals">ゴール</a>
-      <a href="#flow">学習の流れ</a>
-      <a href="#deliverables">成果物</a>
-      <a href="#ops">受講中の操作</a>
-      <a href="#rubric">採点基準</a>
-      <a href="#faq">FAQ</a>
-      <a href="#contact">申込み</a>
+      <a href="#goals">ゴール</a><a href="#flow">学習の流れ</a><a href="#deliverables">成果物</a>
+      <a href="#ops">受講中の操作</a><a href="#rubric">採点基準</a><a href="#faq">FAQ</a><a href="#contact">申込み</a>
     </div>
   </div>
 
@@ -76,88 +69,52 @@
       <section id="flow">
         <h2>当日の流れ（S1〜S6）</h2>
         <ol class="timeline">
-          <li><strong>S1 安全運用の基礎</strong>：情報の扱い・権利・NG例を理解し、<em>安全チェック表</em>を作成</li>
-          <li><strong>S2 良い指示の型</strong>：O–C–IO–Eで自分の業務テーマをプロンプト化</li>
-          <li><strong>S3 議事録テンプレ</strong>：決定事項・ToDoまで揃う自社フォーマット化</li>
-          <li><strong>S4 要約テンプレ</strong>：読者別（上長/現場）に使える要約を設計</li>
+          <li><strong>S1 安全運用の基礎</strong>：<em>安全チェック表</em>を作成</li>
+          <li><strong>S2 良い指示の型</strong>：O–C–IO–Eで業務テーマをプロンプト化</li>
+          <li><strong>S3 議事録テンプレ</strong>：決定事項・ToDoまで揃う</li>
+          <li><strong>S4 要約テンプレ</strong>：読者別に使える要約を設計</li>
           <li><strong>S5 メール下書きテンプレ</strong>：件名/本文/追伸まで一括生成</li>
-          <li><strong>S6 テンプレ化と共有</strong>：成果をパッケージ化して配布ルールを定義</li>
+          <li><strong>S6 テンプレ化と共有</strong>：成果をパッケージ化し配布</li>
         </ol>
-        <div class="callout">
-          <strong>共通進行：</strong>①ねらい → ②講義（3〜5行） → ③ハンズオン → ④提出物採点 → ⑤次アクション
-        </div>
+        <div class="callout">共通進行：①ねらい → ②講義 → ③ハンズオン → ④採点 → ⑤次アクション</div>
       </section>
 
       <section id="deliverables">
-        <h2>持ち帰れるもの（成果物）</h2>
+        <h2>持ち帰れるもの</h2>
         <ul>
-          <li>安全運用チェックリスト（部署版）</li>
-          <li>議事録／要約／メールの<strong>社内配布OKテンプレ</strong>一式</li>
-          <li>あなた専用の<strong>ENTRY講師ボット</strong>（設定済）</li>
-          <li>テンプレ配布手順書＋導入チェックリスト／1週間の実践プラン</li>
+          <li>安全運用チェックリスト</li><li>議事録／要約／メールのテンプレ一式</li>
+          <li>ENTRY講師ボット（設定済）</li><li>配布手順書＋導入チェックリスト／実践プラン</li>
         </ul>
       </section>
 
       <section id="ops">
-        <h2>受講中の操作（チャットコマンド）</h2>
+        <h2>受講中の操作</h2>
         <ul>
-          <li><code>S1開始〜S6開始</code>：各セッション開始／<code>再提出</code>：再採点／<code>やり直し</code>：その回を最初から</li>
-          <li><code>次へ</code>：合格後に次のセッションへ／<code>進捗メモ</code>：保存用ブロックを再表示</li>
+          <li><code>S1開始〜S6開始</code>／<code>再提出</code>／<code>やり直し</code>／<code>次へ</code>／<code>進捗メモ</code></li>
         </ul>
-        <details style="margin-top:8px">
-          <summary>進捗メモ（再開用）の例を開く</summary>
-          <p>セッション終了時に、合否・所要時間・提出物数・改善点・次アクションを1ブロックで出力。コピー保存して次回貼ると続きから再開。</p>
-          <pre style="white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:12px">📌【進捗メモ（再開用）】
-セッション: S2（良い指示の型）
-合否: 合格（10/10）
-所要時間: 5分
-提出物数: 1件
-改善点: トーン・読者・出力形式を加えるとより実務的
-次アクション: 再提出で改善練習 or 「次へ」でS3へ</pre>
-        </details>
       </section>
 
       <section id="rubric">
         <h2>採点ルーブリック（10点）</h2>
-        <ul>
-          <li>安全性（2）／指示品質（3）／目的適合（3）／再現性（2）</li>
-        </ul>
-        <details><summary>採点出力フォーマット</summary>
-<pre style="white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:12px"># 採点
-- 安全性: {}/2（理由）
-- 指示品質: {}/3（理由）
-- 目的適合: {}/3（理由）
-- 再現性: {}/2（理由）
-合計: {}/10
-
-# 改善提案（3点）
-1) …
-2) …
-3) …
-
-# 次アクション
-- このプロンプトを○○に修正して再提出
-- このチェックリストでセルフレビュー</pre>
-        </details>
+        <ul><li>安全性（2）／指示品質（3）／目的適合（3）／再現性（2）</li></ul>
       </section>
 
       <section id="faq">
         <h2>FAQ</h2>
         <ul>
-          <li>録画提供：なし（資料・テンプレ配布あり）</li>
-          <li>社内配布：テンプレとチェックリストは配布可（再販売・公開は不可）</li>
-          <li>推奨環境：Googleアカウント／Chrome、会社PCの制限は事前確認</li>
+          <li>録画提供なし（資料・テンプレ配布あり）</li>
+          <li>社内配布可（再販売・公開不可）</li>
+          <li>Googleアカウント／Chrome推奨</li>
         </ul>
       </section>
 
       <section id="contact" class="callout">
         <div class="pricebox">
+          <div><div class="price">¥980</div><div class="lead">モニター価格／税込</div></div>
           <div>
-            <div class="price">¥980</div>
-            <div class="lead">モニター価格／税込</div>
-          </div>
-          <div>
-            <a class="btn" href="PASTE_STRIPE_ENTRY_URL" target="_blank" rel="noopener">このコースで申し込む</a>
+            <a class="btn js-paylink" data-course="entry"
+               href="https://buy.stripe.com/bJecN42RHdU03IPb796Zy01"
+               target="_blank" rel="noopener">このコースで申し込む</a>
             <a class="btn secondary" href="./exo_courses.html" style="margin-left:8px">他のコースを見る</a>
           </div>
         </div>
@@ -178,5 +135,6 @@
 
   <div class="footer">© ExoVisionary Hub</div>
 </div>
+<script src="./assets/paylinks.js"></script>
 </body>
 </html>
