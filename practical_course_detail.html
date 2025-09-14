@@ -47,15 +47,10 @@
   <div class="hero">
     <span class="badge">実践〜先進向け</span>
     <h1>PRACTICAL：疑似案件で本格運用へ（3週間）</h1>
-    <p class="lead">MIDDLE修了者向け。専用カスタムGPT「<strong>PRACTICAL講師ボット</strong>」が、<strong>要件定義 → 設計 → 実装 → 納品 → 検証（RAG PoC） → 発表</strong>までを伴走し、現場で通用する運用ドキュメントと動く仕組みを揃えます。</p>
+    <p class="lead">MIDDLE修了者向け。専用カスタムGPT「<strong>PRACTICAL講師ボット</strong>」が、<strong>要件定義 → 設計 → 実装 → 納品 → 検証（RAG PoC） → 発表</strong>まで伴走し、現場で通用する運用ドキュメントと動く仕組みを揃えます。</p>
     <div class="toc">
-      <a href="#goals">ゴール</a>
-      <a href="#flow">ロードマップ</a>
-      <a href="#deliverables">成果物</a>
-      <a href="#ops">受講中の操作</a>
-      <a href="#rubric">採点基準</a>
-      <a href="#faq">FAQ</a>
-      <a href="#contact">申込み</a>
+      <a href="#goals">ゴール</a><a href="#flow">ロードマップ</a><a href="#deliverables">成果物</a>
+      <a href="#ops">受講中の操作</a><a href="#rubric">採点基準</a><a href="#faq">FAQ</a><a href="#contact">申込み</a>
     </div>
   </div>
 
@@ -64,99 +59,62 @@
       <section id="goals">
         <h2>受講するとこうなれる</h2>
         <ul>
-          <li><strong>要件を正しく把握</strong>：目的・背景・制約・優先度を矛盾なく整理</li>
-          <li><strong>設計書が作れる</strong>：情報構造・権限・例外処理・運用設計を網羅</li>
-          <li><strong>動く形にできる</strong>：GAS等で最小構成実装、エラー時の分岐も備える</li>
-          <li><strong>納品一式を整える</strong>：設計書・SOP・レポート・デモ台本をパッケージ</li>
-          <li><strong>RAGを検証</strong>：FAQ50件で正答率の測定→改善→再測定</li>
+          <li><strong>要件把握</strong>：目的・背景・制約・優先度を矛盾なく整理</li>
+          <li><strong>設計書作成</strong>：情報構造・権限・例外処理・運用設計を網羅</li>
+          <li><strong>実装</strong>：GAS等で最小構成を安定稼働（エラー時分岐・ログ含む）</li>
+          <li><strong>納品一式</strong>：設計書／SOP／レポート／デモ台本をパッケージ化</li>
+          <li><strong>RAG検証</strong>：FAQ50件で正答率の測定→改善→再測定</li>
         </ul>
       </section>
 
       <section id="flow">
         <h2>3週間ロードマップ（S1〜S6）</h2>
         <ol class="timeline">
-          <li><strong>S1 要件定義</strong>：ロールプレイでイシュー具体化／成功基準・スコープ確定</li>
-          <li><strong>S2 設計</strong>：データフロー・権限表・例外時迂回・監視とログ</li>
-          <li><strong>S3 実装</strong>：フォーム→記録→自動返信→集計（命名規則・トリガー・ログ）</li>
+          <li><strong>S1 要件定義</strong>：ロールプレイで具体化、成功基準・スコープ確定</li>
+          <li><strong>S2 設計</strong>：データフロー・権限表・迂回フロー・監視とログ</li>
+          <li><strong>S3 実装</strong>：フォーム→記録→自動返信→集計（トリガー／命名規則／ログ）</li>
           <li><strong>S4 納品準備</strong>：SOP・移行チェックリスト・デモ台本・成果レポート</li>
           <li><strong>S5 RAGミニPoC</strong>：FAQ50件でベンチ→改善→再ベンチ、ログ化</li>
           <li><strong>S6 最終発表</strong>：デモ＆レビュー、運用可能性を確認</li>
         </ol>
-        <div class="callout">共通進行：①ねらい → ②講義（3〜5行） → ③ハンズオン → ④提出物採点 → ⑤次アクション</div>
+        <div class="callout">共通進行：①ねらい → ②講義 → ③ハンズオン → ④採点 → ⑤次アクション</div>
       </section>
 
       <section id="deliverables">
-        <h2>持ち帰れるもの（成果物）</h2>
+        <h2>持ち帰れるもの</h2>
         <ul>
-          <li>要件定義書（Who/What/Why/How/When＋スコープ・前提・リスク）</li>
-          <li>設計書（フロー図・GAS設計・権限表・失敗時対応・監視）</li>
-          <li>GASコード（関数コメント／トリガー設定手順）</li>
-          <li>納品フォルダ一式（SOP、成果レポート、デモ台本、移行チェックリスト）</li>
-          <li>RAG検証ログ（初期ベンチ→改善→再評価）</li>
-          <li>成果スライド（案件まとめ）</li>
-          <li>あなた専用の<strong>PRACTICAL講師ボット</strong></li>
+          <li>要件定義書／設計書／GASコード／SOP／成果レポート／デモ台本</li>
+          <li>RAG検証ログ（初期→改善→再評価）／成果スライド</li>
+          <li>PRACTICAL講師ボット（設定済）</li>
         </ul>
       </section>
 
       <section id="ops">
-        <h2>受講中の操作（コマンド）</h2>
-        <ul>
-          <li><code>S1開始〜S6開始</code>／<code>再提出</code>／<code>やり直し</code>／<code>次へ</code>／<code>進捗メモ</code></li>
-        </ul>
-        <details style="margin-top:8px">
-          <summary>進捗メモ（再開用）の例を開く</summary>
-<pre style="white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:12px">📌【進捗メモ（再開用）】
-セッション: S2（設計フェーズの実装）
-合否: 合格（9/10）
-所要時間: 75分
-提出物数: 設計書1点（フォーム設計＋エラー処理設計）
-改善点: 権限設定が曖昧。リスク対応案の明記を推奨
-次アクション: S3の実装に進む or 設計を追記して再提出</pre>
-        </details>
+        <h2>受講中の操作</h2>
+        <ul><li><code>S1開始〜S6開始</code>／<code>再提出</code>／<code>やり直し</code>／<code>次へ</code>／<code>進捗メモ</code></li></ul>
       </section>
 
       <section id="rubric">
         <h2>採点ルーブリック（10点）</h2>
-        <ul>
-          <li>要件把握力（2）／設計力（2）／実装力（2）／納品力（2）／検証・改善力（2）</li>
-        </ul>
-        <details><summary>採点出力フォーマット</summary>
-<pre style="white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:12px"># 採点
-- 要件把握力: {}/2（理由）
-- 設計力: {}/2（理由）
-- 実装力: {}/2（理由）
-- 納品力: {}/2（理由）
-- 検証・改善力: {}/2（理由）
-合計: {}/10
-
-# 改善提案（3点）
-1) …
-2) …
-3) …
-
-# 次アクション
-- ○○を修正して再提出
-- または「次へ」で次のセッションへ</pre>
-        </details>
+        <ul><li>要件把握力（2）／設計力（2）／実装力（2）／納品力（2）／検証・改善力（2）</li></ul>
       </section>
 
       <section id="faq">
         <h2>FAQ</h2>
         <ul>
-          <li>納品物の社内・顧客提案利用は可（再販売・公開は不可）</li>
-          <li>保守：講座範囲の最小構成まで。拡張・保守契約は別途</li>
-          <li>RAG：本講座はPoCレベル。本番運用には追加検証が必要</li>
+          <li>納品物は社内・顧客提案に利用可（再販売・公開不可）</li>
+          <li>保守は最小構成まで（拡張・保守契約は別途）</li>
+          <li>RAGはPoCレベル。本番投入は追加検証が必要</li>
         </ul>
       </section>
 
       <section id="contact" class="callout">
         <div class="pricebox">
+          <div><div class="price">¥980</div><div class="lead">モニター価格／税込</div></div>
           <div>
-            <div class="price">¥980</div>
-            <div class="lead">モニター価格／税込</div>
-          </div>
-          <div>
-            <a class="btn" href="PASTE_STRIPE_PRACTICAL_URL" target="_blank" rel="noopener">このコースで申し込む</a>
+            <a class="btn js-paylink" data-course="practical"
+               href="https://buy.stripe.com/9B66oG2RH03adjpfnp6Zy03"
+               target="_blank" rel="noopener">このコースで申し込む</a>
             <a class="btn secondary" href="./exo_courses.html" style="margin-left:8px">他のコースを見る</a>
           </div>
         </div>
@@ -177,5 +135,6 @@
 
   <div class="footer">© ExoVisionary Hub</div>
 </div>
+<script src="./assets/paylinks.js"></script>
 </body>
 </html>
