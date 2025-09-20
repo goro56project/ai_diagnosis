@@ -33,3 +33,25 @@ const FAQ_DATA = {
     { q: "講座はオンラインのみですか？", a: "はい、すべてオンラインで実施します。場所を問わず受講可能です。" }
   ]
 };
+function renderFaq(courseKey, targetId, limit = 5) {
+  const box = document.getElementById(targetId);
+  if (!box) return;
+
+  // データを取得
+  let items = FAQ_DATA[courseKey] || [];
+  const commons = FAQ_DATA.common || [];
+  // 共通FAQも最後に追加（必要な場合）
+  items = items.concat(commons);
+
+  // 件数制限
+  items = items.slice(0, limit);
+
+  // HTML化
+  box.innerHTML = items.map(it => `
+    <details class="faq">
+      <summary>${it.q}</summary>
+      <div>${it.a}</div>
+    </details>
+  `).join("");
+}
+
