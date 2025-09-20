@@ -159,5 +159,15 @@
 <!-- スクリプト（支払いリンク & GAS連携FAQ） -->
 <script src="./assets/paylinks.js"></script>
 <script src="./assets/faq.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof renderFaq === "function") {
+      renderFaq("middle", "faq-list-side", 5);
+    }
+    if (typeof enableFaqAsk === "function") {
+      enableFaqAsk();
+    }
+  });
+</script>
 </body>
 </html>
