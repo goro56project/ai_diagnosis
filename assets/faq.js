@@ -54,4 +54,41 @@ function renderFaq(courseKey, targetId, limit = 5) {
     </details>
   `).join("");
 }
+function enableFaqAsk() {
+  const askBox = document.getElementById("faq-ask");
+  const answerBox = document.getElementById("faq-answer");
+  if (!askBox || !answerBox) return;
+
+  // 入力フォームを設置
+  askBox.innerHTML = `
+    <input id="faq-input" type="text" placeholder="質問を入力してください" 
+      style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;" />
+    <button id="faq-btn" 
+      style="margin-top:8px;padding:6px 12px;border-radius:6px;background:#2563eb;color:#fff;border:none;">
+      質問する
+    </button>
+  `;
+
+  // ボタンクリックでAPI呼び出し
+  document.getElementById("faq-btn").addEventListener("click", async () => {
+    const q = document.getElementById("faq-input").value.trim();
+    if (!q) return;
+    answerBox.innerHTML = "回答を生成中…";
+
+    try {
+      const res = await fetch(`/exec?api=faq&fn=answer&q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      if (data.ok) {
+        answerBox.innerHTML = `<div style="margin-top:8px;padding:8px;border:1px solid #ddd;border-radius:6px;">
+          ${data.answer}
+        </div>`;
+      } else {
+        answerBox.innerHTML = "回答を取得できませんでした。";
+      }
+    } catch (e) {
+      answerBox.innerHTML = "エラーが発生しました。";
+    }
+  });
+}
+
 
