@@ -1,5 +1,20 @@
-// assets/faq.js
+/* assets/faq.js  —— 置き換え用 完全版
+   仕様：
+   - 右カラムにFAQ（最大件数指定）を表示：renderFaq(courseKey, targetId, limit)
+   - 自由質問フォームを有効化：enableFaqAsk()
+     → /exec?api=faq&fn=answer&q=... を呼び、
+        シートに無い質問はGPT補完（GAS側の実装に従う）
+   - CORSを避けたい場合はJSONPで呼ぶ。GAS側は &callback= に対応済み
+*/
 
+/* ====== 設定 ====== */
+/* 同一ドメインでGASをプロキシしているなら '/exec' のまま。
+   Apps Script の「ウェブアプリURL」を直接叩く場合は下の値をそのURLに変更。
+   例: 'https://script.google.com/macros/s/AKfycby......../exec'
+*/
+const FAQ_API_BASE = '/exec';
+
+/* ====== 表示用データ（各コース5件に厳選） ====== */
 const FAQ_DATA = {
   entry: [
     { q: "AI初心者でも受講できますか？", a: "はい。AI未経験者やパソコンが得意でない方でも安心して受講できます。" },
@@ -33,62 +48,114 @@ const FAQ_DATA = {
     { q: "講座はオンラインのみですか？", a: "はい、すべてオンラインで実施します。場所を問わず受講可能です。" }
   ]
 };
+
+/* ====== ユーティリティ ====== */
+function htmlEscape(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ====== FAQリスト描画 ====== */
+/**
+ * @param {"entry"|"middle"|"practical"} courseKey
+ * @param {string} targetId  例: "faq-list-side"
+ * @param {number} limit     表示件数（既定:5）
+ */
 function renderFaq(courseKey, targetId, limit = 5) {
   const box = document.getElementById(targetId);
   if (!box) return;
-
-  // データを取得
-  let items = FAQ_DATA[courseKey] || [];
-  const commons = FAQ_DATA.common || [];
-  // 共通FAQも最後に追加（必要な場合）
-  items = items.concat(commons);
-
-  // 件数制限
-  items = items.slice(0, limit);
-
-  // HTML化
+  const items = (FAQ_DATA[courseKey] || []).slice(0, limit);
   box.innerHTML = items.map(it => `
     <details class="faq">
-      <summary>${it.q}</summary>
-      <div>${it.a}</div>
+      <summary>${htmlEscape(it.q)}</summary>
+      <div>${htmlEscape(it.a)}</div>
     </details>
   `).join("");
 }
+
+/* ====== 自由質問フォーム（GAS→シート→GPT補完） ====== */
 function enableFaqAsk() {
   const askBox = document.getElementById("faq-ask");
   const answerBox = document.getElementById("faq-answer");
   if (!askBox || !answerBox) return;
 
-  // 入力フォームを設置
   askBox.innerHTML = `
-    <input id="faq-input" type="text" placeholder="質問を入力してください" 
-      style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;" />
-    <button id="faq-btn" 
-      style="margin-top:8px;padding:6px 12px;border-radius:6px;background:#2563eb;color:#fff;border:none;">
-      質問する
-    </button>
+    <div style="margin-bottom:8px">
+      <input id="faq-input" type="text" placeholder="FAQにない質問も入力できます"
+             style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10px" />
+      <button id="faq-submit"
+              style="margin-top:6px;padding:8px 12px;border:1px solid #2563eb;border-radius:10px;
+                     background:#2563eb;color:#fff;font-weight:700;cursor:pointer;">
+        質問する
+      </button>
+    </div>
   `;
 
-  // ボタンクリックでAPI呼び出し
-  document.getElementById("faq-btn").addEventListener("click", async () => {
-    const q = document.getElementById("faq-input").value.trim();
+  const $input = document.getElementById("faq-input");
+  const $btn = document.getElementById("faq-submit");
+
+  const ask = async () => {
+    const q = ($input.value || '').trim();
     if (!q) return;
-    answerBox.innerHTML = "回答を生成中…";
+    answerBox.innerHTML = '回答を生成中…';
 
     try {
-      const res = await fetch(`/exec?api=faq&fn=answer&q=${encodeURIComponent(q)}`);
-      const data = await res.json();
-      if (data.ok) {
-        answerBox.innerHTML = `<div style="margin-top:8px;padding:8px;border:1px solid #ddd;border-radius:6px;">
-          ${data.answer}
-        </div>`;
+      const data = await faqAnswerApi(q); // {ok, answer, source}
+      if (data && data.ok) {
+        const src = data.source === 'faq' ? '（FAQ）' : '（GPT）';
+        answerBox.innerHTML = `
+          <div style="margin-top:8px;padding:10px;border:1px solid #e5e7eb;border-radius:10px;background:#fff">
+            ${htmlEscape(data.answer)} <span style="color:#64748b">${src}</span>
+          </div>`;
       } else {
-        answerBox.innerHTML = "回答を取得できませんでした。";
+        answerBox.innerHTML = '回答を取得できませんでした。';
       }
     } catch (e) {
-      answerBox.innerHTML = "エラーが発生しました。";
+      answerBox.innerHTML = 'エラーが発生しました。';
     }
+  };
+
+  $btn.addEventListener('click', ask);
+  $input.addEventListener('keydown', e => { if (e.key === 'Enter') ask(); });
+}
+
+/* ====== API呼び出し（fetch → 失敗時はJSONPフォールバック） ====== */
+async function faqAnswerApi(q) {
+  const base = String(FAQ_API_BASE || '').replace(/\/+$/,''); // 末尾スラ削除
+  const url = `${base}?api=faq&fn=answer&q=${encodeURIComponent(q)}`;
+
+  // 1) まずは通常のfetch（同一オリジン・CORS許可前提）
+  try {
+    const res = await fetch(url, { method: 'GET' });
+    if (res.ok) {
+      const json = await res.json();
+      if (json && typeof json === 'object') return json;
+    }
+  } catch (_) { /* fallthrough */ }
+
+  // 2) 失敗したらJSONP
+  return jsonpFetch(url);
+}
+
+/* JSONP（&callback=cbName でGASが返すJSを実行） */
+function jsonpFetch(url, timeoutMs = 12000) {
+  return new Promise((resolve, reject) => {
+    const cb = 'faq_cb_' + Math.random().toString(36).slice(2);
+    const cleanup = (scriptEl) => {
+      try { delete window[cb]; } catch(_) {}
+      if (scriptEl && scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
+    };
+    window[cb] = (data) => {
+      cleanup(script);
+      resolve(data);
+    };
+    const script = document.createElement('script');
+    script.src = `${url}${url.includes('?') ? '&' : '?'}callback=${cb}`;
+    script.onerror = () => { cleanup(script); reject(new Error('JSONP error')); };
+    document.head.appendChild(script);
+    setTimeout(() => { cleanup(script); reject(new Error('JSONP timeout')); }, timeoutMs);
   });
 }
 
-
+/* グローバル公開（HTMLから typeof で存在確認できるように） */
+window.renderFaq = renderFaq;
+window.enableFaqAsk = enableFaqAsk;
