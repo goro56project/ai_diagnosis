@@ -168,6 +168,17 @@
       renderFaq("entry", "faq-list-side", 5);
     }
   });
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    if (typeof renderFaq === "function") {
+      renderFaq("entry", "faq-list-side", 5);
+    }
+    if (typeof enableFaqAsk === "function") {
+      enableFaqAsk();   <!-- ★ここを追加 -->
+    }
+  });
+</script>
+
 </script>
 </body>
 </html>
