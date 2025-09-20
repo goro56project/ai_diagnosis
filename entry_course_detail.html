@@ -177,6 +177,19 @@
       enableFaqAsk();   <!-- ★ここを追加 -->
     }
   });
+  <script src="./assets/paylinks.js"></script>
+<script src="./assets/faq.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    if (typeof renderFaq === "function") {
+      renderFaq("entry", "faq-list-side", 5);   // ← 5件表示
+    }
+    if (typeof enableFaqAsk === "function") {
+      enableFaqAsk();                            // ← 自由質問フォーム
+    }
+  });
+</script>
+
 </script>
 
 </script>
